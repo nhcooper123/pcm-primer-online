@@ -1,0 +1,21 @@
+# Glossary {#glossary}
+
+- **phylogeny**
+- **Root**
+- **Branch**
+- **Tip**
+- **Node**
+- **Outgroup**
+- **ingroup**
+- **Speciation**
+- **Extinction**
+- **Diversification**
+- **Polytomy**
+- **sister species**
+- **Clade**
+- **Monophyly**
+- **Paraphyly**
+- **Cladogram**
+- **Ultrametric**
+- **Total evidence trees**
+

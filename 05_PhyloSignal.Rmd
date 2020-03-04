@@ -1,0 +1,158 @@
+---
+title: "Phylogenetic signal in R"
+author: "Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+# Phylogenetic Signal in R
+Phylogenetic signal is the pattern where close relatives have more similar trait values than more distant relatives (see Kamilar and Cooper 2013). The aims of this exercise are to learn how to use R to estimate phylogenetic signal using Pagel's $\lambda$ and Blomberg's *K*. 
+
+We will be using the evolution of primate life-history variables as an example. 
+These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+
+```{block, type="info"}
+Note that we have already cleaned and tidied this tree and data so it matches up. If doing this for your own data remember to run through XXXXX first.
+```
+
+You will also need to install the following packages: 
+
+* `ape`
+* `geiger`
+* `picante`
+* `caper`
+
+***
+## Preparation
+### Load the required packages
+To begin we need to load the packages for this practical.
+
+```{r, message = FALSE}
+# Load the packages
+library(ape)
+library(geiger)
+library(picante)
+library(caper)
+library(tidyverse)
+```
+
+### Reading your data and tree into R
+The data are in a comma-delimited text file called `clean-primate-data.csv`. Load these data as follows. 
+
+```{r}
+# Read in the data
+primatedata <- read.csv("Primatedata.csv")
+# Check everything loaded corrected
+glimpse(primatedata)
+```
+
+To load the tree we will use `read.nexus`.
+
+```{r}
+# Read in the tree
+primatetree <- read.nexus("consensusTree_10kTrees_Version2.nex")
+# Check it loaded correctly
+str(primatetree)
+```
+
+Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted. 
+
+```{r}
+# Check whether the tree is binary
+# We want this to be TRUE
+is.binary.tree(primatetree)
+```
+
+```{r}
+# Check whether the tree is rooted
+# We want this to be TRUE
+is.rooted(primatetree)
+```
+
+### Combining the tree and the data for `caper`
+To estimate Pagel's $\lambda$ in R we use the package `caper`. For `caper` to work you first need to combine the phylogeny and data into one object using the function `comparative.data` as follows. 
+
+```{r}
+# Combine the tree and the data
+primate <- comparative.data(phy = primatetree, data = primatedata, 
+                            names.col = Binomial, vcv = TRUE, 
+                            na.omit = FALSE, warn.dropped = TRUE)
+```
+
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. 
+
+`warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. Here we won't drop any species because we already did this in script XXXX. If you do have species that don't match in the tree and the data, this function will give a warning telling you that some species have been dropped. You can view the dropped species using:
+
+```{r}
+primate$dropped$tips
+primate$dropped$unmatched.rows
+```
+
+Here we already fixed this problem, so nothing is listed.
+
+```{block, type = "info"}
+**Always** make sure you check the list of dropped species is what you expected, it often reveals typos in your species names, or mismatches in taxonomies used etc.
+```
+
+## Phylogenetic signal using Pagel's $\lambda$ 
+Let's estimate $\lambda$ for log GestationLen_d:
+
+```{r}
+lambdaGL <- pgls(log(GestationLen_d) ~ 1, data = primate, 
+                 lambda = "ML")
+```
+
+We use the same function as if we were fitting a phylogenetic generalised least square (PGLS) model `pgls` (see exercise XXX). In these, the `1` would be replaced by our explanatory variables. By replacing the explanatory variables with 1 you are just investigating the relationship between log gestation length and the phylogeny. 
+
+To look at the output we use `summary`
+```{r}
+summary(lambdaGL)
+```
+
+The $\lambda$ value is the $\lambda$ estimate for log GestationLen_d and the p values are from likelihood ratio tests showing whether the ML $\lambda$ is significantly different from 0 (no phylogenetic signal) or 1 (the expectation under Brownian motion).
+
+***
+
+## Blomberg's *K* (Blomberg et al 2003)
+To estimate Blomberg’s *K* we use the `Kcalc` function in `picante`. 
+First you need to set up a new vector with the values for the variable you are interested in, here the log of gestation length, and with a names attribute with the names of your species. 
+Here I'll call this vector `lngest`.
+
+```{r}
+lngest <- log(primatedata$GestationLen_d)
+names(lngest) <- primatedata$Binomial
+```
+
+We can then calculate *K* for log gestation length:
+
+```{r}
+Kcalc(lngest[primatetree$tip.label], primatetree)
+```
+
+`Kcalc` (and `phylosignal`, see below) require the trait data to be in the _same order_ as the tree tip labels. 
+`lngest[primatetree$tip.label]` selects gestation lengths from the species in the same order as they are in the tree (square brackets `[ ]` are used in R to subset data).
+
+K for log gestation length is 0.7758. 
+As with $\lambda$ above, we're interested in whether the value of K is significantly different from what we'd expect by chance. 
+We can do this using the function `phylosignal`.
+This function randomly assigns the trait values to the species and then calculates K. 
+This is repeated 1000 times (if `reps = 1000`) and the observed value of K is then compared to the randomized values to determine its significance.
+
+```{r}
+phylosignal(lngest[primatetree$tip.label], primatetree, reps = 1000)
+```
+
+In this case the observed K is significantly higher than the random values of K (`PIC.variance.P` < 0.001). (Click on the little black arrows to scroll left along the table if you're looking at this in RStudio).
+
+*Note this is a randomization test so your output here will not be identical to mine.*
+
+```{block, type = "info"}
+Really important that it's phylo signal in residuals not variables we need to fix...
+```
+## Test yourself
+Answers at the end of the book...
+
+1. What is 

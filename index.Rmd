@@ -1,0 +1,48 @@
+--- 
+title: "A Primer on Phylogenetic Comparative Methods"
+author: "Natalie Cooper, Robert P. Freckleton"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::pdfbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+colorlinks: yes
+description: "Draft of PCM primer book"
+---
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
+
+# Preface {-}
+
+Book title: Primer on Phylogenetic Comparative Methods
+
+## Intended readers {-}
+
+*Primers* are aimed at undergraduate and postgraduate students in the *Life and Environmental Sciences* and also....
+
+
+## How is the book organised? {-}
+
+The content and structure of the book is like this
+
+## Online companion material {-}
+
+## Topics not in *Primer*? {-}
+
+## Boxes {-}
+
+Throughout the book are boxes of text highlighting particularly important issues:
+
+```{block, type="info"}
+**Info** Extra info for interested
+```
+
+
+## Acknowledgements {-}

@@ -1,0 +1,266 @@
+---
+title: "Phylogenetic Generalised Least Squares (PGLS) in R"
+author: "Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+# Phylogenetic Generalised Least Squares (PGLS) in R
+The aims of this exercise are to learn how to use R to perform Phylogenetic Generalised Least Squares (PGLS) analyses.
+
+We will be using the evolution of primate life-history variables as an example. 
+These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+
+```{block, type="info"}
+Note that we have already cleaned and tidied this tree and data so it matches up. If doing this for your own data remember to run through XXXXX first.
+```
+
+You will also need to install the following packages: 
+
+* `ape`
+* `geiger`
+* `picante`
+* `caper`
+
+***
+## Preparation
+### Load the required packages
+To begin we need to load the packages for this practical.
+
+```{r, message = FALSE}
+# Load the packages
+library(ape)
+library(geiger)
+library(picante)
+library(caper)
+library(tidyverse)
+```
+
+### Reading your data and tree into R
+The data are in a comma-delimited text file called `clean-primate-data.csv`. Load these data as follows. 
+
+```{r}
+# Read in the data
+primatedata <- read.csv("Primatedata.csv")
+# Check everything loaded corrected
+glimpse(primatedata)
+```
+
+To load the tree we will use `read.nexus`.
+
+```{r}
+# Read in the tree
+primatetree <- read.nexus("consensusTree_10kTrees_Version2.nex")
+# Check it loaded correctly
+str(primatetree)
+```
+
+Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted. 
+
+```{r}
+# Check whether the tree is binary
+# We want this to be TRUE
+is.binary.tree(primatetree)
+```
+
+```{r}
+# Check whether the tree is rooted
+# We want this to be TRUE
+is.rooted(primatetree)
+```
+
+### Combining the tree and the data for `caper`
+To perform a PGLS analysis in R we use the package `caper`. For `caper` to work you first need to combine the phylogeny and data into one object using the function `comparative.data` as follows. 
+
+```{r}
+# Combine the tree and the data
+primate <- comparative.data(phy = primatetree, data = primatedata, 
+                            names.col = Binomial, vcv = TRUE, 
+                            na.omit = FALSE, warn.dropped = TRUE)
+```
+
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. 
+
+`warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. Here we won't drop any species because we already did this in script XXXX. If you do have species that don't match in the tree and the data, this function will give a warning telling you that some species have been dropped. You can view the dropped species using:
+
+```{r}
+primate$dropped$tips
+primate$dropped$unmatched.rows
+```
+
+Here we already fixed this problem, so nothing is listed.
+
+```{block, type = "info"}
+**Always** make sure you check the list of dropped species is what you expected, it often reveals typos in your species names, or mismatches in taxonomies used etc.
+```
+
+***
+
+## Phylogenetic generalized least squares models (PGLS)
+
+Let's investigate the relationship between gestation length in Primates and their body size. Theory leads us to believe that bigger mammals have longer gestation lengths (compare mice to elephants), but is this true in Primates?
+
+We can first quickly look at the phylogenetic pseudoreplication problem on the graph by colouring the points by family.
+
+```{r}
+# Plot gestation length against body size, coloured by family
+ggplot(primatedata, aes(x = log(AdultBodyMass_g), 
+                        y = log(GestationLen_d), 
+                        colour = Family)) +
+  geom_point()
+```
+
+Note how certain families are clustered on the graph. It's clear that close relatives are more similar than distant relatives. So we need to account for phylogenetic non independence.
+
+There are several ways of accounting for phylogenetic non independence in your analyses. Here we will use phylogenetic generalized least squares (PGLS). Another popular earlier method is independent contrasts (PIC). This method is really similar to PGLS, in fact it is just a special kind of PGLS where $\lambda$ is equal to 1.
+
+PGLS offers some important advantages over independent contrasts. 
+The model of trait evolution can be more flexible i.e., it can depart from a strict Brownian motion process ($\lambda$ or *K* = 1). Different scaling parameters ($\lambda$, $\kappa$, and $\delta$) can be incorporated in the analysis, which can significantly improve the fit of the data to the model and thus also improve the estimation of the trait correlation. Another advantage of PGLS is that the intercept of the regression is not forced to be zero.
+
+### Fitting PGLS models in R
+
+The function for PGLS analyses in `caper` is `pgls`. To fit a model which uses the Maximum Likelihood (ML) estimate of $\lambda$ we use the following code:
+
+```{r}
+# Fit a PGLS model
+model.pgls <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g), 
+                   data = primate, lambda = "ML")
+```
+
+To look at the output we use `summary`
+
+```{r}
+# Look at the model outputs
+summary(model.pgls)
+```
+
+As well as the standard regression outputs, the output includes the estimated ML value of $\lambda$ (0.892) and p values from likelihood ratio tests showing whether the ML $\lambda$ is significantly different from 0 or 1. 
+
+$\kappa$ and $\delta$ are also tree transformations which can improve the fit of the data to the tree. It is also possible to use `pgls` to optimise $\kappa$ or $\delta$  (using kappa = "ML" or delta = "ML" instead of lambda = "ML" in the code above). We will not cover this here. 
+
+```{block, type = "info"}
+Note that optimizing more than one of these parameters at the same time is not advisable because it would be impossible to interpret the results!
+```
+
+We can also plot the results as follows:
+
+```{r}
+# can we ggplot?
+#plot(log(GestationLen_d) ~ log(AdultBodyMass_g), data = primatedata)
+#abline(model.pgls)
+```
+
+### Model diagnostics for PGLS models
+You must always check model diagnostic plots whenever you fit a model in R to check that your data meet the assumptions of the model. The method for this in PGLS is the same for OLS, independent contrasts and PGLS models (though the graphs are slightly different) - we just use the function `plot`. 
+
+```{block, type="info"}
+You might recall we also use `plot` to plot phylogenies and other things. `plot` is one of a set of clever functions in R that uses an _ifelse_ statement to decide what kind of plot it should do. When you ask R to `plot` something, it first determines what _class_ of object it is. It then chooses the correct version of `plot` for that class. In this case the function it is actually using to plot the model diagnostics for PGLS is `plot.pgls`.
+```
+
+To get model diagnostic plots for PGLS:
+
+```{r}
+# First make a plotting window with 4 panes as there are four plots
+par(mfrow = c(2, 2))
+# Now plot the model diagnostics
+plot(model.pgls)
+# Return the plot window to one pane for later plotting
+par(mfrow = c(1, 1))
+```
+
+Without going into the statistical details (and if you've no idea what these plots are for I suggest looking this up online or in a stats textbook), what you are looking for in these plots is:
+
+1. In plot one you shouldn't see any data with a studentized residual > $\pm$ 3. 
+Any species with such large residuals should be removed as these outliers may overly influence the results of the regression (see Jones and Purvis 1997). Often these are the result of measurement error associated with species pairs joined by very short branches. You should generally report results with and without outliers unless the results remain qualitatively the same.
+2.  The points of the Q-Q plot (plot 2) should approximately fall on the line. This tests for normality of residuals, one of the assumptions of linear models
+3.  Plots 3 and 4 should show a fairly random scattering of points. You want to avoid any clear patterns. The first is related to the systematic component of the model - any pattern here suggests that the model has not been correctly specified. The second is to test the assumption that variances are equal (homoscedascity).
+
+It takes practice to know what is "good", "bad" and "acceptable" with these plots. I would say the plots above are fine, but there appear to be a couple of data points with studentized residuals > $\pm$ 3 in plot 1 that should be removed, or at least checked for errors. 
+
+### Likelihood profiles for $\lambda$ in PGLS models
+You should also look at the likelihood profiles for branch length transformations in PGLS models using `pgls.profile`:
+
+```{r}
+# Create a likelihood profile of the lambda estimate
+lambda.profile <- pgls.profile(model.pgls, "lambda")
+# Plot the likelihood profile
+plot(lambda.profile)
+```
+
+This graph shows the likelihood profile of $\lambda$ in our model. 
+Ideally you want a line with an obvious peak/optimum like this, rather than a flat line which would suggest $\lambda$ could be anything. You can see that the optimum (the peak of the curve) is at 0.892 as estimated in our PGLS model. The dotted red lines are the 95\% confidence intervals on $\lambda$ for our model. `pgls.confint` prints out these numbers in `$ci.val` if you want to know the exact numbers.
+
+```{r}
+# Extract the confidence intervals on lambda
+pgls.confint(model.pgls, "lambda")$ci.val
+```
+
+***
+## Common issues when running PGLS models in R
+
+Our data are designed to work easily, but when you use your own data you may come across a couple of common errors. I therefore list these below.
+
+### Optim errors
+Sometimes you will find that `pgls` will not work and you get an `optim error`. This generally happens when the lambda profile is really flat, and the model is getting stuck near one of the bounds.
+
+To fix this error you need to _change the bounds_ (i.e. upper and lower values) on the parameter being optimized, in this case $\lambda$. It usually seems to be the lower bound which is the issue. Just change the lower bound of $\lambda$ to something a little bigger than 1e-6 (the default lower bound) until it works. For example:
+
+```{r}
+# Fit PGLS model with a higher lower bound on lambda
+model.pgls2 <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g), 
+                    data = primate, lambda = "ML", 
+                    bounds = list(lambda = c(1e-05, 1)))
+```
+
+### Big problems with small datasets
+You will often find strange $\lambda$ profiles when you don't have a lot of species in your data, because $\lambda$ has very low power to detect phylogenetic signal for less than 20-30 data points (see Freckleton et al. 2002). This means that using PGLS on small datasets is tricky - you almost always get ML $\lambda$ of zero but the $\lambda$ profile will show a pretty flat likelihood surface. Unfortunately people often forget to look at the $\lambda$ profile so erroneously conclude that there is no phylogenetic autocorrelation in their data.
+
+Generally I'd say don't use small datasets, however, this seems unavoidable in some fields. Therefore my advice is to (only in this situation!) ignore one of Freckleton's deadly sins (2009, JEB) and report the results from an OLS model (equivalent of PGLS with $\lambda$ = 0) and *also* report the results from a PGLS model with $\lambda$ set to 1 (equivalent to independent contrasts). 
+This problem comes up regularly, and current consensus among the PCM community is that this is best solution at present, if collecting more data is not an option.
+
+To set $\lambda$ to 1 you just replace "ML" with 1
+
+```{r}
+# Fit PGLS model with lambda set to 1
+model.pgls3 <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g),
+                    data = primate, lambda = 1)
+```
+
+### Model diagnostics for PGLS models
+You should always check model diagnostic plots whenever you fit a model in R to check that your data meet the assumptions of the model. 
+The method for this in PGLS is the same for OLS, independent contrasts and PGLS models (though the graphs are slightly different). 
+To get model diagnostic plots for PGLS:
+
+```{r}
+par(mar = c(4,4,2,0))
+par(mfrow = c(2, 2))
+plot(model.pgls)
+par(mfrow = c(1, 1))
+```
+
+Without going into the statistical details (and if you've no idea what these plots are for I suggest looking this up online or in a stats textbook), what you are looking for in these plots is:
+
+1. In plot one you shouldn't see any data with a studentized residual > $\pm$ 3. 
+Any species with such large residuals should be removed as these outliers may overly influence the results of the regression (see Jones and Purvis 1997). Often these are the result of measurement error associated with species pairs joined by very short branches. You should generally report results with and without outliers unless the results remain qualitatively the same.
+2.  The points of the Q-Q plot (plot 2) should approximately fall on the line. This tests for normality of residuals, one of the assumptions of linear models
+3.  Plots 3 and 4 should show a fairly random scattering of points. You want to avoid any clear patterns. The first is related to the systematic component of the model - any pattern here suggests that the model has not been correctly specified. The second is to test the assumption that variances are equal (homoscedascity).
+
+It takes practice to know what is "good", "bad" and "acceptable" with these plots. I would say the plots above are fine, but there appear to be a couple of data points with studentized residuals > $\pm$ 3 in plot 1 that should be removed, or at least checked for errors. 
+
+***
+
+## References
+* Arnold, C., L. J. Matthews, and C. L. Nunn. 2010. The 10ktrees website: a new online resource for primate phylogeny. Evolutionary Anthropology: Issues, News, and Reviews 19:114–118.
+* Blomberg, S. P., T. Garland, and A. R. Ives. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution 57:717–745.
+* Freckleton, R. P., P. H. Harvey, and M. Pagel. 2002. Phylogenetic analysis and comparative data: a test and review of evidence. The American Naturalist 160:712-726.
+* Freckleton, R. P. (2009) The seven deadly sins of comparative analysis. Journal of Evolutionary Biology, 22, 1367–1375.
+* Jones, K. E., J. Bielby, M. Cardillo, S. A. Fritz, J. O'Dell, C. D. L. Orme, K. Safi, W. Sechrest, E. H. Boakes, C. Carbone, et al. 2009. Pantheria: a species-level database of life history, ecology, and geography of extant and recently extinct mammals: Ecological archives e090-184. Ecology 90:2648–2648.
+* Kamilar, J. M., & Cooper, N. 2013. Phylogenetic signal in primate behaviour, ecology and life history. Phil. Trans. R. Soc. B, 368(1618), 20120341.
+* Pagel, M. 1999. Inferring the historical patterns of biological evolution. Nature, 401(6756), 877-884.
+* Revell, L. J. 2010. Phylogenetic signal and linear regression on species data. Methods in Ecology and Evolution, 1, 319-329.
+
+### Extra Reading
+* Losos, J.B. (2011) Seeing the forest for the trees: the limitations of phylogenies in comparative biology. The American Naturalist, 177, 709–727.
