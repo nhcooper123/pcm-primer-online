@@ -1,5 +1,5 @@
 --- 
-title: "A Primer on Phylogenetic Comparative Methods"
+title: "Online materials for Primer on Phylogenetic Comparative Methods"
 author: "Natalie Cooper, Robert P. Freckleton"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -9,7 +9,6 @@ bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 colorlinks: yes
-description: "Draft of PCM primer book"
 ---
 
 ```{r include=FALSE}
@@ -21,28 +20,20 @@ knitr::write_bib(c(
 
 # Preface {-}
 
-Book title: Primer on Phylogenetic Comparative Methods
-
-## Intended readers {-}
-
-*Primers* are aimed at undergraduate and postgraduate students in the *Life and Environmental Sciences* and also....
-
-
-## How is the book organised? {-}
-
-The content and structure of the book is like this
-
-## Online companion material {-}
-
-## Topics not in *Primer*? {-}
+The material in this online book is designed to support the *Primer on Phylogenetic Comparative Methods*. For more theoretical underpinnings of the topics covered here please refer to the Primer.
 
 ## Boxes {-}
 
 Throughout the book are boxes of text highlighting particularly important issues:
 
 ```{block, type="info"}
-**Info** Extra info for interested
+**Information** Extra information about how the method or code works for those who are interested. These boxes may also show you how to solve problems that may not affect every user.
 ```
 
+```{block, type="warning"}
+**Warning** These boxes highlight important points that need to be considered when working through your own analyses. The image used here is a Jurassic Park era velociraptor to remind you of the "Jurassic Park caveat", i.e. that just because you *can* perform an analysis in R doesn't mean that you *should*. Always consider the question at hand, your study group, and the quality of the data you are using before embarking on a new comparative analyses.
+```
 
 ## Acknowledgements {-}
+
+We thank the many generations of students who have taken courses with us and helped us to hone these materials. Also XX for test running this version for us.

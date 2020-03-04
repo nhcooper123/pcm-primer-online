@@ -18,19 +18,18 @@ We will be using the evolution of primate life-history variables as an example.
 These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
 
 ```{block, type="info"}
-- Download all of the data for the practical into a folder somewhere on your computer.
-- Set your working directory to this folder. *actually let's change to projects*
-- Start a new script for this practical.
-```
+- Open the `02_Preparation.RProj` file in the `02_Preparation` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
 * `ape`
 * `geiger`
 * `tidyverse`
+```
 
 ***
-## Preparation
+## Preparation 
 ### Load the required packages
 To begin we need to load the packages for this practical.
 
@@ -114,10 +113,8 @@ Our tree is rooted but if you wanted to change the root, or root an unrooted tre
 There are many many ways we can plot beautiful phylogenies, and these are evolving all the time. We don't aim to cover these in this book but I recommend looking here....
 ```
 
-
 ## Reading the data into R
-The data are in a comma-delimited text file called `Primatedata.csv`. Load these data as follows. 
-*I am assuming you have set your working directory.*
+The data are in a comma-delimited text file called `Primatedata.csv`. Load these data as follows.
 
 ```{r}
 # Read in the data
