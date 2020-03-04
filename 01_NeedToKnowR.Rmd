@@ -118,7 +118,7 @@ If you run `library(package_name)` and you get the error message `Error in libra
 
 Packages are generally installed from CRAN, the same place you downloaded R from. But some communities share their packages in different ways. `ggtree` is one such package. To install `ggtree` we need to use Biocunductor instead as follows:
 
-```{r, message = FALSE}
+```{r, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
