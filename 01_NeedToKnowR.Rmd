@@ -45,7 +45,7 @@ To make an R Project for practical exercises in `05-PGLSinR`, for example, go to
 
 This will cause a few things to happen. First, RStudio may ask if you want to save any unsaved files if you were already doing something in RStudio. Save them if they are important! Second, RStudio will look like it restarted. And third, a new file will appear in the folder: the `.Rproj` file, with the same file name as your R Project. When you want to use that R Project in future just double click the `.Rproj` icon in the folder and it will open the R Project in RStudio for you.
 
-```{block, type = info}
+```{block, type = "info"}
 To save you some time we have made an `.Rproj` file for each chapter of this book. They should have been downloaded with the data. To use these just navigate to the appropriate chapter folder and double click the `.Rproj` icon to start.
 ```
 
@@ -89,7 +89,7 @@ If everything worked you will see some (often a lot) red text but no error messa
 install.packages(c("ape", "picante"))
 ```
 
-```{block, type = warning}
+```{block, type = "warning"}
 Some common issues that might arise when installing packages are:
 
 1. R asks if you would like to update other packages that the package you are installing needs to work. You might see the question `Update all/some/none? [a/s/n]:`. In that case type `a` and enter, and R will update these packages too.
