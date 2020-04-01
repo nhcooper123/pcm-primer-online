@@ -1,13 +1,3 @@
----
-title: "Preparing your tree and data for PCMs in R"
-author: "Natalie Cooper (natalie.cooper@nhm.ac.uk)"
-date: "`r Sys.Date()`"
-output:
-  pdf_document: default
-  html_document: default
----
-
-
 # Preparing your tree and data for PCMs in R
 
 Before we do any analysis in R we will always need to clean and tidy our data. For example, we might need to check XXXX.
@@ -17,7 +7,7 @@ In this exercise we will take an existing tree and some data and prepare them fo
 We will be using the evolution of primate life-history variables as an example. 
 These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
 
-```{block, type="info"}
+## Before you start
 - Open the `02_Preparation.RProj` file in the `02_Preparation` folder to open your R Project for this exercise.
 - Make yourself a new R script for your code.
 
@@ -26,7 +16,6 @@ You will also need to install the following packages:
 * `ape`
 * `geiger`
 * `tidyverse`
-```
 
 ***
 ## Preparation 
