@@ -34,6 +34,11 @@ Throughout the book are boxes of text highlighting particularly important issues
 **Warning** These boxes highlight important points that need to be considered when working through your own analyses. The image used here is a Jurassic Park era velociraptor to remind you of the "Jurassic Park caveat", i.e. that just because you *can* perform an analysis in R doesn't mean that you *should*. Always consider the question at hand, your study group, and the quality of the data you are using before embarking on a new comparative analyses.
 ```
 
+```{r, echo = FALSE}
+# Quietly load tidyverse
+library(tidyverse)
+```
+
 ## Acknowledgements {-}
 
 We thank the many generations of students who have taken courses with us and helped us to hone these materials. Also XX for test running this version for us.
