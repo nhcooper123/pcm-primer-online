@@ -1,0 +1,226 @@
+# Data Wrangling
+
+In the *Primer*, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the [tidyverse](https://www.tidyverse.org/) - these are amazing for data manipulation etc. It's beyond the scope of this *Primer* to cover these in detail, but we will show you what we did to get the tidied dataset in the book.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(knitr)
+```
+
+## Before you start
+
+- Open the `02_DataWrangling.RProj` file in the `02_DataWrangling` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
+
+You will also need to install the following packages: 
+
+* `tidyverse`
+* `measurements`
+
+## Chameleon data 
+
+Let's imagine we have the following three sources of chameleon body length and life history data. 
+
+**SOURCE 1: Smith et al. 2020.** 
+
+- *Chamaeleo chamaeleon*. 245 mm, 80 eggs, sexually dimorphic.
+- *Brookesia minima*. 33 mm, 2 eggs, sexually dimorphic.
+- *Calumma parsonii*. 650 mm, 50 eggs, sexually dimorphic.
+
+**SOURCE 2: Jones et al. 2020.**
+
+- *Chamaeleo chamaeleon*. Up to 250 cm, Up to 100 eggs.
+- *Brookesia minima*. Up to 34 mm, 2 eggs.
+- *Calumma parsonii*. Up to 695 mm, Up to 50 eggs.
+
+**SOURCE 3: Han et al. 2020.**
+
+- *Chamaeleo chamaeleon*. Approximately 10 inches.
+- *Brookesia minima*. Approximately 1 inch.
+- *Calumma parsonii*. Approximately 24 inches.
+
+We would tend to record these data in a table (probably in Excel or another spreadsheet program). Here we have saved this file as `chameleon-data-raw.csv`
+```{r, echo = FALSE}
+chameleon <- data.frame("Species" = c(rep("Chamaeleo chamaeleon", 3), 
+                            rep("Brookesia minima", 3),
+                            rep("Calumma parsonii", 3),
+                            rep("Chamaeleo chamaeleon", 2), 
+                            rep("Brookesia minima", 2),
+                            rep("Calumma parsonii", 2),
+                            "Chamaeleo chamaeleon", 
+                            "Brookesia minima",
+                            "Calumma parsonii"),
+                "Measurement" = c(rep(c("length", "clutch size", "dimorphic"), 3),
+                                  rep(c("length", "clutch size"), 3),
+                                  rep("length", 3)),
+                "Value" = c(245, 80, 1, 33, 2, 1, 650, 50, 1,
+                            250, 100, 34, 2, 695, 50,
+                            10, 1, 24),
+                "Data_Type" = c(rep(c("mean", "mean", "truefalse"), 3),
+                           rep(c("max"), 6),
+                           rep("mean", 3)),
+                "Units" = c(rep(c("mm", "eggs", "NA"), 3),
+                            rep(c("mm", "eggs"), 3),
+                            rep("inches", 3)),
+                "Data_Quality" = c(rep("high", 9),
+                             rep("high", 6),
+                             rep("medium", 3)), 
+                "Approximation" = c(rep(FALSE, 15),
+                                    rep(TRUE, 3)),
+                "Source" = c(rep("Jones et al 2020", 9),
+                             rep("Smith et al 2020", 6),
+                             rep("Han et al 2020", 3))
+                             )
+```
+
+We would also record the full reference for each source in a separate table. Recording the data like this makes it easy to enter in Excel, and also makes it easy for us to exclude certain types of data or sources should we decide we don't trust them enough to include in our analyses.
+
+Note that this will not be the ideal format for using the data in R, so you will need to manipulate or *wrangle* the data first. In R, the `tidyr` and `dplyr` packages are useful for doing this. Or you could use something like Excel if you are less confident with R. Make sure to keep the raw data too in case you accidentally introduce any errors, and so that you can repeat the data collection and analyses if needed.
+
+Both `dplyr` and `tidyr` packages are part of the `tidyverse` so we can save some time by loading them both at the same time via `library(tidyverse)`
+
+```{r}
+# Load packages
+library(tidyverse)
+```
+
+Next we need to read in the chameleon data from our folder. This is saved in the file `chameleon-data-raw.csv` so we can read it in using `read.csv` as usual.
+
+```{r}
+# Read in the data
+chameleon <- read.csv("chameleon-data-raw.csv")
+# Take a look at it
+```
+
+To wrangle this data, we would first convert the units to a standard unit for each measurement. Here we have length in mm and inches, so we would convert the inches into mm. The three altered rows are shown below. Note that converting from inches to mm gives us the false impression of precision, i.e. two values are now 25.4 and 609.6, rather than whole numbers making it look like these were measured accurately rather than approximated. It's worth looking out for this in other data, especially curated databases where this kind of conversion is typical.
+
+We can do this easily using the function `conv_unit` in the package `measurements`. Let's load the library here so we can do this. 
+
+```{r}
+# Load packages
+library(measurements)
+```
+
+Now let's use `conv_unit` and some `dplyr` functions to convert all inches to mm.
+
+```{r}
+# Create a new dataset called chameleon2
+chameleon2 <-
+  # Start with the chameleon data
+  chameleon %>% 
+  # Convert inches into mm within the Value column
+  mutate(Value = ifelse(Units == "inches", conv_unit(Value, "inch", "mm"), Value)) %>%
+  # Remove Units and Source columns
+  select(-Units, - Source)
+```
+
+Here `mutate` modifies the variable *Value*. The `ifelse` statement tells R that if *Units* is in inches, we should use `conv_unit` to convert from inch to mm, and place this value in the *Value* column. If *Units* is _not_ in inches it just records the original value in *Value*.
+
+Finally, `select` is used to remove the *Units* and *Source* columns. These are important to keep in our raw data, but we don't need them for our analyses, so it's neater to remove them.
+
+```{r}
+# Just show the last three entries to check what we have done looks correct
+tail(chameleon2, n = 3)
+```
+  
+Next we might decide to exclude low quality records, and remove any approximations. We might need to do something more complicated if we only have one record for a species and it is an approximation. In this case we are going to keep the approximations, and use all the data. But you should choose what is sensible for your dataset. 
+
+To make our data tidier and remove unneccsary columns we will use `select` again to remove the *Data_Quality* and *Approximation* columns.
+
+```{r}
+# Create a new dataset called chameleon3
+chameleon3 <-
+  # Start with chameleon2
+  chameleon2 %>%
+  # Remove the Data Quality and Approximation columns
+  select(-Data_Quality, -Approximation)
+
+# Look at the data
+head(chameleon3)
+```
+
+Finally, we want to summarise the data for each species, to get means/medians and possibly also minima and maxima. To summarise we use the function `summarise` (!). But first we need to group the data into the groupings we want the summary data for. In this case we want to know the median values for each species, for each different measurement, and for each different type of measurement, i.e. averages, maximums, minimums etc. We can tell R to group data using `group_by`. To do all of this we use the following code:
+
+```{r}
+# Create a new dataset called chameleon4
+chameleon4 <-
+  # Start with chameleon3
+  chameleon3 %>%
+  # Group the records together by Species, Measurement, and Data_Type
+  group_by(Species, Measurement, Data_Type) %>%
+  # Get the median and max for Value in each group constructed by Species, Measurement, and Data_Type.
+  summarise(median = median(Value),
+                max = max(Value))
+
+# Look at the output
+head(chameleon4)
+```
+
+Note that we now have a median and maximum value, for each measurement and data type for each species.
+
+This is fine, but to run analyses in R we are going to want a different column for each of the measurement x data type combinations. To do this we can use the function `pivot_wider`, because the change will make the table wider...
+
+```{r}
+# Create a new dataset called chameleon5
+chameleon5 <-
+  # Start with chameleon4
+  chameleon4 %>%
+  # Reshape the data so measurement X data types combinations are their own columns
+  pivot_wider(names_from = c(Measurement, Data_Type), values_from = c(median, max)) 
+
+# Look at the output
+chameleon5
+```  
+
+Finally, we probably don't need all of these columns. The summary data you use and how you calculate it will vary depending on your inputs for example here we might want to extract:
+
+* *Median of mean length values*. This will tell us about the overall **mean** value for length across all sources.
+* *Maximum of maximum length values*. This will tell us about the overall **maximum** value for length across all sources.
+* *Median of mean clutch size values*. This will tell us about the overall **mean** value for clutch size across all sources.
+* *Maximum of maximum clutch size values*. This will tell us about the overall **maximum** value for clutch size across all sources.
+* *Median dimorphism score*. This will tell use whether the species is predominantly considered to be dimorphic or not.
+
+We can select these columns only using `select`:
+```{r}
+# Create a new dataset called chameleon6
+chameleon6 <-
+  # Start with chameleon5
+  chameleon5 %>%
+  # Select only the required columns
+  select(Species, median_length = median_length_mean, max_length = max_length_max,
+         median_clutchsize = `median_clutch size_mean`, max_clutchsize = `max_clutch size_max`,
+         dimorphic = median_dimorphic_truefalse)
+
+# Look at the output
+chameleon6
+```  
+
+Finally if this were a real dataset, we might want to save this clean and tidy version so that we don't have to run all of this code again everytime we want to use it. We can do this using the function `write_csv`:
+```{r}
+write_csv(x = chameleon6, path = "data/chameleon-data-for-analyses.csv")
+```
+
+Note that, to demonstrate how the code works we've separated it into chunks above, but you could use `%>%` to do all of these in one go if you wanted to:
+```{r}
+chameleon_final <-
+  # Start with chameleon
+  chameleon %>%
+  # Convert inches into mm within the Value column
+  mutate(Value = ifelse(Units == "inches", conv_unit(Value, "inch", "mm"), Value)) %>%
+  # Remove the Units, Source, Data Quality and Approximation columns
+  select(-Units, - Source, -Data_Quality, -Approximation) %>%
+  # Group the records together by Species, Measurement, and Data_Type
+  group_by(Species, Measurement, Data_Type) %>%
+  # Get the median and max for Value in each group constructed by Species, Measurement, and Data_Type.
+  summarise(median = median(Value),
+                max = max(Value)) %>%
+  # Reshape the data so measurement X data types combinations are their own columns
+  pivot_wider(names_from = c(Measurement, Data_Type), values_from = c(median, max)) %>%
+  # Select only the required columns
+  select(Species, median_length = median_length_mean, max_length = max_length_max,
+         median_clutchsize = `median_clutch size_mean`, max_clutchsize = `max_clutch size_max`,
+         dimorphic = median_dimorphic_truefalse)
+
+# Look at the output
+chameleon_final
+```
