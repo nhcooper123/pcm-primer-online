@@ -1,12 +1,3 @@
----
-title: "What you need to be able to do in R before you start"
-author: "Natalie Cooper (natalie.cooper@nhm.ac.uk)"
-date: "`r Sys.Date()`"
-output:
-  html_document: default
-  pdf_document: default
----
-
 # What you need to be able to do in R before you start
 
 These days most people have used R a bit, but it is possible you're a bit rusty, or have no R experience. This isn't a problem, we will try and summarise what you need to be able to do to get these exercises running below. We are not, however, going to write a full introductory guide to R here, so if you've never used R before or find it a bit of a struggle, we strongly recommend the book [Getting Started With R](http://www.r4all.org/) or there are lots of great tutorials online.
