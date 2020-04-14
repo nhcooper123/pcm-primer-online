@@ -4,6 +4,7 @@ In the *Primer*, we took some data on chameleons and manipulated/wrangled it so 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
+library(measurements)
 library(knitr)
 ```
 
