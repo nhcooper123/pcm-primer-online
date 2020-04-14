@@ -76,7 +76,7 @@ chameleon <- data.frame("Species" = c(rep("Chamaeleo chamaeleon", 3),
 
 We would also record the full reference for each source in a separate table. Recording the data like this makes it easy to enter in Excel, and also makes it easy for us to exclude certain types of data or sources should we decide we don't trust them enough to include in our analyses.
 
-Note that this will not be the ideal format for using the data in R, so you will need to manipulate or *wrangle* the data first. In R, the `tidyr` and `dplyr` packages are useful for doing this. Or you could use something like Excel if you are less confident with R. Make sure to keep the raw data too in case you accidentally introduce any errors, and so that you can repeat the data collection and analyses if needed.
+Note that this will not be the ideal format for using the data in R, so you will need to manipulate or *wrangle* the data first to make it **tidy**. In R, the `tidyr` and `dplyr` packages are useful for doing this. Or you could use something like Excel if you are less confident with R. Make sure to keep the raw data too in case you accidentally introduce any errors, and so that you can repeat the data collection and analyses if needed.
 
 Both `dplyr` and `tidyr` packages are part of the `tidyverse` so we can save some time by loading them both at the same time via `library(tidyverse)`
 
@@ -126,7 +126,7 @@ tail(chameleon2, n = 3)
   
 Next we might decide to exclude low quality records, and remove any approximations. We might need to do something more complicated if we only have one record for a species and it is an approximation. In this case we are going to keep the approximations, and use all the data. But you should choose what is sensible for your dataset. 
 
-To make our data tidier and remove unneccsary columns we will use `select` again to remove the *Data_Quality* and *Approximation* columns.
+To make our data tidier and remove unnecessary columns we will use `select` again to remove the *Data_Quality* and *Approximation* columns.
 
 ```{r}
 # Create a new dataset called chameleon3
@@ -140,7 +140,7 @@ chameleon3 <-
 head(chameleon3)
 ```
 
-Finally, we want to summarise the data for each species, to get means/medians and possibly also minima and maxima. To summarise we use the function `summarise` (!). But first we need to group the data into the groupings we want the summary data for. In this case we want to know the median values for each species, for each different measurement, and for each different type of measurement, i.e. averages, maximums, minimums etc. We can tell R to group data using `group_by`. To do all of this we use the following code:
+Finally, we want to summarise the data for each species, to get means/medians and possibly also minima and maxima. To summarise we use the function `summarise` (or `summarize` if you prefer the US spelling). But first we need to group the data into the groupings we want the summary data for. In this case we want to know the median values for each species, for each different measurement, and for each different type of measurement, i.e. averages, maximums, minimums etc. We can tell R to group data using `group_by`. To do all of this we use the following code:
 
 ```{r}
 # Create a new dataset called chameleon4

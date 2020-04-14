@@ -95,7 +95,7 @@ library(ape)
 
 You can think of `install.packages` like installing an app from the App Store on your smart phone - *you only do this once* - and `library` as being like pushing the app button on your phone - *you do this every time you want to use the app* (credit to Dylan Childs for this great analogy!).
 
-For many packages, you won't see any message at all when you run `library(package_name)`. That means the code has worked. Some packages will print a message, explaining some feature of the package, or telling you that it is also loading some other pacakge, or highlighting that the package was written for a newer version of R. As long as you don't see an error, everything is fine.
+For many packages, you won't see any message at all when you run `library(package_name)`. That means the code has worked. Some packages will print a message, explaining some feature of the package, or telling you that it is also loading some other package, or highlighting that the package was written for a newer version of R. As long as you don't see an error, everything is fine.
 
 ```{block, type = "info"}
 If you run `library(package_name)` and you get the error message `Error in library(package_name) : there is no package called ‘package_name’package not found`, this means you have not installed the package properly. Often just going back and trying to install it again will work.
