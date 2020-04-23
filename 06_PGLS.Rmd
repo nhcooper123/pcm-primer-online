@@ -1,13 +1,3 @@
----
-title: "Phylogenetic Generalised Least Squares (PGLS) in R"
-author: "Natalie Cooper (natalie.cooper@nhm.ac.uk)"
-date: "`r Sys.Date()`"
-output:
-  pdf_document: default
-  html_document: default
----
-
-
 # Phylogenetic Generalised Least Squares (PGLS) in R
 The aims of this exercise are to learn how to use R to perform Phylogenetic Generalised Least Squares (PGLS) analyses.
 
