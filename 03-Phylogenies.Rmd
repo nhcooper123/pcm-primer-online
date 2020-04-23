@@ -532,3 +532,19 @@ After manipulating a phylogeny, if you want to save the new tree you can use `wr
 
 ## Summary
 This exercise should have given you the skills to understand, plot and manipulate phylogenies.
+
+## Practice exercise
+
+For the next two exercises we are going to use XXXXX phylogeny. Download it (or any other phylogeny you have to hand) and see if you can do the following:
+
+1. Read the tree into R.
+2. Use R functions to determine: 
+    a) how many species are in the tree?
+    b) is the tree fully resolved?
+    c) is the tree rooted?
+3. Use `plot.phylo` to plot the tree.
+    a) Can you change the size and colour of the tip labels?
+    b) Can you make a fan-shaped plot? 
+4. Save the tree to file as "mysuperdoopertree.nex"    
+    
+EXTRA credit. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send us a screenshot!
