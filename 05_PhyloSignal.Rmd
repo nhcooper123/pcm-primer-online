@@ -1,13 +1,3 @@
----
-title: "Phylogenetic signal in R"
-author: "Natalie Cooper (natalie.cooper@nhm.ac.uk)"
-date: "`r Sys.Date()`"
-output:
-  pdf_document: default
-  html_document: default
----
-
-
 # Phylogenetic Signal in R
 Phylogenetic signal is the pattern where close relatives have more similar trait values than more distant relatives (see Kamilar and Cooper 2013). The aims of this exercise are to learn how to use R to estimate phylogenetic signal using Pagel's $\lambda$ and Blomberg's *K*. 
 
