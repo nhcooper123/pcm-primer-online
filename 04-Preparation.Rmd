@@ -342,3 +342,6 @@ write_csv(mydata, path = "data/clean-primate-data.csv")
 write.nexus(mytree, file = "data/clean-primate-tree.nex")
 ```
 
+## Practice exercises
+
+
