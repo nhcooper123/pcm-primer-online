@@ -10,12 +10,21 @@
 - polytomies
 - rooting
 - removing species
-- adding species
+- adding species [needs to be added - code is in office]
 
+## Before you start
+- Open the `03_Phylogenies.RProj` file in the `03_Phylogenies` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
 
+You will also need to install the following packages: 
 
-Install ape
-- 
+* `ape`
+* `tidyverse`
+* `ggtree`
+* `patchwork`
+* `ggimage`
+
+***
 
 ## What do phylogeny files look like?
 
@@ -231,21 +240,101 @@ legend("topleft", fill = mycolours,
 `cex = 1.2` increases the point size, and `adj = 1` moves the tip labels sideways so they don't obscure the ends of the branches.
 
 ### Basic phylogeny plotting with `ggtree`
-I won't go into a huge amount of detail here because the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) is really comprehensive, and for the most part you won't need to know how to do most of the things it can do. Instead I'll give a basic introduction, and then show you how to make some of the plots used in chapter 2 of the *Primer*. I will also provide the code used to build figures in the *Primer* where appropriate in later exercises. 
+I won't go into a huge amount of detail about `ggtree` because the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) is really comprehensive, and for the most part you won't need to know how to do most of the things it can do. Instead I'll give a basic introduction, and then show you how to make some of the plots used in chapter 2 of the *Primer*. I will also provide the code used to build figures in the *Primer* where appropriate in later exercises. 
 
-`ggtree` extends the `ggpolt2` packages to work with phylogenies. GGPLOT STUFF
+#### A quick intro to `ggplot2`
 
-To plot the basic phylogeny using `ggtree`
+`ggtree` extends the `ggplot2` package to work with phylogenies. What's `ggplot2`? The `ggplot2` package was developed by Hadley Wickham to implement some of the ideas in a book called "The Grammar of Graphics" by Wilkinson (2005), hence the *gg* bit of the name. Many books and online tutorials cover `ggplot2` in detail, so here I'll just cover the basics you need to understand how `ggtree` works. See https://ggplot2-book.org/ for details.
+
+`ggplot2` works on the basis of __layers__. You start off with a line of code that uses the function `ggplot`, then at the end of the line you add a `+`. On the next line you add a *layer*. This layer might tell R what kind of plot to make, what the axes should be, how to draw the legend etc. You keep adding layers until you get the plot that you want.
+
+Each layer can have six components, but we'll just focus on the main three:
+
+1. The __data__. Every layer needs some data, in the form of a dataframe (or tibble). Each layer can be associated with a different dataset if appropriate. 
+
+* A __geometric object__, called a 'geom'. geoms refer to the things we can see on a plot, such as points, lines or bars.
+
+* A set of __aesthetic mappings__. These describe how variables in the data are associated with the aesthetic properties of the layer. This can include what to use as x and y axes, and the colour and size of the objects (e.g. points) on a plot. Each layer can be associated with its own unique aesthetic mappings. Aesthetic mappings are alwasy defined inside the `aes` funtion. Different geoms will need different sets of aesthetic mappings, for example to draw a scatter plot you need to define the x and y axes, but for a histogram you only need the x axis.. 
+
+Each layer will also have layer specific parameters. These are the features of a layer, for example in `geom_point`, the geom that makes points on a graph, one layer specific parameter is `colour = ` which defines the colour of the data points.
+
+Let's quickly demonstrate this using some fake data - read in the code below to create a monster dataset.
+```{r}
+# Make some fake data
+monsterdata <- data.frame(monster = c("vampire", "golem", 
+                                      "cookie-monster", "manticore", "wererat"),
+                          type = c("dead", "dead", "alive", "dead", "alive"),
+                          scariness = c(65, 50, 10, 75, 95))
+```
+
+To make a really basic plot...
+```{r}
+ggplot(data = monsterdata, aes(x = monster, y = scariness)) +
+  geom_point(colour = "deeppink", size = 4) +
+  theme_bw() +
+  ylim(0, 100)
+```
+A couple of points to note:
+
+In `ggplot2`, *theme* is used to define the overall look of the plot. We can use the `theme` function modify everything individually, but there are some built in themes that do lots of things at once. `theme_bw` is one of my favourites as it gets rid of the horrible grey background that is a `ggplot2` default, but keeps the nice background grid.
+
+I also used `ylim` to change the y axis limits to go from 0 to 100. 
+
+Another thing I'm going to do below with `ggtree` is plot multiple plots on one plotting space. There are a couple of ways to do this, but the easiest is to use the package `patchwork`. First we need to assign our plots to an object using `<-`. So for the example above...
 
 ```{r}
+myplot <- 
+  ggplot(data = monsterdata, aes(x = monster, y = scariness)) +
+  geom_point(colour = "deeppink", size = 4) +
+  theme_bw() +
+  ylim(0, 100)
+```
+
+With `patchwork`, we can use `+` to plot things next to each other, or `/` to plot things on top of one another, and `()` to do more complex arrangements. See https://patchwork.data-imaginist.com/articles/patchwork.html for details.
+
+```{r}
+library(patchwork)
+myplot + myplot
+```
+```{r}
+myplot / (myplot + myplot)
+```
+
+Below you'll see I use the `ggplot2` layer `labs` to add A, B, C etc labels to plots in multi-panel figures
+
+### Back to `ggtree`
+
+OK that should give you the basics of what to expect from `ggplot2`. Now let's use `ggtree`...
+
+To plot a phylogeny using `ggtree` we always start with the `ggtree` function (*not* `ggplot`). We then add layers using the `+` like in `ggplot2`. Some layers are the same (e.g. `xlim`, `ylim`), others are unique to `ggtree` (e.g. `geom_tiplab`). `ggtree` also has an inbuilt theme for trees called `theme_tree`.
+
+To plot the basic phylogeny we've been practicing with we use:
+
+```{r, message = FALSE}
+library(ggtree)
+
 ggtree(tree) + 
+  # Add theme for trees
   theme_tree() +
-  # Change limits so labels fit
+  # Change x and y limits so labels fit
   xlim(0, 22) +
   ylim(0, 5) +
+  # Add tip labels as text, slightly offset from the tips and aligned
   geom_tiplab(geom = "text", align = TRUE, offset = 0.5, linetype = NA)
 ```
 
+Note that you might need to fiddle around with the  `xlim` and `ylim` a bit to make sure your phylogeny and the tip labels fit. If we don't specify the limits the tip labels often fall off the plotting window (see below), and the tree will push right up against the top and bottom of the page making it hard to add images to the tips etc.
+
+```{r}
+# Demonstration of what happens if you don't define the x and y limits
+ggtree(tree) + 
+  theme_tree() +
+  geom_tiplab(geom = "text", align = TRUE, offset = 0.5, linetype = NA)
+```
+
+This is clearly a bit more involved than just using `plot.phylo` with `ape`. If you're happy with plotting in `ape` you don't need to use `ggtree`. As I mentioned above, for day-to-day tree viewing and checking I just tend to use `ape`, so don't worry if this is all incomprehensible.
+
+One thing, among many, that `ggtree` is great for is adding images to the tips rather than species names. To do this you need to collate the images you want to use first. You may want to draw your own, or I often download them from the excellent [PhyloPic](http://phylopic.org/) website (these are free to use but don't forget to record who made the image so you can credit them in your papers etc.). To keep my folder tidy I keep images in a separate subfolder called, predictably, `images`. You need the package `ggimage` installed for this to work.
 
 ```{r}
 # Plot with images at tips
@@ -261,196 +350,66 @@ ggtree(tree) +
                             "images/jellyfish.png",
                             rep(NA, 3))), 
               geom = "image", align = TRUE, offset = 0.5, 
-              linetype = NA, size = c(.12, .15, .09, .15)) +
-  # Highlight clades
-  geom_hilight(node = 6, fill = "cornflowerblue", alpha = 0.4) +
-  geom_hilight(node = 7, fill = "springgreen", alpha = 0.4) +
-  geom_cladelabel(node = 7 , label = "A", offset = 4,
-                  fontsize = 5) +
-  geom_cladelabel(node = 6 , label = "B", offset = 6,
-                  fontsize = 5) 
-
+              linetype = NA, size = c(0.12, 0.15, 0.09, 0.15))
 ```
 
+Note that to add eitehr text or images to the tips we use the same layer function, `geom_tiplab`. If doing this with your own data you'll likely need to fiddle with the sizes of the images to get them looking right. 
 
+Some of you may be wondering what the `rep(NA, 3)` bit of the code above does. When we try to add images to the tips, the function also tries to add images to the internal nodes. We don't want these to have images so we just ask `ggtree` to use `NA`, i.e. don't add an image. `rep(NA, 3)` means replicate `NA` three times (for the three internal nodes). Again you'll probably need to increase the number when you do this for your own data.
+
+As with `plot.phylo` we can plot phylogenies in different ways, see code below. Fan trees are called circular trees. Note the different values for offsets and hjust (horizontal justification) I've used here to make the labels fit. Again you will need to fiddle with these numbers to get this to work for your data.
 
 ```{r}
-# Plot with images at tips
-ggtree(tree) + 
-  theme_tree() +
-  # Change limits so labels fit
-  xlim(0, 22) +
-  ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = 0.5, 
-              linetype = NA, size = c(.12, .15, .09, .15)) +
-  # Highlight clades
-  geom_hilight(node = 6, fill = "cornflowerblue", alpha = 0.4) +
-  geom_hilight(node = 7, fill = "springgreen", alpha = 0.4) +
-  geom_cladelabel(node = 7 , label = "A", offset = 4,
-                  fontsize = 5) +
-  geom_cladelabel(node = 6 , label = "B", offset = 6,
-                  fontsize = 5) 
-
-```
-
-```{r diff-trees, echo = FALSE, fig.cap = 'All of these phylogenies show the same species relationships, they are just presented in different ways', out.width='80%', fig.asp=.75, fig.align = 'left'}
-
-# Read in basic 4 species phylogeny
-tree <- read.tree("data/basic.tre")
-# Rotate tree
-newtree <- rotate(phy = tree, 5)
-
-# Plot with images at tips
-p <- 
+# Standard tree
+p1 <- 
   ggtree(tree) + 
   theme_tree() +
   # Change limits so labels fit
   xlim(0, 22) +
   ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = 1.5, 
-              linetype = NA, size = c(.12, .15, .09, .15)) +
+  # Add tip labels
+  geom_tiplab(geom = "text", align = TRUE, offset = 0.5, linetype = NA) +
   labs(tag = "A", size = 2)
 
-px <- 
-  ggtree(tree) + 
-  theme_tree() +
-  scale_x_reverse(limits = c(22, 0)) +
-  # Change limits so labels fit
-  ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = -3.5, 
-              linetype = NA, size = c(.12, .15, .09, .15)) +
-  labs(tag = "B", size = 2)
-
-pxx <-
+# Standard tree facing up
+p2 <-
   ggtree(tree) + 
   theme_tree() +
   coord_flip() +
   # Change limits so labels fit
   xlim(0, 22) +
   ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = 4, 
-              linetype = NA, size = c(.12, .15, .09, .15), 
-              hjust = 2) +
+  # Add tip labels
+  geom_tiplab(geom = "text", align = TRUE, offset = 2, hjust = 0.5, linetype = NA) +
+  labs(tag = "B", size = 2)
+
+# Slanted tree
+p3 <- 
+  ggtree(tree, layout = "slanted") + 
+  theme_tree() +
+  # Change limits so labels fit
+  xlim(0, 22) +
+  ylim(0, 5) +
+  # Add tip labels
+  geom_tiplab(geom = "text", align = TRUE, offset = 0.5, linetype = NA) +
   labs(tag = "C", size = 2)
 
 
-pxxx <-
-  ggtree(tree) + 
+# Fan/circular tree
+p4 <-
+  ggtree(tree, layout = "circular") + 
   theme_tree() +
-  coord_flip() +
-  scale_x_reverse(limits = c(22, 0)) +
-  # Change limits so labels fit
-  ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = -4, 
-              linetype = NA, size = c(.12, .15, .09, .15), 
-              hjust = -2) +
+  # Add tip labels
+  geom_tiplab(geom = "text", align = TRUE, offset = 5, hjust = 0.5,  linetype = NA, size = 3) +
   labs(tag = "D", size = 2)
 
-p1 <- 
-  ggtree(tree, layout = "slanted") + 
-  theme_tree() +
-  # Change limits so labels fit
-  xlim(0, 22) +
-  ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = 1.5, 
-              linetype = NA, size = c(.12, .15, .09, .15)) +
-  labs(tag = "E", size = 2)
-
-p1x <- 
-  ggtree(tree, layout = "slanted") + 
-  theme_tree() +
-  scale_x_reverse(limits = c(22, 0)) +
-  # Change limits so labels fit
-  ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = -3.5, 
-              linetype = NA, size = c(.12, .15, .09, .15)) +
-  labs(tag = "F", size = 2)
-
-p1xx <-
-  ggtree(tree, layout = "slanted") + 
-  theme_tree() +
-  coord_flip() +
-  # Change limits so labels fit
-  xlim(0, 22) +
-  ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = 4, 
-              linetype = NA, size = c(.12, .15, .09, .15), 
-              hjust = 2) +
-  labs(tag = "G", size = 2)
-
-p1xxx <-
-  ggtree(tree, layout = "slanted") + 
-  theme_tree() +
-  coord_flip() +
-  scale_x_reverse(limits = c(22, 0)) +
-  # Change limits so labels fit
-  ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/deer.png",
-                            "images/robin.png",
-                            "images/spider.png",
-                            "images/jellyfish.png",
-                            rep(NA, 3))), 
-              geom = "image", align = TRUE, offset = -4, 
-              linetype = NA, size = c(.12, .15, .09, .15), 
-              hjust = -2) +
-  labs(tag = "H", size = 2)
-
 # Plot
-(p + px) / (pxx+pxxx) / (p1 + p1x) / (p1xx+p1xxx)  
+(p1 + p2) / (p3 + p4)
 
 ```
 
+What about highlighting clades? We can use `geom_hilight` to add coloured shading to all species from a defined node, and/or `geom_cladelabel` to label clades (A and B below) from a defined node. The offset in `geom_cladelabel` defines how far from the phylogeny tips the lines should be drawn. Again, you'll need to play with this to get the best picture possible.
 
-Add clade labels
 ```{r}
 # Plot with images at tips
 ggtree(tree) + 
@@ -476,17 +435,11 @@ ggtree(tree) +
 
 ```
 
-¢ do some grouping
-```{r paraphyly, echo = FALSE, fig.cap='Phylogeny showing the relationships among birds, mammals and reptiles. Reptiles forms a paraphyletic group because birds is nested within it. The group formed by birds and mammals is a polyphyletic group.', out.width='80%', fig.asp=.75, fig.align='center'}
-
-# Read in basic 4 species phylogeny
-tree <- read.tree("data/reptile.tre")
-
-# Define groups
-# Note that ggtree does some weird ordering hence my "croc" and "robin" being 
-# the wrong way round!
-grp <- list(reptiles   = c("robin", "turtle", "lizard"),
-            warm = c("crocodile", "deer"))
+You can also highlight non-monophyletic groups using `groupOTU`. Here's a quick and silly example...
+```{r}
+# Define group
+feathers <- list(no   = c("deer","jellyfish", "spider"),
+                 yes = c("robin"))
 
 # Plot with images at tips
 p <- 
@@ -495,36 +448,17 @@ p <-
   # Change limits so labels fit
   xlim(0, 25) +
   ylim(0, 5) +
-  # Add tip label pictures
-  geom_tiplab(aes(image = c("images/crocodile.png",
-                            "images/robin.png",
-                            "images/lizard.png",
-                            "images/turtle.png",
-                           "images/deer.png",
-                            rep(NA, 4))), 
-              geom = "image", align = TRUE, offset = 3.5, 
-           linetype = NA, size = c(.15, .12, .18, .07, .12)) +
-  geom_tiplab(aes(label = c("crocodile",
-                            "bird",
-                            "lizard",
-                            "turtle",
-                            "mammal",
-                            rep(NA, 4))), 
-              geom = "text", align = TRUE, offset = 0.5, 
-              linetype = NA) +
-  geom_strip("1", "4", barsize = 2, color = "#fe4a49",
-             label = "reptiles", offset = 8.5, offset.text = 0.5, geom = "text")
+  # Add tip labels
+  geom_tiplab(geom = "text", align = TRUE, offset = 0.5, linetype = NA)
 
-# Add phyly colours
-groupOTU(p, grp, 'Species') + 
-  aes(color = Species) +
-  scale_colour_manual(values = c("#fe4a49","#2ab7ca")) +
-  theme(legend.position = "none")
-
+# Add colours to branches and labels
+groupOTU(p, feathers, 'feathers') + 
+  aes(color = feathers) +
+  scale_colour_manual(values = c("orange1","darkblue")) +
+  theme(legend.position = "top")
 ```
 
-
-
+There are many more things you can do with `ggtree`, all based on this idea of adding layers. See the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) for more details.
 
 ## Phylogeny manipulation
 
@@ -587,10 +521,11 @@ You can also remove multiple tips at once...
 bird.orders <- drop.tip(bird.orders, tip = c("Struthioniformes", "Tinamiformes"))
 plot(bird.orders)
 ```
-...however, if you're looking to do something more complex like removing entire clades or functional groups it's probably easier to use the functions in the next exercise.
+...however, if you're looking to do something more complex like removing entire clades or functional groups it's probably easier to use the `treeplyr` functions in the next exercise.
 
 #### Adding species
 
+BIND TREE - code is on computer in work...
 
 ### Writing phylogenies to file
 After manipulating a phylogeny, if you want to save the new tree you can use `write.tree` or `write.nexus` as preferred.
