@@ -65,7 +65,7 @@ primatetree <- multi2di(primatetree)
 is.rooted(primatetree)
 ```
 
-Next check that the species names match up in the tree and the data. This shoul reveal any typos and/or taxonomic differences that need to be fixed before moving any further
+Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before moving any further
 
 ```{r}
 # Check whether the names match in the data and the tree
