@@ -3,47 +3,50 @@ The aims of this exercise are to learn how to use R to perform Phylogenetic Gene
 
 We will be using the evolution of primate life-history variables as an example. 
 These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
-
-```{block, type="info"}
-Note that we have already cleaned and tidied this tree and data so it matches up. If doing this for your own data remember to run through XXXXX first.
-```
-
 You will also need to install the following packages: 
 
 * `ape`
 * `geiger`
-* `picante`
+* `treeplyr`
 * `caper`
+* `tidyverse`
 
 ***
 ## Preparation
-### Load the required packages
+
 To begin we need to load the packages for this practical.
 
 ```{r, message = FALSE}
 # Load the packages
 library(ape)
 library(geiger)
-library(picante)
+library(treeplyr)
 library(caper)
 library(tidyverse)
 ```
 
-### Reading your data and tree into R
-The data are in a comma-delimited text file called `clean-primate-data.csv`. Load these data as follows. 
+Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+
+It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
 ```{r}
 # Read in the data
-primatedata <- read.csv("Primatedata.csv")
+primatedata <- read.csv("data/Primatedata.csv")
 # Check everything loaded corrected
+glimpse(primatedata)
+
+# Replace spaces with underscores in species names
+primatedata <- 
+  primatedata %>%
+  mutate(Binomial = str_replace(string = Binomial, pattern = " ", replacement = "_"))
+# Check it worked
 glimpse(primatedata)
 ```
 
 To load the tree we will use `read.nexus`.
-
 ```{r}
 # Read in the tree
-primatetree <- read.nexus("consensusTree_10kTrees_Version2.nex")
+primatetree <- read.nexus("data/consensusTree_10kTrees_Version2.nex")
 # Check it loaded correctly
 str(primatetree)
 ```
@@ -54,40 +57,56 @@ Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted.
 # Check whether the tree is binary
 # We want this to be TRUE
 is.binary.tree(primatetree)
-```
-
-```{r}
-# Check whether the tree is rooted
-# We want this to be TRUE
+# Make the tree into a binary tree
+primatetree <- multi2di(primatetree)
+# Check whether the tree is rooted 
+# We want this to be TRUE 
 is.rooted(primatetree)
 ```
 
-### Combining the tree and the data for `caper`
-To perform a PGLS analysis in R we use the package `caper`. For `caper` to work you first need to combine the phylogeny and data into one object using the function `comparative.data` as follows. 
+Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before moving any further
 
 ```{r}
-# Combine the tree and the data
-primate <- comparative.data(phy = primatetree, data = primatedata, 
-                            names.col = Binomial, vcv = TRUE, 
-                            na.omit = FALSE, warn.dropped = TRUE)
+# Check whether the names match in the data and the tree
+check <- name.check(phy = primatetree, data = primatedata, 
+                    data.names = primatedata$Binomial)
+# Look at check
+check
 ```
+Here all the excluded species are exclude because they are genuinely missing, not because of any typos, so we can move on.
 
-Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. 
-
-`warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. Here we won't drop any species because we already did this in script XXXX. If you do have species that don't match in the tree and the data, this function will give a warning telling you that some species have been dropped. You can view the dropped species using:
+Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
 
 ```{r}
-primate$dropped$tips
-primate$dropped$unmatched.rows
+# Combine and match the tree and data
+primatestuff <- make.treedata(tree = primatetree,  data = primatedata, 
+                              name_column = "Binomial")
+
+# Look at the tree
+primatestuff$phy
+# Look at the data
+glimpse(primatestuff$dat)
 ```
 
-Here we already fixed this problem, so nothing is listed.
+Then we replace the removed species names column, and save the data as a dataframe for later analyses.
 
-```{block, type = "info"}
-**Always** make sure you check the list of dropped species is what you expected, it often reveals typos in your species names, or mismatches in taxonomies used etc.
+```{r}
+# Make a new column called Binomial with the tip labels in it
+primatestuff$dat$Binomial <- primatestuff$phy$tip.label
+# Force mydata to be a data frame
+mydata <- as.data.frame(primatestuff$dat)
 ```
 
-***
+Finally we save the tree
+
+```{r}
+# Save tree as mytree
+mytree <- primatestuff$phy
+```
+
+Note that is is possible to use the `make.treedata` object directly to run some analyses, but we have saved these separately here as many PCMs cannot work with this.
+
+Now we're ready to run our analyses!
 
 ## Phylogenetic generalized least squares models (PGLS)
 
@@ -100,7 +119,8 @@ We can first quickly look at the phylogenetic pseudoreplication problem on the g
 ggplot(primatedata, aes(x = log(AdultBodyMass_g), 
                         y = log(GestationLen_d), 
                         colour = Family)) +
-  geom_point()
+  geom_point() +
+  theme_bw()
 ```
 
 Note how certain families are clustered on the graph. It's clear that close relatives are more similar than distant relatives. So we need to account for phylogenetic non independence.
@@ -111,6 +131,30 @@ PGLS offers some important advantages over independent contrasts.
 The model of trait evolution can be more flexible i.e., it can depart from a strict Brownian motion process ($\lambda$ or *K* = 1). Different scaling parameters ($\lambda$, $\kappa$, and $\delta$) can be incorporated in the analysis, which can significantly improve the fit of the data to the model and thus also improve the estimation of the trait correlation. Another advantage of PGLS is that the intercept of the regression is not forced to be zero.
 
 ### Fitting PGLS models in R
+
+To perform PGLS models in R, `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`. This is similar to what we did with `make.treedata`, but it does some stuff that is particular to how `caper` works so we still need to do this here.
+
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). 
+`na.omit = FALSE` stops the function from removing species without data for all variables. 
+`warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. 
+Here we won't drop any species because we already did this using `make.treedata`.
+
+```{r}
+primate <- comparative.data(phy = mytree, data = mydata, 
+                            names.col = Binomial, vcv = TRUE, 
+                            na.omit = FALSE, warn.dropped = TRUE)
+```
+
+If you do need to drop species, this function will give a warning telling you that some species have been dropped.
+You can view the dropped species using:
+
+```{r}
+primate$dropped$tips
+primate$dropped$unmatched.rows
+```
+
+**Always** make sure you check the list of dropped species is what you expected, it often reveals typos in your species names, or mismatches in taxonomies used etc.
+Here of course we already fixed this problem, so nothing is listed.
 
 The function for PGLS analyses in `caper` is `pgls`. To fit a model which uses the Maximum Likelihood (ML) estimate of $\lambda$ we use the following code:
 
@@ -138,9 +182,18 @@ Note that optimizing more than one of these parameters at the same time is not a
 We can also plot the results as follows:
 
 ```{r}
-# can we ggplot?
-#plot(log(GestationLen_d) ~ log(AdultBodyMass_g), data = primatedata)
-#abline(model.pgls)
+ggplot(primatedata, aes(x = log(AdultBodyMass_g), 
+                        y = log(GestationLen_d))) +
+  geom_point() +
+  geom_abline(slope = coefficients(model.pgls)[2], intercept = coefficients(model.pgls)[1]) +
+  theme_bw()
+```
+
+Note that `coefficients(model.pgls)` gives us the intercept `coefficients(model.pgls)[2]`, and slope `coefficients(model.pgls)[2]` of the line, allowing use to use `geom_abline` to fit the line.
+
+```{r}
+# Check out the model coefficients (intercept and slope)
+coefficients(model.pgls)
 ```
 
 ### Model diagnostics for PGLS models
@@ -171,7 +224,7 @@ Any species with such large residuals should be removed as these outliers may ov
 It takes practice to know what is "good", "bad" and "acceptable" with these plots. I would say the plots above are fine, but there appear to be a couple of data points with studentized residuals > $\pm$ 3 in plot 1 that should be removed, or at least checked for errors. 
 
 ### Likelihood profiles for $\lambda$ in PGLS models
-You should also look at the likelihood profiles for branch length transformations in PGLS models using `pgls.profile`:
+You should also look at the __likelihood profiles__ for branch length transformations in PGLS models using `pgls.profile`:
 
 ```{r}
 # Create a likelihood profile of the lambda estimate
@@ -218,27 +271,6 @@ To set $\lambda$ to 1 you just replace "ML" with 1
 model.pgls3 <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g),
                     data = primate, lambda = 1)
 ```
-
-### Model diagnostics for PGLS models
-You should always check model diagnostic plots whenever you fit a model in R to check that your data meet the assumptions of the model. 
-The method for this in PGLS is the same for OLS, independent contrasts and PGLS models (though the graphs are slightly different). 
-To get model diagnostic plots for PGLS:
-
-```{r}
-par(mar = c(4,4,2,0))
-par(mfrow = c(2, 2))
-plot(model.pgls)
-par(mfrow = c(1, 1))
-```
-
-Without going into the statistical details (and if you've no idea what these plots are for I suggest looking this up online or in a stats textbook), what you are looking for in these plots is:
-
-1. In plot one you shouldn't see any data with a studentized residual > $\pm$ 3. 
-Any species with such large residuals should be removed as these outliers may overly influence the results of the regression (see Jones and Purvis 1997). Often these are the result of measurement error associated with species pairs joined by very short branches. You should generally report results with and without outliers unless the results remain qualitatively the same.
-2.  The points of the Q-Q plot (plot 2) should approximately fall on the line. This tests for normality of residuals, one of the assumptions of linear models
-3.  Plots 3 and 4 should show a fairly random scattering of points. You want to avoid any clear patterns. The first is related to the systematic component of the model - any pattern here suggests that the model has not been correctly specified. The second is to test the assumption that variances are equal (homoscedascity).
-
-It takes practice to know what is "good", "bad" and "acceptable" with these plots. I would say the plots above are fine, but there appear to be a couple of data points with studentized residuals > $\pm$ 3 in plot 1 that should be removed, or at least checked for errors. 
 
 ***
 
