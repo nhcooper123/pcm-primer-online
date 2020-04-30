@@ -1,8 +1,8 @@
 # Phylogenetic Generalised Least Squares (PGLS) in R
 The aims of this exercise are to learn how to use R to perform Phylogenetic Generalised Least Squares (PGLS) analyses.
 
-We will be using the evolution of primate life-history variables as an example. 
-These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+We will be using the evolution of eye size in frogs as an example. The data and modified tree come from Thomas et al 2020 (CITE PROPERLY), and the original tree comes from Feng et al (2019; CITE PROPERLY). I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Thomas et al 2020 (CITE PROPERLY)!
+
 You will also need to install the following packages: 
 
 * `ape`
@@ -31,24 +31,17 @@ It is important to do these things before beginning a phylogenetic comparative a
 
 ```{r}
 # Read in the data
-primatedata <- read.csv("data/Primatedata.csv")
+frogdata <- read.csv("data/frog-eyes.csv")
 # Check everything loaded corrected
-glimpse(primatedata)
-
-# Replace spaces with underscores in species names
-primatedata <- 
-  primatedata %>%
-  mutate(Binomial = str_replace(string = Binomial, pattern = " ", replacement = "_"))
-# Check it worked
-glimpse(primatedata)
+glimpse(frogdata)
 ```
 
 To load the tree we will use `read.nexus`.
 ```{r}
 # Read in the tree
-primatetree <- read.nexus("data/consensusTree_10kTrees_Version2.nex")
+frogtree <- read.nexus("data/frog-tree.nex")
 # Check it loaded correctly
-str(primatetree)
+str(frogtree)
 ```
 
 Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted. 
@@ -56,52 +49,50 @@ Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted.
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(primatetree)
-# Make the tree into a binary tree
-primatetree <- multi2di(primatetree)
+is.binary.tree(frogtree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
-is.rooted(primatetree)
+is.rooted(frogtree)
 ```
 
 Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before moving any further
 
 ```{r}
 # Check whether the names match in the data and the tree
-check <- name.check(phy = primatetree, data = primatedata, 
-                    data.names = primatedata$Binomial)
+check <- name.check(phy = frogtree, data = frogdata, 
+                    data.names = frogdata$tiplabel)
 # Look at check
 check
 ```
-Here all the excluded species are exclude because they are genuinely missing, not because of any typos, so we can move on.
+Here all the excluded species are excluded because they are genuinely missing, not because of any typos, so we can move on.
 
 Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
 
 ```{r}
 # Combine and match the tree and data
-primatestuff <- make.treedata(tree = primatetree,  data = primatedata, 
-                              name_column = "Binomial")
+frogstuff <- make.treedata(tree = frogtree,  data = frogdata, 
+                              name_column = "tiplabel")
 
 # Look at the tree
-primatestuff$phy
+frogstuff$phy
 # Look at the data
-glimpse(primatestuff$dat)
+glimpse(frogstuff$dat)
 ```
 
 Then we replace the removed species names column, and save the data as a dataframe for later analyses.
 
 ```{r}
 # Make a new column called Binomial with the tip labels in it
-primatestuff$dat$Binomial <- primatestuff$phy$tip.label
+frogstuff$dat$Species <- frogstuff$phy$tip.label
 # Force mydata to be a data frame
-mydata <- as.data.frame(primatestuff$dat)
+mydata <- as.data.frame(frogstuff$dat)
 ```
 
 Finally we save the tree
 
 ```{r}
 # Save tree as mytree
-mytree <- primatestuff$phy
+mytree <- frogstuff$phy
 ```
 
 Note that is is possible to use the `make.treedata` object directly to run some analyses, but we have saved these separately here as many PCMs cannot work with this.
@@ -110,20 +101,20 @@ Now we're ready to run our analyses!
 
 ## Phylogenetic generalized least squares models (PGLS)
 
-Let's investigate the relationship between gestation length in Primates and their body size. Theory leads us to believe that bigger mammals have longer gestation lengths (compare mice to elephants), but is this true in Primates?
+Let's investigate the relationship between eye size in frogs and their body size. Theory leads us to believe that bigger animals will have bigger eyes, but is this true in frogs?
 
 We can first quickly look at the phylogenetic pseudoreplication problem on the graph by colouring the points by family.
 
 ```{r}
-# Plot gestation length against body size, coloured by family
-ggplot(primatedata, aes(x = log(AdultBodyMass_g), 
-                        y = log(GestationLen_d), 
+# Plot eyesize against body mass, coloured by family
+ggplot(frogdata, aes(x = log(mass), 
+                        y = log(eyesize), 
                         colour = Family)) +
   geom_point() +
   theme_bw()
 ```
 
-Note how certain families are clustered on the graph. It's clear that close relatives are more similar than distant relatives. So we need to account for phylogenetic non independence.
+This is a bit messy because there are a lot of families, but note how certain families are clustered on the graph. It's clear that close relatives are more similar than distant relatives. So we need to account for phylogenetic non independence.
 
 There are several ways of accounting for phylogenetic non independence in your analyses. Here we will use phylogenetic generalized least squares (PGLS). Another popular earlier method is independent contrasts (PIC). This method is really similar to PGLS, in fact it is just a special kind of PGLS where $\lambda$ is equal to 1.
 
@@ -140,8 +131,8 @@ Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you wil
 Here we won't drop any species because we already did this using `make.treedata`.
 
 ```{r}
-primate <- comparative.data(phy = mytree, data = mydata, 
-                            names.col = Binomial, vcv = TRUE, 
+frog <- comparative.data(phy = mytree, data = mydata, 
+                            names.col = Species, vcv = TRUE, 
                             na.omit = FALSE, warn.dropped = TRUE)
 ```
 
@@ -149,8 +140,8 @@ If you do need to drop species, this function will give a warning telling you th
 You can view the dropped species using:
 
 ```{r}
-primate$dropped$tips
-primate$dropped$unmatched.rows
+frog$dropped$tips
+frog$dropped$unmatched.rows
 ```
 
 **Always** make sure you check the list of dropped species is what you expected, it often reveals typos in your species names, or mismatches in taxonomies used etc.
@@ -160,8 +151,8 @@ The function for PGLS analyses in `caper` is `pgls`. To fit a model which uses t
 
 ```{r}
 # Fit a PGLS model
-model.pgls <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g), 
-                   data = primate, lambda = "ML")
+model.pgls <- pgls(log(eyesize) ~ log(mass), 
+                   data = frog, lambda = "ML")
 ```
 
 To look at the output we use `summary`
@@ -171,7 +162,7 @@ To look at the output we use `summary`
 summary(model.pgls)
 ```
 
-As well as the standard regression outputs, the output includes the estimated ML value of $\lambda$ (0.892) and p values from likelihood ratio tests showing whether the ML $\lambda$ is significantly different from 0 or 1. 
+As well as the standard regression outputs, the output includes the estimated ML value of $\lambda$ (0.976) and p values from likelihood ratio tests showing whether the ML $\lambda$ is significantly different from 0 or 1. 
 
 $\kappa$ and $\delta$ are also tree transformations which can improve the fit of the data to the tree. It is also possible to use `pgls` to optimise $\kappa$ or $\delta$  (using kappa = "ML" or delta = "ML" instead of lambda = "ML" in the code above). We will not cover this here. 
 
@@ -182,8 +173,8 @@ Note that optimizing more than one of these parameters at the same time is not a
 We can also plot the results as follows:
 
 ```{r}
-ggplot(primatedata, aes(x = log(AdultBodyMass_g), 
-                        y = log(GestationLen_d))) +
+ggplot(frogdata, aes(x = log(mass), 
+                        y = log(eyesize))) +
   geom_point() +
   geom_abline(slope = coefficients(model.pgls)[2], intercept = coefficients(model.pgls)[1]) +
   theme_bw()
@@ -234,7 +225,7 @@ plot(lambda.profile)
 ```
 
 This graph shows the likelihood profile of $\lambda$ in our model. 
-Ideally you want a line with an obvious peak/optimum like this, rather than a flat line which would suggest $\lambda$ could be anything. You can see that the optimum (the peak of the curve) is at 0.892 as estimated in our PGLS model. The dotted red lines are the 95\% confidence intervals on $\lambda$ for our model. `pgls.confint` prints out these numbers in `$ci.val` if you want to know the exact numbers.
+Ideally you want a line with an obvious peak/optimum like this, rather than a flat line which would suggest $\lambda$ could be anything. You can see that the optimum (the peak of the curve) is at 0.976 as estimated in our PGLS model. The dotted red lines are the 95\% confidence intervals on $\lambda$ for our model. `pgls.confint` prints out these numbers in `$ci.val` if you want to know the exact numbers.
 
 ```{r}
 # Extract the confidence intervals on lambda
@@ -251,10 +242,10 @@ Sometimes you will find that `pgls` will not work and you get an `optim error`. 
 
 To fix this error you need to _change the bounds_ (i.e. upper and lower values) on the parameter being optimized, in this case $\lambda$. It usually seems to be the lower bound which is the issue. Just change the lower bound of $\lambda$ to something a little bigger than 1e-6 (the default lower bound) until it works. For example:
 
-```{r}
+```{r, eval = FALSE}
 # Fit PGLS model with a higher lower bound on lambda
-model.pgls2 <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g), 
-                    data = primate, lambda = "ML", 
+model.pgls2 <- pgls(log(eyesize) ~ log(mass), 
+                    data = frog, lambda = "ML", 
                     bounds = list(lambda = c(1e-05, 1)))
 ```
 
@@ -268,11 +259,18 @@ To set $\lambda$ to 1 you just replace "ML" with 1
 
 ```{r}
 # Fit PGLS model with lambda set to 1
-model.pgls3 <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g),
-                    data = primate, lambda = 1)
+model.pgls3 <- pgls(log(eyesize) ~ log(mass),
+                    data = frog, lambda = 1)
 ```
 
-***
+## Practical exercises
+
+In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+
+Let's investigate the relationship between gestation length in Primates and their body size. Theory leads us to believe that bigger mammals have longer gestation lengths (compare mice to elephants), but is this true in Primates?
+
+Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in the previous exercise which should save you some time). Then fit a PGLS model to investigate the relationship between log gestation length (y = log(GestationLen_d)) and log body size (x = log(AdultBodyMass_g)) in primates. 
+                        
 
 ## References
 * Arnold, C., L. J. Matthews, and C. L. Nunn. 2010. The 10ktrees website: a new online resource for primate phylogeny. Evolutionary Anthropology: Issues, News, and Reviews 19:114–118.
