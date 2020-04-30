@@ -98,3 +98,86 @@ plot(tree,
 ```    
 
 EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send us a screenshot!
+
+## Preparations
+
+In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+
+For practice, see if you can read in the tree and data, and prepare them for a PCM analysis.
+
+```{r, eval = FALSE}
+# Load packages
+library(ape)
+library(geiger)
+library(tidyverse)
+library(treeplyr)
+
+# Read in the tree
+primatetree <- read.nexus("data/consensusTree_10kTrees_Version2.nex")
+# Look at the tree summary
+str(primatetree)
+
+# Plot the tree as a circular/fan phylogeny with small labels
+plot(primatetree, cex = 0.2, typ = "fan", no.margin = TRUE)
+
+# Check whether the tree is binary
+# We want this to be TRUE
+is.binary.tree(primatetree) 
+
+# It is FALSE so make the tree binary:
+primatetree <- multi2di(primatetree)
+
+# Check whether the tree is binary now...
+is.binary.tree(primatetree) 
+
+# Check whether the tree is rooted
+# We want this to be TRUE
+is.rooted(primatetree)
+
+# Read in the data
+primatedata <- read_csv("data/primate-life-history-data.csv")
+
+# Look at the data
+glimpse(primatedata)
+
+# Check whether the names match in the data and the tree
+check <- name.check(phy = primatetree, data = primatedata, 
+                    data.names = primatedata$tiplabel)
+# Look at check
+check
+
+### Correct any typos/taxonomic errors in the tree or data ###
+  
+# Combine and match the tree and data
+primatestuff <- make.treedata(tree = primatetree,  data = primatedata, 
+                              name_column = "tiplabel")
+
+# Look at the tree summary
+primatestuff$phy
+
+# Look at the data
+glimpse(primatestuff$dat)
+
+# Make a new column called Binomial with the tip labels in it
+primatestuff$dat$Binomial <- primatestuff$phy$tip.label
+
+# Save tree as mytree
+mytree <- primatestuff$phy
+# Save data as mydata
+mydata <- primatestuff$dat
+
+# Force mydata to be a data frame
+mydata <- as.data.frame(mydata)
+# Check mydata is now a dataframe
+str(mydata)
+
+## OPTIONAL
+# Make any required subsets of the tree/data
+
+## OPTIONAL
+# Write the cleaned data to a new file
+write_csv(mydata, path = "data/clean-primate-data.csv")
+
+# Write the cleaned tree to a new file
+write.nexus(mytree, file = "data/clean-primate-tree.nex")
+```
