@@ -1,0 +1,37 @@
+# Answers to practical exercises
+
+
+## Data Wrangling
+
+Using the `frog-eyes-raw-data.csv` data and R, create a new dataframe that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from (Thomas et al 2020 ADD CITATION)
+
+There are multiple ways of doing this, but the easiest is as follows:
+```{r}
+# Load packages
+library(tidyverse)
+
+# Read in the data
+frog <- read_csv("data/frog-eyes-raw-data.csv")
+# Take a look at it
+glimpse(frog)
+
+# Create a new dataframe called frog2
+frog2 <-
+  # Start with the frog dataframe
+  frog %>%
+  # Select only the columns of interest
+  select(genus_species, Family, rootmass, eyemean) %>%
+  # Group by species name, and Family (or summarise will try and average this too!)
+  group_by(genus_species, Family) %>%
+  # Summarise to get the mean values
+  summarise(mean_rootmass = mean(rootmass),
+            mean_eyemean = mean(eyemean))
+
+# Look at frog2
+glimpse(frog2)
+
+# Write to file
+# This is commented out as I don't want to save this
+# write_csv(frog2, path = "data/clean-frog-data.csv")
+```
+
