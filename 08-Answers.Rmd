@@ -103,7 +103,7 @@ EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree
 
 In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
 
-For practice, see if you can read in the tree and data, and prepare them for a PCM analysis.
+For practice, read in the tree and data then prepare them for a PCM analysis.
 
 ```{r, eval = FALSE}
 # Load packages
@@ -140,23 +140,31 @@ primatedata <- read_csv("data/primate-life-history-data.csv")
 # Look at the data
 glimpse(primatedata)
 
+# Replace spaces with underscores in species names
+primatedata <- 
+  primatedata %>%
+  mutate(Binomial = str_replace(string = Binomial, pattern = " ", replacement = "_"))
+# Check it worked
+glimpse(primatedata)
+
 # Check whether the names match in the data and the tree
 check <- name.check(phy = primatetree, data = primatedata, 
-                    data.names = primatedata$tiplabel)
+                    data.names = primatedata$Binomial)
 # Look at check
 check
 
-### Correct any typos/taxonomic errors in the tree or data ###
+# 149 species are in the tree but not the data
+# 0 species are in the data but not the tree
   
 # Combine and match the tree and data
 primatestuff <- make.treedata(tree = primatetree,  data = primatedata, 
-                              name_column = "tiplabel")
+                              name_column = "Binomial")
 
 # Look at the tree summary
 primatestuff$phy
-
 # Look at the data
 glimpse(primatestuff$dat)
+## There are 77 species in the tree and the data
 
 # Make a new column called Binomial with the tip labels in it
 primatestuff$dat$Binomial <- primatestuff$phy$tip.label
