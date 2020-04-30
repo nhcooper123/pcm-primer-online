@@ -189,3 +189,64 @@ write_csv(mydata, path = "data/clean-primate-data.csv")
 # Write the cleaned tree to a new file
 write.nexus(mytree, file = "data/clean-primate-tree.nex")
 ```
+
+## PGLS
+
+In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+
+Let's investigate the relationship between gestation length in Primates and their body size. Theory leads us to believe that bigger mammals have longer gestation lengths (compare mice to elephants), but is this true in Primates?
+
+Read in the tree and data, then prepare them for a PCM analysis (you should have already done this in the previous exercise which should save you some time). Then fit a PGLS model to investigate the relationship between log gestation length (y = log(GestationLen_d)) and log body size (x = log(AdultBodyMass_g)) in primates. Don't forget to look at the model diagnostics!!!
+
+```{r, message = FALSE}
+# Load the packages
+library(ape)
+library(geiger)
+library(treeplyr)
+library(caper)
+library(tidyverse)
+
+### Prepare the tree and the data as shown in the answer above ###
+### This should mean you now have mydata and mytree ready to work with ###
+
+# Prepare the data for use in caper
+primate <- comparative.data(phy = mytree, data = mydata, 
+                            names.col = Species, vcv = TRUE, 
+                            na.omit = FALSE, warn.dropped = TRUE)
+
+# Check the list of dropped species is what you expected
+primate$dropped$tips
+primate$dropped$unmatched.rows
+
+# Fit a PGLS model
+model.pgls <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g), 
+                   data = frog, lambda = "ML")
+
+# Look at the model outputs
+summary(model.pgls)
+### Lambda should be equal to 0.892
+
+# Plot the results
+ggplot(frogdata, aes(x = log(AdultBodyMass_g), 
+                     y = log(GestationLen_d))) +
+  geom_point() +
+  geom_abline(slope = coefficients(model.pgls)[2], intercept = coefficients(model.pgls)[1]) +
+  theme_bw()
+
+### Model diagnostics
+
+# Make a plotting window with 4 panes as there are four plots
+par(mfrow = c(2, 2))
+# Now plot the model diagnostics
+plot(model.pgls)
+# Return the plot window to one pane for later plotting
+par(mfrow = c(1, 1))
+
+# Create a likelihood profile of the lambda estimate
+lambda.profile <- pgls.profile(model.pgls, "lambda")
+# Plot the likelihood profile
+plot(lambda.profile)
+
+# Extract the confidence intervals on lambda
+pgls.confint(model.pgls, "lambda")$ci.val
+```
