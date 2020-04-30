@@ -548,4 +548,4 @@ Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that 
     c) Can you change the colour of the tips and branches?
 4. Save the tree to file as "mysuperdoopertree.nex"    
     
-EXTRA credit. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send us a screenshot!
+EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send us a screenshot!
