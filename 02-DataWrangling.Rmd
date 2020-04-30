@@ -41,38 +41,6 @@ Let's imagine we have the following three sources of chameleon body length and l
 - *Calumma parsonii*. Approximately 24 inches.
 
 We would tend to record these data in a table (probably in Excel or another spreadsheet program). Here we have saved this file as `chameleon-data-raw.csv`
-```{r, echo = FALSE}
-chameleon <- data.frame("Species" = c(rep("Chamaeleo chamaeleon", 3), 
-                            rep("Brookesia minima", 3),
-                            rep("Calumma parsonii", 3),
-                            rep("Chamaeleo chamaeleon", 2), 
-                            rep("Brookesia minima", 2),
-                            rep("Calumma parsonii", 2),
-                            "Chamaeleo chamaeleon", 
-                            "Brookesia minima",
-                            "Calumma parsonii"),
-                "Measurement" = c(rep(c("length", "clutch size", "dimorphic"), 3),
-                                  rep(c("length", "clutch size"), 3),
-                                  rep("length", 3)),
-                "Value" = c(245, 80, 1, 33, 2, 1, 650, 50, 1,
-                            250, 100, 34, 2, 695, 50,
-                            10, 1, 24),
-                "Data_Type" = c(rep(c("mean", "mean", "truefalse"), 3),
-                           rep(c("max"), 6),
-                           rep("mean", 3)),
-                "Units" = c(rep(c("mm", "eggs", "NA"), 3),
-                            rep(c("mm", "eggs"), 3),
-                            rep("inches", 3)),
-                "Data_Quality" = c(rep("high", 9),
-                             rep("high", 6),
-                             rep("medium", 3)), 
-                "Approximation" = c(rep(FALSE, 15),
-                                    rep(TRUE, 3)),
-                "Source" = c(rep("Jones et al 2020", 9),
-                             rep("Smith et al 2020", 6),
-                             rep("Han et al 2020", 3))
-                             )
-```
 
 We would also record the full reference for each source in a separate table. Recording the data like this makes it easy to enter in Excel, and also makes it easy for us to exclude certain types of data or sources should we decide we don't trust them enough to include in our analyses.
 
@@ -91,6 +59,7 @@ Next we need to read in the chameleon data from our folder. This is saved in the
 # Read in the data
 chameleon <- read.csv("chameleon-data-raw.csv")
 # Take a look at it
+glimpse(chameleon)
 ```
 
 To wrangle this data, we would first convert the units to a standard unit for each measurement. Here we have length in mm and inches, so we would convert the inches into mm. The three altered rows are shown below. Note that converting from inches to mm gives us the false impression of precision, i.e. two values are now 25.4 and 609.6, rather than whole numbers making it look like these were measured accurately rather than approximated. It's worth looking out for this in other data, especially curated databases where this kind of conversion is typical.
@@ -225,3 +194,7 @@ chameleon_final <-
 # Look at the output
 chameleon_final
 ```
+
+## Practical exercise
+
+Using the `frog-eyes-raw-data.csv` dataset and R, create a new dataset that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from (Thomas et al 2020 ADD CITATION).
