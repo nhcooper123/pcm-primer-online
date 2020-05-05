@@ -22,7 +22,7 @@ To begin we need to load the packages for this practical.
 library(ape)
 library(geiger)
 library(treeplyr)
-library(caper)
+library(phytools)
 library(tidyverse)
 ```
 
