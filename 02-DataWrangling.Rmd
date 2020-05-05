@@ -57,7 +57,7 @@ Next we need to read in the chameleon data from our folder. This is saved in the
 
 ```{r}
 # Read in the data
-chameleon <- read.csv("chameleon-data-raw.csv")
+chameleon <- read.csv("data/chameleon-data-raw.csv")
 # Take a look at it
 glimpse(chameleon)
 ```
@@ -81,7 +81,7 @@ chameleon2 <-
   # Convert inches into mm within the Value column
   mutate(Value = ifelse(Units == "inches", conv_unit(Value, "inch", "mm"), Value)) %>%
   # Remove Units and Source columns
-  select(-Units, - Source)
+  select(-Units, -Source)
 ```
 
 Here `mutate` modifies the variable *Value*. The `ifelse` statement tells R that if *Units* is in inches, we should use `conv_unit` to convert from inch to mm, and place this value in the *Value* column. If *Units* is _not_ in inches it just records the original value in *Value*.
