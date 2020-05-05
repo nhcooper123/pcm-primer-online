@@ -31,7 +31,7 @@ It is important to do these things before beginning a phylogenetic comparative a
 
 ```{r}
 # Read in the data
-frogdata <- read.csv("data/frog-eyes.csv")
+frogdata <- read_csv("data/frog-eyes.csv")
 # Check everything loaded corrected
 glimpse(frogdata)
 ```
@@ -55,7 +55,7 @@ is.binary.tree(frogtree)
 is.rooted(frogtree)
 ```
 
-Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before moving any further
+Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before going any further.
 
 ```{r}
 # Check whether the names match in the data and the tree
@@ -88,7 +88,7 @@ frogstuff$dat$Species <- frogstuff$phy$tip.label
 mydata <- as.data.frame(frogstuff$dat)
 ```
 
-Finally we save the tree
+Finally we save the tree:
 
 ```{r}
 # Save tree as mytree
@@ -103,32 +103,28 @@ Now we're ready to run our analyses!
 
 Let's investigate the relationship between eye size in frogs and their body size. Theory leads us to believe that bigger animals will have bigger eyes, but is this true in frogs?
 
-We can first quickly look at the phylogenetic pseudoreplication problem on the graph by colouring the points by family.
+We can first quickly look at the phylogenetic pseudoreplication on the graph by colouring the points by family.
 
 ```{r}
 # Plot eyesize against body mass, coloured by family
-ggplot(frogdata, aes(x = log(mass), 
+ggplot(mydata, aes(x = log(mass), 
                         y = log(eyesize), 
                         colour = Family)) +
   geom_point() +
   theme_bw()
 ```
 
-This is a bit messy because there are a lot of families, but note how certain families are clustered on the graph. It's clear that close relatives are more similar than distant relatives. So we need to account for phylogenetic non independence.
+This is a bit messy because there are a lot of families, but note how certain families are clustered on the graph. It's clear that close relatives are more similar than distant relatives. So we need to account for phylogenetic non-independence, both because of the statistical issues caused by this *and* because it's a better way to model the biological reality of our question. We know frog species evolve from other frog species, and that close relatives will therefore be similar, so we should add this into our models.
+ 
+There are several ways of accounting for phylogenetic non-independence in your analyses. Here we will use phylogenetic generalized least squares (PGLS). Another popular earlier method is independent contrasts (PIC). This method is really similar to PGLS, in fact it is just a special kind of PGLS where $\lambda$ is equal to 1. 
 
-There are several ways of accounting for phylogenetic non independence in your analyses. Here we will use phylogenetic generalized least squares (PGLS). Another popular earlier method is independent contrasts (PIC). This method is really similar to PGLS, in fact it is just a special kind of PGLS where $\lambda$ is equal to 1.
-
-PGLS offers some important advantages over independent contrasts. 
-The model of trait evolution can be more flexible i.e., it can depart from a strict Brownian motion process ($\lambda$ or *K* = 1). Different scaling parameters ($\lambda$, $\kappa$, and $\delta$) can be incorporated in the analysis, which can significantly improve the fit of the data to the model and thus also improve the estimation of the trait correlation. Another advantage of PGLS is that the intercept of the regression is not forced to be zero.
+PGLS offers some important advantages over independent contrasts. The model of trait evolution can be more flexible i.e., it can depart from a strict Brownian motion process ($\lambda$ or *K* = 1). Different scaling parameters ($\lambda$, $\kappa$, and $\delta$) can be incorporated in the analysis, which can significantly improve the fit of the data to the model and thus also improve the estimation of the trait correlation. Another advantage of PGLS is that the intercept of the regression is not forced to be zero. See the *Primer* for more details on the theory underlying PICs and PGLS.
 
 ### Fitting PGLS models in R
 
 To perform PGLS models in R, `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`. This is similar to what we did with `make.treedata`, but it does some stuff that is particular to how `caper` works so we still need to do this here.
 
-Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). 
-`na.omit = FALSE` stops the function from removing species without data for all variables. 
-`warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. 
-Here we won't drop any species because we already did this using `make.treedata`.
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. Here we won't drop any species because we already did this using `make.treedata`.
 
 ```{r}
 frog <- comparative.data(phy = mytree, data = mydata, 
@@ -144,8 +140,7 @@ frog$dropped$tips
 frog$dropped$unmatched.rows
 ```
 
-**Always** make sure you check the list of dropped species is what you expected, it often reveals typos in your species names, or mismatches in taxonomies used etc.
-Here of course we already fixed this problem, so nothing is listed.
+**Always** make sure you check the list of dropped species is what you expected, it often reveals typos in your species names, or mismatches in taxonomies used etc. Here we already fixed this problem, so nothing is listed.
 
 The function for PGLS analyses in `caper` is `pgls`. To fit a model which uses the Maximum Likelihood (ML) estimate of $\lambda$ we use the following code:
 
@@ -155,7 +150,7 @@ model.pgls <- pgls(log(eyesize) ~ log(mass),
                    data = frog, lambda = "ML")
 ```
 
-To look at the output we use `summary`
+To look at the output we use `summary`:
 
 ```{r}
 # Look at the model outputs
@@ -173,7 +168,7 @@ Note that optimizing more than one of these parameters at the same time is not a
 We can also plot the results as follows:
 
 ```{r}
-ggplot(frogdata, aes(x = log(mass), 
+ggplot(mydata, aes(x = log(mass), 
                         y = log(eyesize))) +
   geom_point() +
   geom_abline(slope = coefficients(model.pgls)[2], intercept = coefficients(model.pgls)[1]) +
@@ -197,7 +192,7 @@ You might recall we also use `plot` to plot phylogenies and other things. `plot`
 To get model diagnostic plots for PGLS:
 
 ```{r}
-# First make a plotting window with 4 panes as there are four plots
+# First make a plotting window with four panes as there are four plots
 par(mfrow = c(2, 2))
 # Now plot the model diagnostics
 plot(model.pgls)
@@ -205,12 +200,13 @@ plot(model.pgls)
 par(mfrow = c(1, 1))
 ```
 
-Without going into the statistical details (and if you've no idea what these plots are for I suggest looking this up online or in a stats textbook), what you are looking for in these plots is:
+If you've no idea what these diagnostic plots are for I suggest reading up on this. Getting Started with R is a good place for this (CITE).
 
-1. In plot one you shouldn't see any data with a studentized residual > $\pm$ 3. 
-Any species with such large residuals should be removed as these outliers may overly influence the results of the regression (see Jones and Purvis 1997). Often these are the result of measurement error associated with species pairs joined by very short branches. You should generally report results with and without outliers unless the results remain qualitatively the same.
-2.  The points of the Q-Q plot (plot 2) should approximately fall on the line. This tests for normality of residuals, one of the assumptions of linear models
-3.  Plots 3 and 4 should show a fairly random scattering of points. You want to avoid any clear patterns. The first is related to the systematic component of the model - any pattern here suggests that the model has not been correctly specified. The second is to test the assumption that variances are equal (homoscedascity).
+1. In plot 1 (upper left-hand plot) you should not see any data with a studentized residual > $\pm$ 3. Any species with such large residuals may overly influence the results of the regression (see Jones and Purvis 1997). Often these are the result of measurement error associated with species pairs joined by very short branches. You should report results with and without these outliers included, to see how much of an impact they have on your results.
+
+2. In plot 2 (upper right-hand plot), the Normal Q-Q plot, the points should approximately fall on the line. This tests for normality of residuals, one of the assumptions of linear models.
+
+3. Plots 3 and 4 should show a fairly random scattering of points. You want to avoid any clear patterns. The first is related to the systematic component of the model - any pattern here suggests that the model has not been correctly specified. The second is to test the assumption that variances are equal (homoscedascity).
 
 It takes practice to know what is "good", "bad" and "acceptable" with these plots. I would say the plots above are fine, but there appear to be a couple of data points with studentized residuals > $\pm$ 3 in plot 1 that should be removed, or at least checked for errors. 
 
