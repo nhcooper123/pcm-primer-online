@@ -7,7 +7,7 @@ Below are all the questions and answers to the practical exercises at the end of
 Using the `frog-eyes-raw-data.csv` data and R, create a new dataframe that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from (Thomas et al 2020 ADD CITATION)
 
 There are multiple ways of doing this, but the easiest is as follows:
-```{r}
+```{r, eval = FALSE}
 # Load packages
 library(tidyverse)
 
@@ -198,7 +198,7 @@ Let's investigate the relationship between gestation length in Primates and thei
 
 Read in the tree and data, then prepare them for a PCM analysis (you should have already done this in the previous exercise which should save you some time). Then fit a PGLS model to investigate the relationship between log gestation length (y = log(GestationLen_d)) and log body size (x = log(AdultBodyMass_g)) in primates. Don't forget to look at the model diagnostics!!!
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval = FALSE}
 # Load the packages
 library(ape)
 library(geiger)
