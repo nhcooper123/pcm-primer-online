@@ -204,8 +204,38 @@ There are a couple of, more or less satisfying, solutions...
 
 We can estimate D using the function `phylo.d` in the `caper` package.
 
-First we'd need to set up a binary (0,1) variable. Let's look at Sex_dichromatism as this only has two categories already (Absent and Present).
+First we'd need to set up a binary (0,1) variable. Let's look at Sex_dichromatism as this only has two categories already (Absent and Present). 
 
+```{r}
+mydata %>%
+  group_by(Sex_dichromatism) %>%
+  summarise(n())
+```
+
+There are 36 species without data for this variable. If we were doing something like PGLS (see next exercise), `caper` would be fine with this, but for `phylo.d` we can only work with data without NAs. To fix this, we can use `filter` to exclude the species with NAs, but we also want to remove these species from the tree. It's easiest to go back to our `treeplyr` functions to do this.
+
+Let's first go back to `frogstuff`, the combined object with our data and our tree in it, so we can exclude the species without Sex_dichromatism data, making `frogstuff2`.
+```{r}
+# Filter out species with no Sex_dichromatism data
+frogstuff2 <-
+  frogstuff %>%
+  filter(!is.na(Sex_dichromatism))
+```
+
+Now we can go back to our usual workflow, but using `frogstuff2`.
+
+Replace the removed species names column, save the data as a dataframe for later analyses, and save the tree.
+
+```{r}
+# Make a new column called Binomial with the tip labels in it
+frogstuff2$dat$Species <- frogstuff2$phy$tip.label
+# Force mydata to be a data frame
+mydata <- as.data.frame(frogstuff2$dat)
+# Save tree as mytree
+mytree <- frogstuff2$phy
+```
+
+We also need the variable Sex_dichromatism to be either 0 or 1. We can do this fairly easily using mutate to create a new variable called `sex_di_binary`. 
 ```{r}
 mydata <- 
   mydata %>%
@@ -213,25 +243,11 @@ mydata <-
   # which is Sex_dichromatism expressed as numbers
   # Absent = 1 and Present = 2. To make these 0 and 1 instead we just use -1
   mutate(sex_di_binary = as.numeric(Sex_dichromatism) - 1)
-
-# Check it worked by using summarise to find out 
-# how many species are in each category
-mydata %>%
-  group_by(sex_di_binary) %>%
-  summarise(n())
 ```
 
-Ah there are 36 species without data for this variable. If we were doing something like PGLS (see next exercise), `caper` would be fine with this, but for `phylo.d` we can only work with data without NAs. To fix this, we can use `filter` to exclude the species with NAs.
+To use `phylo.d` we need the `caper` package. `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`. This is similar to what we did with `make.treedata`, but it does some stuff that is particular to how `caper` works so we still need to do this here.
 
-```{r}
-mydata <-
-  mydata %>%
-  filter(!is.na(sex_di_binary))
-```
-
-Next, `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`. This is similar to what we did with `make.treedata`, but it does some stuff that is particular to how `caper` works so we still need to do this here.
-
-Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. 
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function in the next exercise). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. 
 
 ```{r}
 frog <- comparative.data(phy = mytree, data = mydata, 
@@ -239,7 +255,7 @@ frog <- comparative.data(phy = mytree, data = mydata,
                             na.omit = FALSE, warn.dropped = TRUE)
 ```
 
-As we see here, this function will give a warning telling you that some species have been dropped. **Always** make sure you check the list of dropped species is what you expected, as it often reveals typos in your species names, or mismatches in taxonomies used etc. 
+This function will give a warning telling you that some species have been dropped. **Always** make sure you check the list of dropped species is what you expected, as it often reveals typos in your species names, or mismatches in taxonomies used etc. 
 
 You can view the dropped species using:
 
@@ -253,7 +269,7 @@ This shows nothing because we already fixed the data so that all the species in 
 frog$dropped$tips
 ```
 
-Here this is the 36 species we just removed because they don't have Sex_dichromatism data.
+This also shows nothing because we already fixed the tree so that all the species in the tree are in the data.
 
 One last bit of prep required is that *D* cannot be estimated where trees have zero length branches. In `04-Preparation.Rmd` you may recall that we deal with polytomies by replacing them with zero length branches using the `ape` function `mutli2di`. To remove the zero length branches we are going to use the opposite function:  `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
 
