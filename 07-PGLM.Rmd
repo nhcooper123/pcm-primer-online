@@ -1,0 +1,137 @@
+# Phylogenetic Generalised Linear Models (PGLM) in R
+The aims of this exercise are to learn how to use R to perform PGLM analyses.
+
+We will be using the evolution of eye size in frogs as an example. The data and modified tree come from Thomas et al 2020 (CITE PROPERLY), and the original tree comes from Feng et al (2019; CITE PROPERLY). I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Thomas et al 2020 (CITE PROPERLY)!
+
+You will also need to install the following packages: 
+
+* `ape`
+* `geiger`
+* `treeplyr`
+* `tidyverse`
+* `phylolm`
+* `MCMCglmm`
+
+***
+## Preparation
+
+To begin we need to load the packages for this practical.
+
+```{r, message = FALSE}
+# Load the packages
+library(ape)
+library(geiger)
+library(treeplyr)
+library(tidyverse)
+library(phylolm)
+library(MCMCglmm)
+```
+
+Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+
+It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
+
+```{r}
+# Read in the data
+frogdata <- read_csv("data/frog-eyes.csv")
+# Check everything loaded corrected
+glimpse(frogdata)
+```
+
+To load the tree we will use `read.nexus`.
+```{r}
+# Read in the tree
+frogtree <- read.nexus("data/frog-tree.nex")
+# Check it loaded correctly
+str(frogtree)
+```
+
+Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted. 
+
+```{r}
+# Check whether the tree is binary
+# We want this to be TRUE
+is.binary.tree(frogtree)
+# Check whether the tree is rooted 
+# We want this to be TRUE 
+is.rooted(frogtree)
+```
+
+Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before going any further.
+
+```{r}
+# Check whether the names match in the data and the tree
+check <- name.check(phy = frogtree, data = frogdata, 
+                    data.names = frogdata$tiplabel)
+# Look at check
+check
+```
+Here all the excluded species are excluded because they are genuinely missing, not because of any typos, so we can move on.
+
+Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
+
+```{r}
+# Combine and match the tree and data
+frogstuff <- make.treedata(tree = frogtree,  data = frogdata, 
+                              name_column = "tiplabel")
+
+# Look at the tree
+frogstuff$phy
+# Look at the data
+glimpse(frogstuff$dat)
+```
+
+Now let's pause here as we need a bit more prep for logistic models...
+
+## Some additional preparation for logistic models
+
+In the model below we will look at the relationship between sexual dichromatism and eye size. We are predicting that species with larger eyes are more likely to be dichromatic, as they'd be able to see the differences in the sexes for mating purposes.
+
+Sexual dichromatism will be our response variable. For the logistic regression to work the values in the variable Sex_dichromatism need to be either 0 or 1. We also can't have any missing data.
+
+Let's first go back to `frogstuff`, the combined object with our data and our tree in it, so we can exclude the species without Sex_dichromatism data, making `frogstuff2`.
+```{r}
+# Filter out species with no Sex_dichromatism data
+frogstuff2 <-
+  frogstuff %>%
+  filter(!is.na(Sex_dichromatism))
+```
+
+Now we can go back to our usual workflow, but using `frogstuff2`.
+
+Replace the removed species names column, save the data as a dataframe for later analyses, and save the tree.
+
+```{r}
+# Make a new column called Binomial with the tip labels in it
+frogstuff2$dat$Species <- frogstuff2$phy$tip.label
+# Force mydata to be a data frame
+mydata <- as.data.frame(frogstuff2$dat)
+# Save tree as mytree
+mytree <- frogstuff2$phy
+```
+
+We also need the variable Sex_dichromatism to be either 0 or 1. We can do this fairly easily using mutate to create a new variable called `sex_di_binary`. We also did this in exercise `05-PhyloSignal.Rmd`.
+```{r}
+mydata <- 
+  mydata %>%
+  # Make a new variable called sex_di_binary
+  # which is Sex_dichromatism expressed as numbers
+  # Absent = 1 and Present = 2. To make these 0 and 1 instead we just use -1
+  mutate(sex_di_binary = as.numeric(Sex_dichromatism) - 1)
+```
+
+Finally, `phyloglm` is one of the PCM methods that require tiplabels to be the rownames of the dataset.
+
+```{r}
+rownames(mydata) <- mytree$tip.label
+```
+
+## PhloGLM
+
+```{r}
+fit <- phyloglm(sex_di_binary ~ log(eyesize), phy = mytree, data = mydata, 
+               boot = 100)
+summary(fit)
+coef(fit)
+vcov(fit)
+```
