@@ -6,11 +6,12 @@ We will be using the evolution of eye size in frogs as an example. The data and 
 
 You will also need to install the following packages: 
 
+* `tidyverse`
 * `ape`
 * `geiger`
 * `treeplyr`
+* `phytools`
 * `caper`
-* `tidyverse`
 
 ***
 ## Preparation
@@ -19,11 +20,12 @@ To begin we need to load the packages for this practical.
 
 ```{r, message = FALSE}
 # Load the packages
+library(tidyverse)
 library(ape)
 library(geiger)
 library(treeplyr)
 library(phytools)
-library(tidyverse)
+library(caper)
 ```
 
 Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
@@ -100,6 +102,7 @@ Note that is is possible to use the `make.treedata` object directly to run some 
 
 Now we're ready to run our analyses!
 
+***
 ## Estimating phylogenetic signal for continuous variables
 As is common in R, there are a number of ways to estimate Pagel's$\lambda$ and Blomberg's *K*. I've chosen to show you the way implemented in the package `phytools` because it allows you to use the same function for both.
 
@@ -112,8 +115,8 @@ We can use the function `pull` to extract just the eye size values, and we can l
 ```{r}
 # Create logGL containing just log eye size length values
 logEye <- log(pull(mydata, eyesize))
-# Look at it
-logEye
+# Look at the first few rows
+head(logEye)
 ```
 
 Notice that this is currently just a long list of numbers. We can then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels, but luckily `make.treedata` does this automatically.
@@ -121,8 +124,8 @@ Notice that this is currently just a long list of numbers. We can then name thes
 ```{r}
 # Give log Eye names = species names at the tips of the phylogeny
 names(logEye) <- mydata$Species
-# Look at it
-logEye
+# Look at the first few rows
+head(logEye)
 ```
 
 Now we have a list of values with associated species names.
@@ -162,12 +165,131 @@ KEye
 
 We interpret this as *K* being significantly different from 0, i.e. there is significant phylogenetic signal in log eye size.
 
+***
+
 ## A few quick points to always consider
 First, why do we look at two different measures of phylogenetic signal? We don't have to, you could choose one and stick to it. However, I guarantee if you choose one then a reviewer/your supervisor/boss will ask for the other, so why not do both and pop one in the appendix?
 
 Second, remember that when fitting models to account for phylogenetic nonindependence, it is *not* phylogenetic signal in the individual variables that is important. It is phylogenetic signal in the __residuals__ of the model that matters. Evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be phylogenetic signal in the residuals of a model correlating variable X with variable Y. Conversely, lack of evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be no phylogenetic signal in the residuals of a model correlating variable X with variable Y.
 
 Third, always carefully consider what variation in values of $lambda$ and *K* across traits and clades really means. It may not tell you as much about your system as you think it does.
+
+***
+## Estimating phylogenetic signal for non-continuous variables
+Not all variables are continuous, some are categorical, some are binary. For example in the frog data Adult_habitat, Life_history and Sex_dichromatism are categorical variables. We can also code Sex_dichromatism as a binary varaible if we code Absent as 0 and Present as 1.
+ 
+```{r}
+glimpse(mydata)
+```
+
+Estimating phylogenetic signal in categorical variables is tricky. Let's take Adult_habitat as an example. In this variable we have the following categories:
+
+```{r}
+mydata %>%
+ dplyr::select(Adult_habitat) %>%
+ distinct()
+```
+
+Remember with phylogenetic signal we are looking for the pattern where close relatives are more similar to one another than more distant relatives. For these categories, it would be sensible to say we had high phylogenetic signal if, for example, all toads are Semiaquatic, and all tree frogs are Scansorial. But what if some toads are Semiaquatic but others are Ground-dwelling? If we don't know how species transition from state to state, it's hard to know what we might expect to see as evolutionary distance between species increases. We might sensibly assume that species easily evolve from Semiaquatic to Aquatic, or from Subfossorial to Fossorial, but what about changes from Aquatic to Fossorial? All of this makes phylogenetic signal for categorical variables a bit of a mess.
+
+There are a couple of, more or less satisfying, solutions...
+
+1. Do we actually need to know the phylogenetic signal for these variables? For the models we are interested in phylogenetic signal in the *residuals*, so maybe we don't care about phylogenetic signal in the variables? Unless there is a real need, don't bother! You could visualise what is going on instead by adding colours to the tips of the phyolgeny to represent the different categories. This should give you an idea about whether categories cluster in different clades or not.
+
+2. We could code our categories numerically then use lambda and K as usual. This is only suitable if the categories are ordered, and if the difference between each pair of categories can be considered equal. For example, a variable that has low, medium and high values could be coded as low = 1, medium = 2, and high = 3. Again this is not ideal, but will give you an answer. I'd avoid this if possible.
+
+3. We could recode these as binary variables and use D (Fritz & Purvis 2010). For example, creating a new variable called Aquatic, and coding each species as 0 = not aquatic; 1 = aquatic. This is probably the best solution.
+
+### *D* (Fritz & Purvis 2010)
+
+We can estimate D using the function `phylo.d` in the `caper` package.
+
+First we'd need to set up a binary (0,1) variable. Let's look at Sex_dichromatism as this only has two categories already (Absent and Present).
+
+```{r}
+mydata <- 
+  mydata %>%
+  # Make a new variable called sex_di_binary
+  # which is Sex_dichromatism expressed as numbers
+  # Absent = 1 and Present = 2. To make these 0 and 1 instead we just use -1
+  mutate(sex_di_binary = as.numeric(Sex_dichromatism) - 1)
+
+# Check it worked by using summarise to find out 
+# how many species are in each category
+mydata %>%
+  group_by(sex_di_binary) %>%
+  summarise(n())
+```
+
+Ah there are 36 species without data for this variable. If we were doing something like PGLS (see next exercise), `caper` would be fine with this, but for `phylo.d` we can only work with data without NAs. To fix this, we can use `filter` to exclude the species with NAs.
+
+```{r}
+mydata <-
+  mydata %>%
+  filter(!is.na(sex_di_binary))
+```
+
+Next, `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`. This is similar to what we did with `make.treedata`, but it does some stuff that is particular to how `caper` works so we still need to do this here.
+
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. 
+
+```{r}
+frog <- comparative.data(phy = mytree, data = mydata, 
+                            names.col = Species, vcv = TRUE, 
+                            na.omit = FALSE, warn.dropped = TRUE)
+```
+
+As we see here, this function will give a warning telling you that some species have been dropped. **Always** make sure you check the list of dropped species is what you expected, as it often reveals typos in your species names, or mismatches in taxonomies used etc. 
+
+You can view the dropped species using:
+
+```{r}
+frog$dropped$unmatched.rows
+```
+
+This shows nothing because we already fixed the data so that all the species in the data are in the tree.
+
+```{r}
+frog$dropped$tips
+```
+
+Here this is the 36 species we just removed because they don't have Sex_dichromatism data.
+
+One last bit of prep required is that *D* cannot be estimated where trees have zero length branches. In `04-Preparation.Rmd` you may recall that we deal with polytomies by replacing them with zero length branches using the `ape` function `mutli2di`. To remove the zero length branches we are going to use the opposite function:  `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
+
+```{r}
+frog$phy <- di2multi(frog$phy)
+```
+
+Now we are ready to to estimate *D*.
+
+```{r}
+# Estimate D
+Dsexdi <- phylo.d(data = frog, names.col = Species, binvar = sex_di_binary, 
+                  permut = 1000)
+
+# Look at the output
+Dsexdi
+```
+
+`phylo.d` estimates the D value, then tests the estimated D value for significant departure from random association and a Brownian evolution threshold model (see *Primer* and Fritz & Purvis 2010 for more details).
+
+Here *D* for Sex_dichromatism is 0.875. This is significantly different from the expectation under a Brownian threshold model (p < 0.001) but not significantly different from the trait being randomly assorted on the phylogeny (p = 0.212). So here we can say there is no significant phylogenetic signal in the trait.
+
+We can make a really quick plot to check we agree with that statement (never take the results of any analysis at face value). It doesn't seem like sexual dichromatism (red text) is a trait that is particualrly clustered within certain taxonomic groups.
+
+```{r}
+mycolours <- c("black", "red")
+
+plot(frog$phy, show.tip.label = TRUE, tip.color =     
+       mycolours[as.numeric(mydata$sex_di_binary)+1], 
+       no.margin = TRUE, cex = 0.4)
+# Add a legend
+legend("bottomleft", fill = mycolours, 
+       legend = c("Absent", "Present"), 
+       bty = "n")
+
+```
 
 ## Practical exercises
 
