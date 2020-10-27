@@ -157,13 +157,37 @@ KEye <- phylosig(mytree, logEye, method = "K", test = TRUE, nsim = 1000)
 ```
 Additionally we add the argument `nsim = 1000`. This is because we need to use a randomisation test to determine whether *K* is significantly different from 0. `phylosig` randomly assigns the trait values to the species and then calculates *K* as many times as we ask it to in `nsim` (number of simulations). Here we asked for 1000. After the random simulations are run, the observed value of K is then compared to the randomized values. The p value tells us how many times out of 1000, a randomised value of *K* is more extreme than the observed value. If this number is low, the p value is low (e.g. if 5 out of 1000 randomised values of *K* are more extreme than the observed value p = 5/1000 = 0.005). 
 
-As above, to look at the output we just type in the name of the model; `KGL` in this case
+As above, to look at the output we just type in the name of the model; `KEye` in this case
 ```{r}
 KEye
 ```
 *K* for log eye size is 0.283. The p value tells us how many times out of 1000, a randomised value of *K* is more extreme than the observed value. If this number is low, the p value is low (e.g. if 5 out of 1000 randomised values of *K* are more extreme than the observed value p = 5/1000 = 0.005). Here p = 0.001, suggesting that only 1 randomised value of *K* was more extreme than the observed value. 
 
 We interpret this as *K* being significantly different from 0, i.e. there is significant phylogenetic signal in log eye size.
+
+```{r, echo = FALSE}
+xx <- c(2,4,11)
+names(xx) <- c("A", "B", "C")
+results <- ace(xx, tree, method = "pic")
+root <- results$ace[[1]]
+MSE_0 <- sum((xx - root)^2) / (length(xx) - 1)
+
+xxdata <- data.frame(trait = xx, species = c("A", "B", "C"))
+comp.data <- comparative.data(phy = tree, data = xxdata, 
+                              names.col = species, vcv = TRUE, 
+                              na.omit = FALSE, warn.dropped = TRUE)
+model <- pgls(trait ~ 1, 
+                   data = comp.data, lambda = 1)
+model$Vt
+
+phylosig(tree, xx, method = "K", test = TRUE, nsim = 1000)
+```
+
+
+
+
+
+
 
 ***
 

@@ -167,7 +167,7 @@ This gives us five species in the data but not in the tree. As above, make sure 
 Here we know that these species are missing from our data, so we don't need to worry.
 
 ### Matching the tree and the data 
-finally, once we know which species do not match up, we need to remove species missing from the data from the tree, and remove species missing from the tree from the data. This used to be a bit of a pain, but `treeplyr` makes it easy. `treeplyr` has a lot of really cool functions, see the [wiki](https://github.com/uyedaj/treeplyr/wiki) for more details. However, here we are just going to use it just to match up the tree and the data.
+Finally, once we know which species do not match up, we need to remove species missing from the data from the tree, and remove species missing from the tree from the data. This used to be a bit of a pain, but `treeplyr` makes it easy. `treeplyr` has a lot of really cool functions, see the [wiki](https://github.com/uyedaj/treeplyr/wiki) for more details. However, here we are just going to use it just to match up the tree and the data.
 
 We'll use the function `make.treedata` to combine the tree and the dataset into one object. We need to provide the name of the tree, the name of the data, and specify which column our species names are in. 
 

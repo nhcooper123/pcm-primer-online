@@ -1,4 +1,4 @@
-# Data Wrangling
+# Data Wrangling comparative data in R
 
 In the *Primer*, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the [tidyverse](https://www.tidyverse.org/) - these are amazing for data manipulation etc. It's beyond the scope of this *Primer* to cover these in detail, but we will show you what we did to get the tidied dataset in the book.
 

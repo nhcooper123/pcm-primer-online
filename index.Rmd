@@ -1,5 +1,6 @@
 --- 
-title: "Online materials for Primer on Phylogenetic Comparative Methods"
+title: "Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences"
+subtitle: "Oxford Biology Primer series. Primers in Ecology and Evolutionary Biology."
 author: "Natalie Cooper, Robert P. Freckleton"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -20,10 +21,23 @@ knitr::write_bib(c(
 
 # Preface {-}
 
-The material in this online book is designed to support the *Primer on Phylogenetic Comparative Methods*. For more theoretical underpinnings of the topics covered here please refer to the Primer.
+The material in this online book is designed to support the *Primer on Phylogenetic Comparative Methods for the Biological Sciences*. All practical exercises use R (R Core Team 2020), so some knowledge of R is required. We have provided the basics in the first chapter of this online book. The online book focuses on practical implementations of methods for the most part. For information on the theoretical underpinnings of the topics covered here please refer to the *Primer*. 
+
+## Datasets and practical handouts {-}
+[UPDATE THIS WHEN FINISHED WITH OUP LINK]
+All datasets and practical handouts are available on GitHub at [https://github.com/nhcooper123/pcm-primer-online]. You can download them all as a zip file by clicking on the big green "Clone or download" button on the far right hand side near the top of the page and then selecting the "Dowload ZIP" option. Scripts as `.Rmd` files and the data are all available in the `MacroModule` folder.
+
+## How to use these materials {-}
+[UPDATE THIS WHEN FINISHED]
+It is possible to use these materials in a number of ways.
+
+1. Follow this online book, copy pasting code into an R script and then running it in the R console.
+2. Open the .Rmd file for each practical in RStudio and use it as an RNotebook. 
+This allows you to run chunks of code in the script and for the results to appear below the code. 
+This is a good way to learn/teach these materials.
+See [here](http://rmarkdown.rstudio.com/r_notebooks.html) for more details.
 
 ## Boxes {-}
-
 Throughout the book are boxes of text highlighting particularly important issues:
 
 ```{block, type="info"}
@@ -31,12 +45,7 @@ Throughout the book are boxes of text highlighting particularly important issues
 ```
 
 ```{block, type="warning"}
-**Warning** These boxes highlight important points that need to be considered when working through your own analyses. The image used here is a Jurassic Park era velociraptor to remind you of the "Jurassic Park caveat", i.e. that just because you *can* perform an analysis in R doesn't mean that you *should*. Always consider the question at hand, your study group, and the quality of the data you are using before embarking on a new comparative analyses.
-```
-
-```{r, echo = FALSE}
-# Quietly load tidyverse
-library(tidyverse)
+**Warning** These boxes highlight important points that need to be considered when working through your own analyses. They reveal areas where it is important to be careful and think about what you are doing and **why**. The image used here is a Jurassic Park era velociraptor to remind you of the "Jurassic Park caveat", i.e. that just because you *can* perform an analysis in R doesn't mean that you *should*. Always consider the question at hand, your study group, and the quality of the data you are using before embarking on a new comparative analyses. With thanks to Dr Ian Malcolm and Dr Michael Crichton.
 ```
 
 ## Acknowledgements {-}
