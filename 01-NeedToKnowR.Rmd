@@ -1,12 +1,3 @@
----
-title: "What you need to be able to do in R before you start"
-author: "Natalie Cooper (natalie.cooper@nhm.ac.uk)"
-date: "`r Sys.Date()`"
-output:
-  html_document: default
-  pdf_document: default
----
-
 # What you need to be able to do in R before you start
 
 These days most people have used R a bit, but it is possible you're a bit rusty, or have no R experience. This isn't a problem, we will try and summarise what you need to be able to do to get these exercises running below. We are not, however, going to write a full introductory guide to R here, so if you've never used R before or find it a bit of a struggle, we strongly recommend the book [Getting Started With R](http://www.r4all.org/) or there are lots of great tutorials online.
@@ -20,7 +11,7 @@ library(ape)
 R output will be preceded by ## and important comments will be in quote blocks:
 
 ```{block, type = "info"}
-Note that many things in R can be done in multiple ways. You should choose the methods you feel most comfortable with.
+Note that many things in R can be done in multiple ways. You should choose the methods you feel most comfortable with. Don't panic if we do it differently!
 ```
 
 ## Installing R (and RStudio)
@@ -29,17 +20,17 @@ Note that many things in R can be done in multiple ways. You should choose the m
 We highly recommend using RStudio and we will assume you are using it throughout. RStudio is just a wrapper around R, so you still need to install R.
 
 ## Downloading the data
-This is zipped and the data/trees for each exercise are in the appropriate folder for the chapter. To work through the exercises you need to download all the files into a folder somewhere on your computer. Don't forget to **unzip** this before starting. Note that there is a folder for each of the practical exercises in the book.
+This is zipped and the data/trees for each exercise are in the appropriate folder for each practical exercise. To work through the exercises you need to download all the files into a folder somewhere on your computer. Don't forget to **unzip** this before starting. Note that there is a folder for each of the practical exercises in the book.
 
-Some datasets are built into R and the variour R packages (see below), so you may see us access these just using code like this (`iris` is a dataset built into R):
+Some datasets are built into R and/or various R packages (see below), so you may see us access these just using code like this (`iris` is a dataset built into R):
 ```{r}
 data(iris)
 ```
 
 ## R Projects
-One feature of R that tends to trip up beginners, is that to read data into R you need to tell R where to look for the data. In the past we might have solved this problem by setting the working directory, or writing the full path to a file into our code. This works fine, but if you later move the folder or the data, or send it to a collaborator/supervisor the code stops working. Luckily RStudio has a great solution to the problem: R Projects. If you're working in an R Project, R will automatically look for data in the folder you've set to be the project folder!
+One feature of R that tends to trip up beginners is that to read data into R you need to tell R where to look for the data. In the past we might have solved this problem by setting the working directory, or writing the full path to a file into our code. This works fine, but if you later move the folder or the data, or send it to a collaborator/supervisor the code stops working. Luckily RStudio has a great solution to the problem: R Projects. If you're working in an R Project, R will automatically look for data in the folder you've chosen to be the project folder!
 
-What's a Project? A "Project" is just a folder that contains a sensible set of work, for example your undergraduate or masters thesis, a chapter of your PhD thesis, a paper, or a coursework project. Projects will likely contain several files, including data and R scripts. You may also want to store information related to the report/thesis chapter/coursework that you're writing. 
+What's a Project? A "Project" is just a folder that contains a sensible unit of work, for example your undergraduate or masters thesis, a chapter of your PhD thesis, a paper, or a coursework project. Projects will likely contain several files, including data and R scripts. You may also want to store information related to the report/thesis chapter/coursework that you're writing. 
 
 To make an R Project for practical exercises in `05-PGLSinR`, for example, go to the menu in RStudio and click **File > New Project**. You should now see a dialog box with three options: *New Directory*, *Existing Directory*, or *Version Control* (*Directory* just means a folder on your computer). Because we already have a folder choose the option *Existing Directory*. The dialog box moves on so we can use the *Browse* button to locate the folder `05-PGLSinR`. Finally, click the *Create Project* button.
 
@@ -67,13 +58,7 @@ If you want to add comments to the file (i.e., notes to remind yourself what the
 ```
 
 ## Installing and loading extra packages in R
-You'll notice at the start of each exercise we remind you of the packages you need to install and load. To run any specialised analysis in R, you need to download one or more additional packages from the basic R installation. For these materials you will need to install the following packages:
-
-* `tidyverse`
-* `ape`
-* `geiger`
-* `picante`
-* `caper`
+You'll notice at the start of each exercise we remind you of the packages you need to install and load. To run any specialised analysis in R, you need to download one or more additional packages from the basic R installation. __You need to be connected to the internt to do this__. 
 
 To install the package `ape`:
 
@@ -97,7 +82,11 @@ Some common issues that might arise when installing packages are:
 
 2. R asks if you `Do you want to install from sources the packages which need compilation? (Yes/no/cancel)` or similar. In this case, type `Yes` or `y` or whatever the suggested option is for yes. __However__ if this doesn't work and the installation gives you an error, try installing again and this time choose the option for *no*.
 
-3. An annoying error you may encounter (generally on a Mac), is that you keep seeing error messages when trying to install some packages, even after trying the solutions above. This might be because you're installing via the RStudio default server for packages. To fix this change your default by going to **RStudio > Preferences > Packages**. You should see a box with **CRAN mirror** above it. Change this from `Global (CDN) RStudio` to your closest mirror on the list and click **Apply**. This should fix the problem. Note that this issue may be fixed soon by RStudio, but has been an issue in the current version.
+3. An annoying error you may encounter (generally on a Mac), is that you keep seeing error messages when trying to install some packages, even after trying the solutions above. This might be because you're installing via the RStudio default server for packages. To fix this, change your default by going to **RStudio > Preferences > Packages**. You should see a box with **CRAN mirror** above it. Change this from `Global (CDN) RStudio` to your closest mirror on the list and click **Apply**. This should fix the problem and only needs to be done once. Note that this issue may be fixed soon by RStudio, but has been an issue in the current version.
+
+```{block, type = "info"}
+If you get other kinds of errors don't panic. Check you are connected to the internet. Read the error message carefully to see if it gives you any clues. If that fails, try pasting it into Google and seeing if anyone else has had the same error.
+```
 
 ### Loading packages into R
 You've *installed* the packages but they don't automatically get loaded into your R session. Instead you need to tell R to load them **every time** you start a new R session and want to use functions from these packages. To load the package `ape` into your current R session:
@@ -105,8 +94,7 @@ You've *installed* the packages but they don't automatically get loaded into you
 ```{r, message = FALSE}
 library(ape)
 ```
-
-You can think of `install.packages` like installing an app from the App Store on your smart phone - *you only do this once* - and `library` as being like pushing the app button on your phone - *you do this every time you want to use the app*.
+You can think of `install.packages` like installing an app from the App Store on your smart phone - *you only do this once* - and `library` as being like pushing the app button on your phone - *you do this every time you want to use the app* (credit to Dylan Childs for this great analogy!).
 
 For many packages, you won't see any message at all when you run `library(package_name)`. That means the code has worked. Some packages will print a message, explaining some feature of the package, or telling you that it is also loading some other package, or highlighting that the package was written for a newer version of R. As long as you don't see an error message, everything is fine.
 
@@ -132,11 +120,11 @@ library(ggtree)
 ```
 
 ## Loading and viewing your data in R
-R can read files in lots of formats, but for simplicity I'll use comma-delimited or `.csv` files in these exercises. Excel (and many other applications) can output files in this format (it's an option in the `Save As` dialog box under the `File` menu). 
+R can read files in lots of formats, but for simplicity we'll use comma-delimited or `.csv` files in these exercises. Excel (and many other applications) can output files in this format (it's an option in the `Save As` dialog box under the `File` menu). 
 
 As an example, here is how you would read in a comma-delimited text file called `Primatedata.csv`. 
 
-```{r}
+```{r, eval = FALSE}
 primatedata <- read_csv("Primatedata.csv")
 ```
 
@@ -144,7 +132,7 @@ This is a good point to note that unless you __tell__ R you want to do something
 
 We can look at the data by typing:
 
-```{r}
+```{r, eval = FALSE}
 glimpse(primatedata)
 ```
 
@@ -153,15 +141,15 @@ __Always__ look at your data before beginning any analysis to check it read in c
 ## Errors and warnings
 *Errors* are where the code fails to run and you see an *error message* prefaced in R by `Error:`. Often these mistakes are caused by typos, missing commas, or missing brackets. R is *very* pedantic so this happens a lot! But they can also be caused by applying functions incorrectly or to the wrong kinds of data. Error messages are sometimes helpful, but often pretty baffling especially for beginners. 
 
-If you get an error message don't panic. Read the message and see if you can work out what the issue is. Check your code carefully for typos. Make sure you're using the correct data and variable names etc. If you can't work out what the error means, try Googling it (remove any words specific to your data from it first). People may be able to tell you what the issue is.
+If you get an error message don't panic. Read the message and see if you can work out what the issue is. Check your code carefully for typos. Make sure you're using the correct data and variable names etc. If you can't work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is. If that still doesn't help, try asking colleagues or post a question online.
 
-The important thing about errors is that the code does not run. *Warnings*, on the other hand, appear when the code runs fine, but R wants to alert us to something, for example that the code might not be doing what you intended, or R has recognised that something you asked it to do is a bit risky. __Do not ignore warning messages!__. Always read the warning message and try to understand what it means. You may figure out that you can safely ignore the warning (we will try and note these situations in these exercises). Otherwise you probably need to try and fix it.
+The important thing about errors is that the code does not run. *Warnings*, on the other hand, appear when the code runs fine, but R wants to alert us to something, for example that the code might not be doing what you intended, or R has recognised that something you asked it to do is a bit risky. __Do not ignore warning messages!__. Always read the warning message and try to understand what it means. You may figure out that you can safely ignore the warning (we will try and note these situations in the exercises here). Otherwise you probably need to try and fix it.
 
 ### Removing the `+` 
 Some R functions are pretty long, meaning that they need to appear on more than one line in the Console. In a long function, you therefore see a `+` in front of all lines except the first one. This tells you that R is running the code together.
 
-Unfortunately, if you accidentally don't finish a line of code (for example by not closing " or brackets), R will assume you haven't finished and will add a `+` on the next line. If that wasn't your intention then the next line of code won't work leading to an error. 
+Unfortunately, if you accidentally fail to finish a line of code (for example by not closing " or brackets), R will assume you haven't finished and will add a `+` on the next line. If that wasn't your intention, and you try to run another bit of code on the next line, then that next line of code won't work leading to an error. 
 
-This happens to me all the time! If you're getting error messages and can't see why, just check that the Console is showing the prompt `>` not the `+`. If you see the `+`, just hit the Escape key to get back to the prompt `>` and then go back to your code.
+Don't worry, this happens all the time! If you're getting error messages and can't see why, just check that the Console is showing the prompt `>` not the `+` at the start of your line of code. If you see the `+`, just hit the Escape key to get back to the prompt `>` and then go back to your code.
 
 *Hopefully this covers the main introductory elements of R and means you should be able to run the code in the exercises.*

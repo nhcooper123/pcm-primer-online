@@ -1,0 +1,249 @@
+# Answers to practical exercises
+
+Below are all the questions and answers to the practical exercises at the end of each exercise. 
+
+## Data Wrangling
+
+Using the `frog-eyes-raw-data.csv` data and R, create a new dataframe that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from (Thomas et al 2020 ADD CITATION)
+
+There are multiple ways of doing this, but the easiest is as follows:
+```{r, eval = FALSE}
+# Load packages
+library(tidyverse)
+
+# Read in the data
+frog <- read_csv("data/frog-eyes-raw-data.csv")
+# Take a look at it
+glimpse(frog)
+
+# Create a new dataframe called frog2
+frog2 <-
+  # Start with the frog dataframe
+  frog %>%
+  # Select only the columns of interest
+  select(genus_species, Family, rootmass, eyemean) %>%
+  # Group by species name, and Family (or summarise will try and average this too!)
+  group_by(genus_species, Family) %>%
+  # Summarise to get the mean values
+  summarise(mean_rootmass = mean(rootmass),
+            mean_eyemean = mean(eyemean))
+
+# Look at frog2
+glimpse(frog2)
+
+# Write to file
+# This is commented out as I don't want to save this
+# write_csv(frog2, path = "data/clean-frog-data.csv")
+```
+
+## Phylogenies
+
+Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that we will talk more about this tree in later exercises, but it comes Feng et al. (2019), and was modified in Thomas et al 2020 ADD CITATION).
+
+1. Read the tree into R.
+```{r, eval = FALSE}
+# Load packages
+library(ape)
+library(ggtree)
+library(tidyverse)
+
+# Read in the tree
+tree <- read.nexus("data/frog-tree.nex")
+
+# Look at it
+tree
+```
+2. Use R functions to determine: 
+    a) how many species are in the tree?
+    
+```{r, eval = FALSE}
+# Look at the tree structure
+str(tree)
+# Or the whole tree
+tree
+
+# There are 214 tips
+```
+    b) is the tree fully resolved?
+```{r, eval = FALSE}
+# Check whether the tree is binary/fully resolved
+is.binary.tree(tree)
+```
+    c) is the tree rooted?
+```{r, eval = FALSE}
+# Check whether the tree is rooted
+is.rooted(tree, eval = FALSE)
+```    
+3. Use `plot.phylo` to plot the tree.
+    a) Can you change the size of the tip labels?
+    b) Can you make a fan-shaped plot? 
+    c) Can you change the colour of the tips and branches?
+```{r, eval = FALSE}
+# Plot the tree
+plot(tree, 
+     no.margin = TRUE, # to make sure it fills the whole space
+     type = "fan", # to make a fan tree
+     cex = 0.6, # to reduce the tip label size (default = 1)
+     tip.color = "deeppink", # to change the tip colour
+     edge.color = "springgreen") # to change the branch colour
+# yuk!
+```
+4. Save the tree to file as "mysuperdoopertree.nex"    
+```{r, eval = FALSE}
+# Save the tree
+write.nexus(tree, file = "mysuperdoopertree.nex")
+```    
+
+EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send us a screenshot!
+
+## Preparations
+
+In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+
+For practice, read in the tree and data then prepare them for a PCM analysis.
+
+```{r, eval = FALSE}
+# Load packages
+library(ape)
+library(geiger)
+library(tidyverse)
+library(treeplyr)
+
+# Read in the tree
+primatetree <- read.nexus("data/consensusTree_10kTrees_Version2.nex")
+# Look at the tree summary
+str(primatetree)
+
+# Plot the tree as a circular/fan phylogeny with small labels
+plot(primatetree, cex = 0.2, typ = "fan", no.margin = TRUE)
+
+# Check whether the tree is binary
+# We want this to be TRUE
+is.binary.tree(primatetree) 
+
+# It is FALSE so make the tree binary:
+primatetree <- multi2di(primatetree)
+
+# Check whether the tree is binary now...
+is.binary.tree(primatetree) 
+
+# Check whether the tree is rooted
+# We want this to be TRUE
+is.rooted(primatetree)
+
+# Read in the data
+primatedata <- read_csv("data/primate-life-history-data.csv")
+
+# Look at the data
+glimpse(primatedata)
+
+# Replace spaces with underscores in species names
+primatedata <- 
+  primatedata %>%
+  mutate(Binomial = str_replace(string = Binomial, pattern = " ", replacement = "_"))
+# Check it worked
+glimpse(primatedata)
+
+# Check whether the names match in the data and the tree
+check <- name.check(phy = primatetree, data = primatedata, 
+                    data.names = primatedata$Binomial)
+# Look at check
+check
+
+# 149 species are in the tree but not the data
+# 0 species are in the data but not the tree
+  
+# Combine and match the tree and data
+primatestuff <- make.treedata(tree = primatetree,  data = primatedata, 
+                              name_column = "Binomial")
+
+# Look at the tree summary
+primatestuff$phy
+# Look at the data
+glimpse(primatestuff$dat)
+## There are 77 species in the tree and the data
+
+# Make a new column called Binomial with the tip labels in it
+primatestuff$dat$Binomial <- primatestuff$phy$tip.label
+
+# Save tree as mytree
+mytree <- primatestuff$phy
+# Save data as mydata
+mydata <- primatestuff$dat
+
+# Force mydata to be a data frame
+mydata <- as.data.frame(mydata)
+# Check mydata is now a dataframe
+str(mydata)
+
+## OPTIONAL
+# Make any required subsets of the tree/data
+
+## OPTIONAL
+# Write the cleaned data to a new file
+write_csv(mydata, path = "data/clean-primate-data.csv")
+
+# Write the cleaned tree to a new file
+write.nexus(mytree, file = "data/clean-primate-tree.nex")
+```
+
+## PGLS
+
+In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database (Jones et al. 2009) and 10kTrees (Arnold et al. 2010). 
+
+Let's investigate the relationship between gestation length in Primates and their body size. Theory leads us to believe that bigger mammals have longer gestation lengths (compare mice to elephants), but is this true in Primates?
+
+Read in the tree and data, then prepare them for a PCM analysis (you should have already done this in the previous exercise which should save you some time). Then fit a PGLS model to investigate the relationship between log gestation length (y = log(GestationLen_d)) and log body size (x = log(AdultBodyMass_g)) in primates. Don't forget to look at the model diagnostics!!!
+
+```{r, message = FALSE, eval = FALSE}
+# Load the packages
+library(ape)
+library(geiger)
+library(treeplyr)
+library(caper)
+library(tidyverse)
+
+### Prepare the tree and the data as shown in the answer above ###
+### This should mean you now have mydata and mytree ready to work with ###
+
+# Prepare the data for use in caper
+primate <- comparative.data(phy = mytree, data = mydata, 
+                            names.col = Species, vcv = TRUE, 
+                            na.omit = FALSE, warn.dropped = TRUE)
+
+# Check the list of dropped species is what you expected
+primate$dropped$tips
+primate$dropped$unmatched.rows
+
+# Fit a PGLS model
+model.pgls <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g), 
+                   data = frog, lambda = "ML")
+
+# Look at the model outputs
+summary(model.pgls)
+### Lambda should be equal to 0.892
+
+# Plot the results
+ggplot(frogdata, aes(x = log(AdultBodyMass_g), 
+                     y = log(GestationLen_d))) +
+  geom_point() +
+  geom_abline(slope = coefficients(model.pgls)[2], intercept = coefficients(model.pgls)[1]) +
+  theme_bw()
+
+### Model diagnostics
+
+# Make a plotting window with 4 panes as there are four plots
+par(mfrow = c(2, 2))
+# Now plot the model diagnostics
+plot(model.pgls)
+# Return the plot window to one pane for later plotting
+par(mfrow = c(1, 1))
+
+# Create a likelihood profile of the lambda estimate
+lambda.profile <- pgls.profile(model.pgls, "lambda")
+# Plot the likelihood profile
+plot(lambda.profile)
+
+# Extract the confidence intervals on lambda
+pgls.confint(model.pgls, "lambda")$ci.val
+```
