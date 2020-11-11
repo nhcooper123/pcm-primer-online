@@ -83,21 +83,21 @@ install.packages("ape")
 
 Pick the closest mirror to you if asked. Do not put this code into your script as you only need to do this *once* (until you need to update R), and it's a waste of your time to do it each time you run your script.
 
-If everything worked you will see some (often a lot) red text but no error message (errors will generally say something about `non-zero exit status`). You can also install more than one package at a time:
+You can also install more than one package at a time:
 
 ```{r, eval = FALSE}
 install.packages(c("ape", "picante"))
 ```
 
-```{block, type = "warning"}
+If everything worked you will see some (often a lot if you're installing a big package like `tidyverse` or `ggtree`) text appearing in the console, and the occasional *warning* message but importantly __no error messages__. If you do see an error message, something, somewhere has gone wrong. Installation errors will generally say something about `non-zero exit status` of the package, which just tells you that it was not installed.
+
 Some common issues that might arise when installing packages are:
 
-1. R asks if you would like to update other packages that the package you are installing needs to work. You might see the question `Update all/some/none? [a/s/n]:`. In that case type `a` and enter, and R will update these packages too.
+1. R asks if you would like to update other packages that the package you are installing needs to work. You might see the question `Update all/some/none? [a/s/n]:`. In that case type `a` and press enter, and R will update these packages too.
 
-2. R asks if you want to install packages that need to be *compiled from source* or similar wording. In this case, type `y` or `Yes` or whatever the suggested option is for yes. __However__ if this doesn't work and the installation gives you an error, try installing again and this time choose the option for *no*.
+2. R asks if you `Do you want to install from sources the packages which need compilation? (Yes/no/cancel)` or similar. In this case, type `Yes` or `y` or whatever the suggested option is for yes. __However__ if this doesn't work and the installation gives you an error, try installing again and this time choose the option for *no*.
 
 3. An annoying error you may encounter (generally on a Mac), is that you keep seeing error messages when trying to install some packages, even after trying the solutions above. This might be because you're installing via the RStudio default server for packages. To fix this change your default by going to **RStudio > Preferences > Packages**. You should see a box with **CRAN mirror** above it. Change this from `Global (CDN) RStudio` to your closest mirror on the list and click **Apply**. This should fix the problem. Note that this issue may be fixed soon by RStudio, but has been an issue in the current version.
-```
 
 ### Loading packages into R
 You've *installed* the packages but they don't automatically get loaded into your R session. Instead you need to tell R to load them **every time** you start a new R session and want to use functions from these packages. To load the package `ape` into your current R session:
@@ -108,15 +108,15 @@ library(ape)
 
 You can think of `install.packages` like installing an app from the App Store on your smart phone - *you only do this once* - and `library` as being like pushing the app button on your phone - *you do this every time you want to use the app*.
 
-For many packages, you won't see any message at all when you run `library(package_name)`. That means the code has worked. Some packages will print a message, explaining some feature of the package, or telling you that it is also loading some other pacakge, or highlighting that the package was written for a newer version of R. As long as you don't see an error, everything is fine.
+For many packages, you won't see any message at all when you run `library(package_name)`. That means the code has worked. Some packages will print a message, explaining some feature of the package, or telling you that it is also loading some other package, or highlighting that the package was written for a newer version of R. As long as you don't see an error message, everything is fine.
 
 ```{block, type = "info"}
-If you run `library(package_name)` and you get the error message `Error in library(package_name) : there is no package called ‘package_name’package not found`, this means you have not installed the package properly. Often just going back and trying to install it again will work.
+If you run `library(package_name)` and you get the error message `Error in library(package_name) : there is no package called ‘package_name’package not found`, this means you have not installed the package properly. Often just going back and trying to install it again will work. Or check out the list of possible solutions above.
 ```
 
 ### `ggtree`, a special case for package installation
 
-Packages are generally installed from CRAN, the same place you downloaded R from. But some communities share their packages in different ways. `ggtree` is one such package. To install `ggtree` we need to use Biocunductor instead as follows:
+Packages are generally installed from CRAN, the same place you downloaded R from. But some communities share their packages in different ways. `ggtree` is one such package. To install `ggtree` we need to use Bioconductor instead as follows:
 
 ```{r, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
