@@ -85,12 +85,17 @@ chameleon2 <-
   # Convert inches into mm within the Value column
   mutate(Value = ifelse(Units == "inches", conv_unit(Value, "inch", "mm"), Value)) %>%
   # Remove Units and Source columns
-  select(-Units, -Source)
+  dplyr::select(-Units, -Source)
 ```
 
 Here `mutate` modifies the variable *Value*. The `ifelse` statement tells R that if *Units* is in inches, we should use `conv_unit` to convert from inch to mm, and place this value in the *Value* column. If *Units* is _not_ in inches it just records the original value in *Value*.
 
 Finally, `select` is used to remove the *Units* and *Source* columns. These are important to keep in our raw data, but we don't need them for our analyses, so it's neater to remove them.
+
+```{block, type = "info"}
+The observant among you may have noticed I used `dplyr::select` not just `select` in the code above. This tells R to look in the package `dplyr` and use the `select` function from that package. There are several different packages with `select` functions, and I use another one later in this book. To ensure that R knows to use the `dplyr` version here I have used the `::`.
+```
+
 
 ```{r}
 # Just show the last three entries to check what we have done looks correct
@@ -107,7 +112,7 @@ chameleon3 <-
   # Start with chameleon2
   chameleon2 %>%
   # Remove the Data Quality and Approximation columns
-  select(-Data_Quality, -Approximation)
+  dplyr::select(-Data_Quality, -Approximation)
 
 # Look at the data
 head(chameleon3)
@@ -161,7 +166,7 @@ chameleon6 <-
   # Start with chameleon5
   chameleon5 %>%
   # Select only the required columns
-  select(Species, median_length = median_length_mean, max_length = max_length_max,
+  dplyr::select(Species, median_length = median_length_mean, max_length = max_length_max,
          median_clutchsize = `median_clutch size_mean`, max_clutchsize = `max_clutch size_max`,
          dimorphic = median_dimorphic_truefalse)
 
@@ -182,7 +187,7 @@ chameleon_final <-
   # Convert inches into mm within the Value column
   mutate(Value = ifelse(Units == "inches", conv_unit(Value, "inch", "mm"), Value)) %>%
   # Remove the Units, Source, Data Quality and Approximation columns
-  select(-Units, - Source, -Data_Quality, -Approximation) %>%
+  dplyr::select(-Units, - Source, -Data_Quality, -Approximation) %>%
   # Group the records together by Species, Measurement, and Data_Type
   group_by(Species, Measurement, Data_Type) %>%
   # Get the median and max for Value in each group constructed by Species, Measurement, and Data_Type.
@@ -191,7 +196,7 @@ chameleon_final <-
   # Reshape the data so measurement X data types combinations are their own columns
   pivot_wider(names_from = c(Measurement, Data_Type), values_from = c(median, max)) %>%
   # Select only the required columns
-  select(Species, median_length = median_length_mean, max_length = max_length_max,
+  dplyr::select(Species, median_length = median_length_mean, max_length = max_length_max,
          median_clutchsize = `median_clutch size_mean`, max_clutchsize = `max_clutch size_max`,
          dimorphic = median_dimorphic_truefalse)
 
