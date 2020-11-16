@@ -13,7 +13,7 @@ You will also need to install the following packages:
 * `phytools`
 * `caper`
 
-***
+
 ## Preparation
 
 To begin we need to load the packages for this practical.
