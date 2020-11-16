@@ -58,6 +58,10 @@ Next we need to read in the chameleon data from our folder. This is saved in the
 ```{r}
 # Read in the data
 chameleon <- read_csv("data/chameleon-data-raw.csv")
+```
+When we read in data we get output that tells us how R has interpreted each column. Here it thinks `Species` is a character (i.e. words), whereas `Value` is `col_double` which means it's a number with decimal places. These all look right to me, but if something looks off here (i.e. characters where you were expecting numbers) it's worth checking your data to make sure you haven't made any errors. To save having lots of non-needed output I often suppress these messages in this book, though they'll pop up if you run the code yourself.
+
+```{r}
 # Take a look at it
 glimpse(chameleon)
 ```
@@ -197,4 +201,4 @@ chameleon_final
 
 ## Practical exercise
 
-Using the `frog-eyes-raw-data.csv` dataset and R, create a new dataset that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from (Thomas et al 2020 ADD CITATION).
+Using the `frog-eyes-raw-data.csv` dataset and R, create a new dataset that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. We will talk more about this dataset in later exercises, but it comes from @thomas2020eye.
