@@ -335,8 +335,8 @@ frogstuff$phy
 # Look at the data
 glimpse(frogstuff$dat)
 
-# Make a new column called Binomial with the tip labels in it
-frogstuff$dat$Binomial <- frogstuff$phy$tip.label
+# Make a new column called tiplabel with the tip labels in it
+frogstuff$dat$tiplabel <- frogstuff$phy$tip.label
 
 # Save tree as mytree
 mytree <- frogstuff$phy
