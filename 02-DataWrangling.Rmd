@@ -170,7 +170,7 @@ chameleon6
 ```  
 
 Finally if this were a real dataset, we might want to save this clean and tidy version so that we don't have to run all of this code again every time we want to use it. We can do this using the function `write_csv`:
-```{r}
+```{r, eval = FALSE}
 write_csv(x = chameleon6, file = "data/chameleon-data-for-analyses.csv")
 ```
 
@@ -197,6 +197,10 @@ chameleon_final <-
 
 # Look at the output
 chameleon_final
+
+# Write to file
+# I've commented this out as we already made this above
+# write_csv(x = chameleon_final, file = "data/chameleon-data-for-analyses.csv")
 ```
 ## Summary
 This exercise should have given you the skills to being wrangling data in R.
