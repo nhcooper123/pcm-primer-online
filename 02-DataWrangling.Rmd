@@ -53,11 +53,11 @@ Both `dplyr` and `tidyr` packages are part of the `tidyverse` so we can save som
 library(tidyverse)
 ```
 
-Next we need to read in the chameleon data from our folder. This is saved in the file `chameleon-data-raw.csv` so we can read it in using `read.csv` as usual.
+Next we need to read in the chameleon data from our folder. This is saved in the file `chameleon-data-raw.csv` so we can read it in using `read_csv` as usual.
 
 ```{r}
 # Read in the data
-chameleon <- read.csv("data/chameleon-data-raw.csv")
+chameleon <- read_csv("data/chameleon-data-raw.csv")
 # Take a look at it
 glimpse(chameleon)
 ```
@@ -111,7 +111,7 @@ head(chameleon3)
 
 Finally, we want to summarise the data for each species, to get means/medians and possibly also minima and maxima. To summarise we use the function `summarise` (or `summarize` if you prefer the US spelling). But first we need to group the data into the groupings we want the summary data for. In this case we want to know the median values for each species, for each different measurement, and for each different type of measurement, i.e. averages, maximums, minimums etc. We can tell R to group data using `group_by`. To do all of this we use the following code:
 
-```{r}
+```{r, message = FALSE}
 # Create a new dataset called chameleon4
 chameleon4 <-
   # Start with chameleon3
@@ -165,13 +165,13 @@ chameleon6 <-
 chameleon6
 ```  
 
-Finally if this were a real dataset, we might want to save this clean and tidy version so that we don't have to run all of this code again everytime we want to use it. We can do this using the function `write_csv`:
+Finally if this were a real dataset, we might want to save this clean and tidy version so that we don't have to run all of this code again every time we want to use it. We can do this using the function `write_csv`:
 ```{r}
-write_csv(x = chameleon6, path = "data/chameleon-data-for-analyses.csv")
+write_csv(x = chameleon6, file = "data/chameleon-data-for-analyses.csv")
 ```
 
 Note that, to demonstrate how the code works we've separated it into chunks above, but you could use `%>%` to do all of these in one go if you wanted to:
-```{r}
+```{r, message = FALSE}
 chameleon_final <-
   # Start with chameleon
   chameleon %>%
