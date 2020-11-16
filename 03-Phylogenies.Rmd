@@ -2,15 +2,14 @@
 
 - phylogeny file formats
 - phylogeny format in R
-
 - plotting with base R
 - ggtree
-
 - tree manipulation
 - polytomies
 - rooting
 - removing species
-- adding species [needs to be added - code is in office]
+- adding species
+- saving modified trees
 
 ## Before you start
 - Open the `03_Phylogenies.RProj` file in the `03_Phylogenies` folder to open your R Project for this exercise.
@@ -23,6 +22,7 @@ You will also need to install the following packages:
 * `ggtree`
 * `patchwork`
 * `ggimage`
+* `phytools`
 
 ***
 
@@ -41,7 +41,6 @@ library(ape)
 tree <- read.tree("data/basic.tre")
 plot(tree)
 ```
-
 
 The topology of this tree can be represented in Newick format as:
 
@@ -87,12 +86,12 @@ BEGIN TREES;
 NEXUS files can be much more complex and include the data used to infer the tree too, but we don't need this for comparative analyses so `read.nexus` will just ignore it.
 
 ```{block, type = "info"}
-Sometimes someone will email you a `.tre` or `.nex` file, or you'll download one from the internet, but when you use `read.tre` or `read.nexus` it just keeps giving you an error. Before panicking, check what you did after you downloaded the tree file. Did you open it to take a look? On some computers, doing this makes the computer freak out because it doesn't know what to do with `.tre` or `.nex` files, so it converts them into something it does understand like `.txt` or `.docx`. This then alters the tree file to the point that R can no longer read it. To solve the problem, just download the file again but this time *don't open it!*. Just save it and then read it into R. If you need to look at one of these files outside of R, try "Open with" and pick a text editor like Notepad. This shouldn't alter the file.
+Sometimes someone will email you a `.tre` or `.nex` file, or you'll download one from the internet, but when you use `read.tre` or `read.nexus` it just keeps giving you an error. Before panicking, check what you did after you downloaded the tree file. Did you open it to take a look? On some computers, doing this makes the computer freak out because it doesn't know what to do with `.tre` or `.nex` files, so it converts them into something it does understand like `.txt` or `.docx`. This then alters the tree file to the point that R can no longer read it. To solve the problem, just download the file again but this time *don't open it!*. Just save it and then read it into R. If you need to look at one of these files outside of R, try "Open with" and pick a text editor like Notepad or TextEdit. This shouldn't alter the file.
 ```
 
 ## How are phylogenies formatted in R?
 
-You don't need to know how phylogenies are represented in R to use them, but it helps to have a bit of idea what is going on.
+You don't need to know how phylogenies are represented in R to use them, but it helps to have a bit of an idea what is going on.
 
 To load a tree into R you need either the function `read.tree` or `read.nexus` from the package APE. `read.tree` can deal with a number of different types of data (including DNA) whereas `read.nexus` reads NEXUS files. Let's practice with our basic tree from the *Primer*. We can read it in using `read.tree`. Remember to load the APE library first or this won't work.
 
@@ -105,7 +104,7 @@ tree <- read.tree("data/basic.tre")
 
 Note that whether we read the tree in using `read.tree` or `read.nexus` the resulting tree in R is the same. 
 
-To understand what is going on we need a bit of computer programming jargon. Phylogenies are stored as objects of class `phylo`. What do I mean by this? Whenever we make a new "thing" in R and save it with a name we have created an *object*. So where we do `tree <- read.tree("data/basic.tre")` above we are making a new object called `tree` which will have the phylogeny stored in it. Each object in R belongs to a *class*, which is a sort of blueprint for how the object should behave. For example objects of *numeric* class will behave differently to objects of *character* class - we can't multiple two words together for example. There are many classes in R and each have different rules. The `phylo` class is one of these.
+To understand what is going on we need a bit of computer programming jargon. Phylogenies are stored as objects of class `phylo`. What do I mean by this? Whenever we make a new "thing" in R and save it with a name we have created an *object*. So the code `tree <- read.tree("data/basic.tre")` above makes a new object called `tree` which will have the phylogeny stored in it. Each object in R belongs to a *class*, which is a sort of blueprint for how the object should behave. For example, objects of *numeric* class will behave differently to objects of *character* class - we can't multiply two characters (i.e. words) together but we can multiply two numbers. There are many classes in R and each have different rules. The `phylo` class is one of these that we use for phylogenies.
 
 Let's examine the tree by typing:
 
@@ -144,9 +143,9 @@ If we only wanted to see the full `edge` component we can use the `$` to extract
 tree$edge
 ```
 
-What is going on here? The easiest way to understand is to look at the `edge` matrix and the tree with node numbers added to it (see below). For all trees, 1 is the number of the first tip taxon at the bottom of the phylogeny, 2 is the number of the second taxon and so on until you have each taxon numbered. The numbers then refer to *nodes*, working through the tree from the root.
+What is going on here? The easiest way to understand is to look at the `edge` matrix and the tree with node numbers added to it (see below). For all trees, 1 is the number of the first tip taxon at the base of the phylogeny, 2 is the number of the second taxon and so on until you have each taxon numbered. The numbers then refer to *nodes*, working through the tree from the root forwards.
 
-So in the `edge` matrix above, 1, 2, 3 and 4 are the tips. Node 7 leads to tips 1 and 2. Node 6 leads to node 7, and tip 3. Node 5 leads to node and tip 4. Node 5 is the root node.
+So in the `edge` matrix above, 1, 2, 3 and 4 are the tips. Node 7 leads to tips 1 and 2. Node 6 leads to node 7, and tip 3. Node 5 leads to node 6 and tip 4. Node 5 is the root node.
 
 ```{r, echo = FALSE}
 plot(tree, show.node.label = TRUE, label.offset = 1)
@@ -157,17 +156,16 @@ Notice that the `edge.length` variable is in the same order as `edge`. So the fi
 
 ```{r}
 tree$edge
-
 tree$edge.length
 ```
 
-As I said above, you don't need to understand this, so don't worry if this is confusing. But you will see at various points we do things like `tree$tip.label` to extract or change tip labels, and we might set branch lengths using `tree$edge.length` somewhere in our code. So now you understand where those bits of information come from.
+As I said above, you don't need to fully understand this, so don't worry if this is confusing. But you will see at various points we do things like `tree$tip.label` to extract or change tip labels, and we might set branch lengths using `tree$edge.length` somewhere in our code. So now you understand where those bits of information come from.
 
 ## Plotting phylogenies
 
-Regardless of what you're using a phylogeny for, you're likely to want to plot it at some point. Even if you don't need a plot straight away, I highly advise plotting your phylogeny before you do anything else. It's good practice to look at whatever data you read into R, and plotting helps you check it looks correct.
+Regardless of what you're using a phylogeny for, you're likely to want to plot it at some point. Even if you don't need a plot straight away, I highly advise plotting your phylogeny before you do anything else. It's good practice to look at whatever data you read into R to check it, and plotting helps you check it looks correct.
 
-Most phylogeny plotting in R uses the package `ape`. Recently, however, a new package called `ggtree` has been introduced that builds on the popular `ggplot2` method of plotting in R, and is much more flexible than `ape`. This leaves us in a bit of a quandry - which should you use? And which should I teach you?! I think there is a benefit in learning the basics of both approaches. In my own work, I use `ape` to plot trees I am working with to quickly check what is going on. I also use `ape` plotting indirectly in other packages like `phytools` - see later exercises. When I need to produce a pretty or complex tree I'll often use `ggtree` instead. The exercises here will mirror this. The aim is not to give you a thorough introduction to all the things we can do with plotting phlyogenies in R, but more to give a taster of what is possible, and what we will need for the later exercises.
+Most phylogeny plotting in R uses the package `ape`. Recently, however, a new package called `ggtree` has been introduced that builds on the popular `ggplot2` method of plotting in R, and is much more flexible than `ape`. This leaves us in a bit of a quandary - which should you use? And which should I teach you?! I think there is a benefit in learning the basics of both approaches. In my own work, I use `ape` to plot trees I am working with to quickly check what is going on. I also use `ape` plotting indirectly in other packages like `phytools` - see later exercises. When I need to produce a pretty or complex tree I'll often use `ggtree` instead. The exercises here will mirror this. The aim is not to give you a thorough introduction to all the things we can do with plotting phlyogenies in R, but more to give a taster of what is possible, and what we will need for the later exercises.
 
 ### Basic phylogeny plotting with APE
 
@@ -187,14 +185,15 @@ Now plot the tree.
 plot(bird.orders)
 ```
 
-Note that the function we use to plot phylogenies in `ape` is just called `plot`, but R knows to plot a phylogeny not anything else. How does this work? `plot` is one of a set of clever functions in R that uses an _ifelse_ statement to decide what kind of plot it should do. When you ask R to `plot` something, it first determines what _class_ of object it is. It then chooses the correct version of `plot` for that class. In this case the function it is actually using to plot the phylogeny is `plot.phylo`. This is important if you want to look at the help file for plotting phylogenies, you need to use `?plot.phylo` *not* `?plot`.
+Note that the function we use to plot phylogenies in `ape` is just called `plot`, but R knows to plot a phylogeny not anything else. How does this work? `plot` is one of a set of clever functions in R that uses an _ifelse_ statement to decide what kind of plot it should do. When you ask R to `plot` something, it first determines what _class_ of object it is. It then chooses the correct version of `plot` for that class. In this case the function it is actually using to plot the phylogeny is `plot.phylo`. This is important if you want to look at the help file for plotting phylogenies, because you need to use `?plot.phylo` *not* `?plot`.
 
 ```{r, eval = FALSE}
-# Access the helpfile for phylogeny plotting
+# Access the help file for phylogeny plotting
+# This should open a help file in another window of RStudio
 ?plot.phylo
 ```
 
-You should see from the help file that there are lots of options for plotting trees. For example if we want to use a fan-shaped tree, with smaller tip labels, and no white space margin to make the tree fill the plotting area, we can use: 
+You should see from the help file that there are lots of options for plotting trees. For example if we want to use a fan-shaped tree, with smaller tip labels, and no white space round the edges to make the tree fill the plotting area, we can use: 
 
 ```{r}
 # Plot the tree as a circular/fan phylogeny with small labels
@@ -207,7 +206,7 @@ You can change the style of the tree (`type`), the color of the branches and tip
 plot(bird.orders, edge.color = "deeppink", tip.color = "springgreen", no.margin = TRUE)
 ```
 
-We can also add information about the traits of species to trees. We will come back to this when we cover models of evolution, but as a quick demonstration, let's imagine we want to display some data on our bird tree. For example, let's code these bird orders based on how much I like them (this is clearly a total lie because I love them all, but for the sake of an example I'm willing to lie).
+We can also add information about the traits of species to trees. We will come back to this when we cover models of evolution, but as a quick demonstration, let's imagine we want to display some data on our bird tree. For example, let's code these bird orders based on how much I like them (this is clearly a total lie because I love them all equally, but for the sake of an example I'm willing to pretend!).
 
 ```{r}
 # Make a factor which contains how much I like each order
@@ -217,7 +216,7 @@ myfaves <- factor(c("awesome", "cool", "ok", "awesome", "ok",
                     "cool", "ok", "ok", "ok", "ok", "cool", "ok"))
 ```
 
-Now we can plot this on a phylogeny. First decide which colours we'd like and make a list of these (to look at a list of inbuilt colours in R type in `colors()`. you can also use any hex colour coded as e.g. "#000000" instead of "white"). The first colour will be the first category alphabetically, the second will be the second category, and so on.
+Now we can plot this on a phylogeny. First we decide which colours we'd like and make a list of these. To look at a list of inbuilt colours in R type in `colors()`. You can also use any hex colour coded as e.g. "#000000" instead of "white". The first colour will be the first category alphabetically, the second will be the second category alphabetically, and so on.
 
 ```{r}
 mycolours <- c("gold", "cornflowerblue", "cyan4")
@@ -236,8 +235,8 @@ legend("topleft", fill = mycolours,
        bty = "n")
 ```
 
-`pch = 22` sets the tip labels to be unfilled squares, `bg` defines the colours of the squares using the list of colours we provided, and ordering them based on what the value for that order was for `myfaves`.
-`cex = 1.2` increases the point size, and `adj = 1` moves the tip labels sideways so they don't obscure the ends of the branches.
+`pch = 22` sets the tip labels to be unfilled squares, `bg` (background) defines the colours of the squares using the list of colours we provided, and sorting them based on what the value for that order was for `myfaves`.
+`cex = 1.2` increases the point size, and `adj = 1` moves the tip labels sideways a bit so they don't obscure the ends of the branches.
 
 ### Basic phylogeny plotting with `ggtree`
 I won't go into a huge amount of detail about `ggtree` because the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) is really comprehensive, and for the most part you won't need to know how to do most of the things it can do. Instead I'll give a basic introduction, and then show you how to make some of the plots used in chapter 2 of the *Primer*. I will also provide the code used to build figures in the *Primer* where appropriate in later exercises. 
@@ -254,7 +253,7 @@ Each layer can have six components, but we'll just focus on the main three:
 
 * A __geometric object__, called a 'geom'. geoms refer to the things we can see on a plot, such as points, lines or bars.
 
-* A set of __aesthetic mappings__. These describe how variables in the data are associated with the aesthetic properties of the layer. This can include what to use as x and y axes, and the colour and size of the objects (e.g. points) on a plot. Each layer can be associated with its own unique aesthetic mappings. Aesthetic mappings are alwasy defined inside the `aes` funtion. Different geoms will need different sets of aesthetic mappings, for example to draw a scatter plot you need to define the x and y axes, but for a histogram you only need the x axis.. 
+* A set of __aesthetic mappings__. These describe how variables in the data are associated with the aesthetic properties of the layer. This can include what to use as x and y axes, and the colour and size of the objects (e.g. points) on a plot. Each layer can be associated with its own unique aesthetic mappings. Aesthetic mappings are always defined inside the `aes` function. Different geoms will need different sets of aesthetic mappings, for example to draw a scatter plot you need to define the x and y axes, but for a histogram you only need the x axis. 
 
 Each layer will also have layer specific parameters. These are the features of a layer, for example in `geom_point`, the geom that makes points on a graph, one layer specific parameter is `colour = ` which defines the colour of the data points.
 
@@ -280,27 +279,35 @@ In `ggplot2`, *theme* is used to define the overall look of the plot. We can use
 
 I also used `ylim` to change the y axis limits to go from 0 to 100. 
 
-Another thing I'm going to do below with `ggtree` is plot multiple plots on one plotting space. There are a couple of ways to do this, but the easiest is to use the package `patchwork`. First we need to assign our plots to an object using `<-`. So for the example above...
+Another thing I'm going to do below with `ggtree` is plot multiple plots on one plotting space. There are a couple of ways to do this, but the easiest is to use the package `patchwork`. First we need to assign our plots to an object using `<-`. We do this as follows
 
 ```{r}
-myplot <- 
+myplot1 <- 
   ggplot(data = monsterdata, aes(x = monster, y = scariness)) +
   geom_point(colour = "deeppink", size = 4) +
   theme_bw() +
   ylim(0, 100)
+
+myplot2 <- 
+  ggplot(data = monsterdata, aes(x = monster, y = scariness)) +
+  geom_point(colour = "gold1", size = 4, shape = "triangle") +
+  theme_bw() +
+  ylim(0, 100)
 ```
 
-With `patchwork`, we can use `+` to plot things next to each other, or `/` to plot things on top of one another, and `()` to do more complex arrangements. See https://patchwork.data-imaginist.com/articles/patchwork.html for details.
+To look at the plots we would now have to type `myplot1` or `myplot2` into R, but I haven't done this here because we already looked at the first plot above, and all I changed in the second plot was the colour and shape of the points.
+
+With `patchwork`, we can use `+` to plot things next to each other, or `/` to plot things on top of one another, and `()` to do more complex arrangements. See https://patchwork.data-imaginist.com/articles/patchwork.html for details. Here let's just plot them next to each other...
 
 ```{r}
 library(patchwork)
-myplot + myplot
+myplot1 + myplot2
 ```
 ```{r}
-myplot / (myplot + myplot)
+myplot / (myplot1 + myplot2)
 ```
 
-Below you'll see I use the `ggplot2` layer `labs` to add A, B, C etc labels to plots in multi-panel figures
+Below you'll see I use the `ggplot2` layer `labs` to add labels (i.e. A, B, C) to plots in multi-panel figures. We can also angle the x axis labels so they fit, add trend lines etc. But I'll let you find out how to do that for yourselves!
 
 ### Back to `ggtree`
 
@@ -308,7 +315,7 @@ OK that should give you the basics of what to expect from `ggplot2`. Now let's u
 
 To plot a phylogeny using `ggtree` we always start with the `ggtree` function (*not* `ggplot`). We then add layers using the `+` like in `ggplot2`. Some layers are the same (e.g. `xlim`, `ylim`), others are unique to `ggtree` (e.g. `geom_tiplab`). `ggtree` also has an inbuilt theme for trees called `theme_tree`.
 
-To plot the basic phylogeny we've been practicing with we use:
+To plot the basic phylogeny we've been practising with we use:
 
 ```{r, message = FALSE}
 library(ggtree)
@@ -316,14 +323,14 @@ library(ggtree)
 ggtree(tree) + 
   # Add theme for trees
   theme_tree() +
-  # Change x and y limits so labels fit
+  # Change x and y limits so the tip labels fit
   xlim(0, 22) +
   ylim(0, 5) +
   # Add tip labels as text, slightly offset from the tips and aligned
   geom_tiplab(geom = "text", align = TRUE, offset = 0.5, linetype = NA)
 ```
 
-Note that you might need to fiddle around with the  `xlim` and `ylim` a bit to make sure your phylogeny and the tip labels fit. If we don't specify the limits the tip labels often fall off the plotting window (see below), and the tree will push right up against the top and bottom of the page making it hard to add images to the tips etc.
+Note that you might need to fiddle around with the  `xlim` and `ylim` a bit to make sure your phylogeny and the tip labels fit. If we don't specify the limits, the tip labels often fall off the plotting window (see below), and the tree will push right up against the top and bottom of the page making it hard to add things like images to the tips.
 
 ```{r}
 # Demonstration of what happens if you don't define the x and y limits
@@ -332,11 +339,13 @@ ggtree(tree) +
   geom_tiplab(geom = "text", align = TRUE, offset = 0.5, linetype = NA)
 ```
 
-This is clearly a bit more involved than just using `plot.phylo` with `ape`. If you're happy with plotting in `ape` you don't need to use `ggtree`. As I mentioned above, for day-to-day tree viewing and checking I just tend to use `ape`, so don't worry if this is all incomprehensible.
+`ggtree` is clearly a bit more involved than just using `plot.phylo` with `ape`. If you're happy with plotting in `ape` you don't need to use `ggtree`. As I mentioned above, for day-to-day tree viewing and checking I just tend to use `ape`, so don't worry if this is all incomprehensible.
 
-One thing, among many, that `ggtree` is great for is adding images to the tips rather than species names. To do this you need to collate the images you want to use first. You may want to draw your own, or I often download them from the excellent [PhyloPic](http://phylopic.org/) website (these are free to use but don't forget to record who made the image so you can credit them in your papers etc.). To keep my folder tidy I keep images in a separate subfolder called, predictably, `images`. You need the package `ggimage` installed for this to work.
+One thing, among many, that `ggtree` is great for is adding images to the tips rather than species names. To do this you need to collate the images you want to use first. You may want to draw your own, or I often download them from the excellent [PhyloPic](http://phylopic.org/) website (these are free to use but don't forget to record who made the image so you can credit them in your papers/talks). To keep my folder tidy I keep images in a separate subfolder called, predictably, `images`. 
 
-```{r}
+You need the package `ggimage` installed for this to work, which for me took some time and also required that I install `ggplotify`, `magick`, and `gridGraphics`. If this is a struggle, then just skip this example.
+
+```{r, message = FALSE}
 # Plot with images at tips
 ggtree(tree) + 
   theme_tree() +
@@ -353,13 +362,13 @@ ggtree(tree) +
               linetype = NA, size = c(0.12, 0.15, 0.09, 0.15))
 ```
 
-Note that to add eitehr text or images to the tips we use the same layer function, `geom_tiplab`. If doing this with your own data you'll likely need to fiddle with the sizes of the images to get them looking right. 
+Note that to add either text or images to the tips we use the same layer function, `geom_tiplab`. If doing this with your own data you'll likely need to fiddle with the sizes of the images to get them looking right. 
 
-Some of you may be wondering what the `rep(NA, 3)` bit of the code above does. When we try to add images to the tips, the function also tries to add images to the internal nodes. We don't want these to have images so we just ask `ggtree` to use `NA`, i.e. don't add an image. `rep(NA, 3)` means replicate `NA` three times (for the three internal nodes). Again you'll probably need to increase the number when you do this for your own data.
+Some of you may be wondering what the `rep(NA, 3)` bit of the code above does. When we try to add images to the tips, the function also tries to add images to the internal nodes. We don't want these to have images so we just ask `ggtree` to use `NA`, i.e. don't add an image. `rep(NA, 3)` means replicate `NA` three times (for the three internal nodes). Again you'll probably need to modify this number when you do this for your own data.
 
-As with `plot.phylo` we can plot phylogenies in different ways, see code below. Fan trees are called circular trees. Note the different values for offsets and hjust (horizontal justification) I've used here to make the labels fit. Again you will need to fiddle with these numbers to get this to work for your data.
+As with `plot.phylo` we can plot phylogenies in different ways, see code below. Fan trees are called circular trees. Note the different values for `offset` and `hjust` (horizontal justification) I've used here to make the labels fit. Again you will need to fiddle with these numbers to get this to work for your data.
 
-```{r}
+```{r, message=FALSE}
 # Standard tree
 p1 <- 
   ggtree(tree) + 
@@ -408,9 +417,9 @@ p4 <-
 
 ```
 
-What about highlighting clades? We can use `geom_hilight` to add coloured shading to all species from a defined node, and/or `geom_cladelabel` to label clades (A and B below) from a defined node. The offset in `geom_cladelabel` defines how far from the phylogeny tips the lines should be drawn. Again, you'll need to play with this to get the best picture possible.
+What about highlighting clades? We can use `geom_hilight` to add coloured shading to all species from a defined node, and/or `geom_cladelabel` to label clades (A and B below) from a defined node. The offset in `geom_cladelabel` defines how far from the phylogeny tips the lines should be drawn. Again, you'll need to play with this to get the best figure possible.
 
-```{r}
+```{r, message = FALSE}
 # Plot with images at tips
 ggtree(tree) + 
   theme_tree() +
@@ -436,7 +445,7 @@ ggtree(tree) +
 ```
 
 You can also highlight non-monophyletic groups using `groupOTU`. Here's a quick and silly example...
-```{r}
+```{r, message = FALSE}
 # Define group
 feathers <- list(no   = c("deer","jellyfish", "spider"),
                  yes = c("robin"))
@@ -458,11 +467,18 @@ groupOTU(p, feathers, 'feathers') +
   theme(legend.position = "top")
 ```
 
-There are many more things you can do with `ggtree`, all based on this idea of adding layers. See the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) for more details.
+Note the warning here that tells us not to use `filter_`. This is from the internal `ggtree` code and can be ignored for now. Either this will be updated in the future, or `ggtree` will change how this is done. So if this code breaks completely try the `ggtree` help files for a solution.
+
+There are many more things you can do with `ggtree`, all based on this idea of adding layers. See the [manual for `ggtree`](http://yulab-smu.top/treedata-book/index.html) for more details.
 
 ## Phylogeny manipulation
 
 To run analyses in R we often need to manipulate our phylogeny in some way so that the analyses can work. I'll mention these requirements where needed, but here are some common things we might need to change. I'll use the `bird.orders` phylogeny again as it's a manageable size.
+
+```{r}
+# Load the tree
+data(bird.orders)
+```
 
 ### Removing polytomies
 Most R functions require your tree to be dichotomous, i.e. to have no polytomies. To check whether your tree is dichotomous use `is.binary.tree`. 
@@ -481,7 +497,7 @@ bird.orders <- multi2di(bird.orders)
 ```
 
 ### Rooting your phylogeny
-Most R functions also require the tree to be rooted, i.e., to have one taxon designated as the outgroup. We can check whether the tree is rooted as follows.
+Most R functions also require the tree to be rooted, i.e., to have one (or more) taxon designated as the outgroup. We can check whether the tree is rooted as follows.
 
 ```{r}
 # Check whether the tree is rooted
@@ -489,7 +505,7 @@ Most R functions also require the tree to be rooted, i.e., to have one taxon des
 is.rooted(bird.orders)
 ```
 
-Our tree is rooted but if you wanted to change the root, or root an unrooted tree use `root`. We can make a new tree and root it on something silly (e.g. Passerformes) to demonstrate. Remember that your root should be the outgroup from the phylogenetic inference. Rooting a tree incorrectly can cause big issues with downstream analyses, so make sure you choose carefully.
+Our tree is rooted but if you wanted to change the root, or root an unrooted tree use `root`. We can make a new tree and root it on something silly (e.g. Passeriformes) to demonstrate. Remember that your root should be the outgroup from the phylogenetic inference. Rooting a tree incorrectly can cause big issues with downstream analyses, so make sure you choose carefully.
 
 ```{r}
 new.tree <- root(bird.orders, outgroup = "Passeriformes")
@@ -497,7 +513,7 @@ plot(new.tree)
 ```
 
 ### Manipulating the species in your phlyogeny
-When we do comparative analyses, we have data and a tree to deal with. It's very common to have species in your data that are not in your tree and vice versa. In the next exercise I'm going to show you how to match up the species in your comparative data with the species in your phylogeny. But you may also want to make these changes for plotting purposes, so it is useufl to know how to do them anyway.
+When we do comparative analyses, we have data and a tree to deal with. It's very common to have species in your data that are not in your tree and vice versa. In the next exercise I'm going to show you how to match up the species in your comparative data with the species in your phylogeny. But you may also want to make these changes for plotting purposes, so it is useful to know how to do them anyway.
 
 #### Renaming species
 We can change the names of species using `gsub` which stands for generalised substitution. This can help with typos etc. or if you have minor taxonomic changes to make. Here, for fun let's rename Passeriformes...
@@ -521,14 +537,44 @@ You can also remove multiple tips at once...
 bird.orders <- drop.tip(bird.orders, tip = c("Struthioniformes", "Tinamiformes"))
 plot(bird.orders)
 ```
-...however, if you're looking to do something more complex like removing entire clades or functional groups it's probably easier to use the `treeplyr` functions in the next exercise.
+However, if you're looking to do something more complex like removing entire groups it's probably easier to use the functions in the next exercise.
 
 #### Adding species
 
-BIND TREE - code is on computer in work...
+Sometimes you'll find your phylogeny is missing some species that you have in your dataset. In general the easiest thing is just to omit those species from your analysis, but it may be that they're data points you really want to keep. In which case you can add species to the tree.
+
+Before you can add the species you need to find out *where* in the tree the species belongs. This will require looking in the literature to find the closest relative of the species that already exists in the tree. You also need to know how long the branch should be that will attach the new species to the tree. In some cases this will also be possible to locate in the literature. In other cases, for example if you're adding a species as a sister species to another species within its genus, you can just choose an arbitrary short branch length, e.g. 0.1 or 1. The exact value depends on the branch lengths in the tree. We can then use R to add the species to the tree. 
+
+To add a species in R, we first select the node that we want to add the tip to. For example, if we want to add Big Bird to our `bird.orders` tree as a sister to the Galliformes, we can identify the node to add Big Bird to using:
+
+```{r}
+# Identify the node
+node <- which(bird.orders$tip.label == "Galliformes")
+# Which node is it?
+node
+```
+We then add the species to this node using the `bind.tip` function in `phytools`:
+
+```{r}
+library(phytools)
+bird.orders_plusbigbird <- bind.tip(bird.orders, tip.label = "Big_Bird",
+                                    where = node, position = 4.5)
+
+plot(bird.orders_plusbigbird)
+```
+You can see that Big Bird has been added to the Galliformes branch. In the `bind.tip` function, `position` is the length of the new branch. Here we used 4.5, but you could use other numbers if you needed the branch to be longer or shorter (i.e. if you knew the divergence between Galliformes and Big Bird was longer ago or more recent). Note that the value of `position` is limited by the length of the branch you are adding the new species to. If you see the error below it means you've given `position` a value which is longer that the existing branch, and you'll need to make it a bit smaller.
+
+> `Error in bind.tree(tree, tip, where = where, position = pp) : 
+  'position' is larger than the branch length`
 
 ### Writing phylogenies to file
-After manipulating a phylogeny, if you want to save the new tree you can use `write.tree` or `write.nexus` as preferred.
+After manipulating a phylogeny, if you want to save the new tree you can use `write.tree` or `write.nexus` as preferred. You can then use this modified tree for you analyses or plots, meaning that you don't have to do all the manipulation again every time you want to use it.
+
+If we want to save the Big Bird tree we can use:
+
+```{r}
+write.nexus(bird.orders_plusbigbird, file = "bigbirdtree.nex")
+```
 
 ## Summary
 This exercise should have given you the skills to understand, plot and manipulate phylogenies.
