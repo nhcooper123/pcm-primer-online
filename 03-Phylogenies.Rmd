@@ -577,11 +577,11 @@ write.nexus(bird.orders_plusbigbird, file = "bigbirdtree.nex")
 ```
 
 ## Summary
-This exercise should have given you the skills to understand, plot and manipulate phylogenies.
+This exercise should have given you the skills to understand, plot and manipulate phylogenies in R.
 
 ## Practice exercise
 
-Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that we will talk more about this tree in later exercises, but it comes Feng et al. (2019), and was modified in Thomas et al 2020 ADD CITATION).
+Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that we will talk more about this tree in later exercises, but it comes from @feng2017phylogenetics.
 
 1. Read the tree into R.
 2. Use R functions to determine: 
