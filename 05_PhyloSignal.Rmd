@@ -102,9 +102,12 @@ Note that is is possible to use the `make.treedata` object directly to run some 
 
 Now we're ready to run our analyses!
 
-***
 ## Estimating phylogenetic signal for continuous variables
 As is common in R, there are a number of ways to estimate Pagel's $\lambda$ and Blomberg's *K*. I've chosen to show you the way implemented in the package `phytools` because it allows you to use the same function for both.
+
+```{block, type = "info"}
+Why do we look at two different measures of phylogenetic signal? We don't have to, you could choose one and stick to it. However, I guarantee if you choose one then a reviewer/your supervisor/boss will ask for the other, so why not do both and pop one in the appendix?
+```
 
 Let's estimate $\lambda$ for log eye size.
 
@@ -142,9 +145,6 @@ To look at the output we just type in the name of the model; `lambdaEye` in this
 ```{r}
 lambdaEye
 ```
-logL	
-log-likelihood, for estimation with sampling error.
-
 The $\lambda$ estimate for log eye size is around 0.803. `logL` is the log-likelihood, `LR(lambda=0)` is	the log-likelihood for $\lambda$ of 0, and `P-value` is the p value from a likelihood ratio test testing whether $\lambda$ is significantly different from 0 (no phylogenetic signal).
 
 Here P < 0.001. We interpret this as $\lambda$ being significantly different from 0, i.e. there is significant phylogenetic signal in log eye size.
@@ -165,16 +165,10 @@ KEye
 
 We interpret this as *K* being significantly different from 0, i.e. there is significant phylogenetic signal in log eye size.
 
-***
+```{block, type = "warning"}
+Remember that when fitting models to account for phylogenetic non-independence, it is *not* phylogenetic signal in the individual variables that is important. It is phylogenetic signal in the __residuals__ of the model that matters. Evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be phylogenetic signal in the residuals of a model correlating variable X with variable Y. Conversely, lack of evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be no phylogenetic signal in the residuals of a model correlating variable X with variable Y.
+```
 
-## A few quick points to always consider
-First, why do we look at two different measures of phylogenetic signal? We don't have to, you could choose one and stick to it. However, I guarantee if you choose one then a reviewer/your supervisor/boss will ask for the other, so why not do both and pop one in the appendix?
-
-Second, remember that when fitting models to account for phylogenetic non-independence, it is *not* phylogenetic signal in the individual variables that is important. It is phylogenetic signal in the __residuals__ of the model that matters. Evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be phylogenetic signal in the residuals of a model correlating variable X with variable Y. Conversely, lack of evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be no phylogenetic signal in the residuals of a model correlating variable X with variable Y.
-
-Third, always carefully consider what variation in values of $\lambda$ and *K* across traits and groups really means. It may not tell you as much about your system as you think it does. Phylogenetic signal is only a pattern, not a process!
-
-***
 ## Estimating phylogenetic signal for non-continuous variables
 Not all variables are continuous, some are categorical, some are binary. For example in the frog data `Adult_habitat`, `Life_history` and `Sex_dichromatism` are categorical variables. We can also code `Sex_dichromatism` as a binary variable if we code Absent as 0 and Present as 1.
  
@@ -306,6 +300,9 @@ legend("bottomleft", fill = mycolours,
        bty = "n")
 
 ```
+```{block, type = "warning"}
+Always carefully consider what variation in values of $\lambda$ and *K* and *D* across traits and groups really means. It may not tell you as much about your system as you think it does. Phylogenetic signal is only a pattern, not a process!
+```
 
 ## Summary
 You should now know how to estimate the phylogenetic signal of your variables using R.
@@ -314,6 +311,4 @@ You should now know how to estimate the phylogenetic signal of your variables us
 
 In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
 
-- What are lambda and K for log gestation length in Primates? 
-
-Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in the previous exercise which should save you some time). Then use `phylosig` to estimate lambda and *K* for log gestation length.
+Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in the previous exercise which should save you some time). Then use `phylosig` to estimate $\lambda$ and *K* for log gestation length.
