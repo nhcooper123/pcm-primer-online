@@ -1,15 +1,6 @@
 # Understanding, plotting and manipulating phylogenies in R
 
-- phylogeny file formats
-- phylogeny format in R
-- plotting with base R
-- ggtree
-- tree manipulation
-- polytomies
-- rooting
-- removing species
-- adding species
-- saving modified trees
+Using phylogenies in R can feel daunting at first, even if you're already familiar with R. Luckily, lots of nice R packages exist to help us work with them, and fairly new packages like `ggtree` mean we can now make beautiful phylogeny plots without needing to resort to other software. In this chapter I'll introduce you to how R stores phylogenies, and then show you how to plot them and manipulate them before using them in your PCMs. Most of the examples come from the *Primer*.
 
 ## Before you start
 - Open the `03_Phylogenies.RProj` file in the `03_Phylogenies` folder to open your R Project for this exercise.
