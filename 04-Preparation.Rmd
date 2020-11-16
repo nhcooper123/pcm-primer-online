@@ -271,7 +271,7 @@ Another thing that could be useful here is to subset so that you have a complete
 
 ```{r}
 mydata %>%
-  select(everything()) %>%
+  dplyr::select(everything()) %>%
   summarise_all(list(~ sum(is.na(.))))
 ```
 22 species don't have a value for `Life_history`, and 36 species don't have a value for `Sex_dichromatism`. Many PCMs will just ignore NA values, but if you needed to remove these you could subset them out as follows, leaving only the 163 species with complete data.
