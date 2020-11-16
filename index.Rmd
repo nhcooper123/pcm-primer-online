@@ -1,8 +1,7 @@
 --- 
 title: "Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences"
 subtitle: "Oxford Biology Primer series. Primers in Ecology and Evolutionary Biology."
-author: "Natalie Cooper, Robert P. Freckleton"
-date: "`r Sys.Date()`"
+author: "Natalie Cooper"
 site: bookdown::bookdown_site
 output: bookdown::pdfbook
 documentclass: book
@@ -21,14 +20,18 @@ knitr::write_bib(c(
 
 # Preface {-}
 
-The material in this online book is designed to support the *Primer on Phylogenetic Comparative Methods for the Biological Sciences*. All practical exercises use R (R Core Team 2020), so some knowledge of R is required. We have provided the basics in the first chapter of this online book. The online book focuses on practical implementations of methods for the most part. For information on the theoretical underpinnings of the topics covered here please refer to the *Primer*. 
+The material in this online book is designed to support the *Primer on Phylogenetic Comparative Methods for the Biological Sciences* by Natalie Cooper and Rob P Freckleton. These materials were primarily written by me (Natalie), so don't blame Rob for any errors! 
+
+All practical exercises use R [@rcoreteam2020], so some knowledge of R is required. I have provided the basics in the first chapter. The online book focuses on practical implementations of methods for the most part. For information on the theoretical underpinnings of the topics covered here please refer to the *Primer*. 
 
 ## Datasets and practical handouts {-}
 [UPDATE THIS WHEN FINISHED WITH OUP LINK]
-All datasets and practical handouts are available on GitHub at [https://github.com/nhcooper123/pcm-primer-online]. You can download them all as a zip file by clicking on the big green "Clone or download" button on the far right hand side near the top of the page and then selecting the "Dowload ZIP" option. Scripts as `.Rmd` files and the data are all available in the `MacroModule` folder.
+
+All datasets and practical handouts are available on GitHub at https://github.com/nhcooper123/pcm-primer-online. You can download them all as a zip file by clicking on the big green *Code* button on the far right hand side near the top of the page and then selecting the "Download ZIP" option. Scripts as `.Rmd` files and the data are all available in the `PCM_Primer` folder.
 
 ## How to use these materials {-}
 [UPDATE THIS WHEN FINISHED]
+
 It is possible to use these materials in a number of ways.
 
 1. Follow this online book, copy pasting code into an R script and then running it in the R console.
@@ -48,6 +51,51 @@ Throughout the book are boxes of text highlighting particularly important issues
 **Warning** These boxes highlight important points that need to be considered when working through your own analyses. They reveal areas where it is important to be careful and think about what you are doing and **why**. The image used here is a Jurassic Park era velociraptor to remind you of the "Jurassic Park caveat", i.e. that just because you *can* perform an analysis in R doesn't mean that you *should*. Always consider the question at hand, your study group, and the quality of the data you are using before embarking on a new comparative analyses. With thanks to Dr Ian Malcolm and Dr Michael Crichton.
 ```
 
+## Citing R and R packages {-}
+
+Lots of people work on R and R packages for free. They're the reason that R is so great! The best way to thank them for this selfless work is to **cite R, and any R packages that you use**, whenever you write a report, article, thesis chapter or paper. This means that R developers can show their funders, bosses, supervisors and potential employers that people are using their work. 
+
+The citation for R will usually look something like this
+
+> All analyses used R version 4.0 (R Core Team 2020). 
+
+Your version number might be different (4.0 is the current version at the time of writing this book). You only need to do this once, usually in the methods section. The full citation for the bibliography is usually something like: 
+
+> R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+If you don't remember this, or can't work out what version of R you are using, the R folk have you covered. To get the citation you can use:
+```{r}
+citation()
+```
+
+To get the version of R you can use:
+```{r}
+R.Version()$version.string
+```
+
+You can also look at more version information by running:
+```{r, eval = FALSE}
+R.Version()
+```
+
+I've supressed the output here as it will be different for every user. The version number is near the bottom of the output. You'll also see one of the fun things about R here which is that each version has a nickname, all of which are the titles of Peanuts comics! For more info see this [slackoverflow discussion](https://stackoverflow.com/questions/13478375/is-there-any-authoritative-documentation-on-r-release-nicknames/36694119#36694119).
+
+What about R packages? You should cite these at the relevant points in your methods section. For example, for `caper`(we'll return to what this does later in the book) we might write
+
+> We fitted phylogenetic generalised least squares (PGLS) models using the R package caper version 1.0.1 (Orme et al. 2018).
+
+To find out what the citation is for an R package we also use the function `citation` but this time specify the package
+```{r}
+citation(package = "caper")
+```
+
+Usually package citations contain the version number, but if not you can get the version using 
+```{r}
+packageVersion("caper")
+```
+
+An additional benefit to citing R packages is that it helps people understand exactly what you did. It's possible there are multiple ways to run a PGLS model, but if your report says you used `caper`, it's easy for a reader to check how `caper` does it and to know exactly what you did. This helps people reproduce your analysis, and can also help you prove to anyone assessing your work that you know what you are doing!
+
 ## Acknowledgements {-}
 
-We thank the many generations of students who have taken courses with us and helped us to hone these materials. Also XX for test running this version for us.
+Thanks to the many generations of students who have taken courses with me and helped me to hone these materials. And to the many others out there teaching PCMs and writing tutorials that helped me learn these methods in the first place! Also thanks to XXXX for test running this version of these materials.
