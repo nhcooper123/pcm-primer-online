@@ -572,7 +572,7 @@ After manipulating a phylogeny, if you want to save the new tree you can use `wr
 
 If we want to save the Big Bird tree we can use:
 
-```{r}
+```{r, eval = FALSE}
 write.nexus(bird.orders_plusbigbird, file = "bigbirdtree.nex")
 ```
 
