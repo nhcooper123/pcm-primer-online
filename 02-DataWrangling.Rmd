@@ -198,6 +198,8 @@ chameleon_final <-
 # Look at the output
 chameleon_final
 ```
+## Summary
+This exercise should have given you the skills to being wrangling data in R.
 
 ## Practical exercise
 

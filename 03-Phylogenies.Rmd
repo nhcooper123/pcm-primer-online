@@ -304,7 +304,7 @@ library(patchwork)
 myplot1 + myplot2
 ```
 ```{r}
-myplot / (myplot1 + myplot2)
+myplot1 / (myplot1 + myplot2)
 ```
 
 Below you'll see I use the `ggplot2` layer `labs` to add labels (i.e. A, B, C) to plots in multi-panel figures. We can also angle the x axis labels so they fit, add trend lines etc. But I'll let you find out how to do that for yourselves!
@@ -579,9 +579,9 @@ write.nexus(bird.orders_plusbigbird, file = "bigbirdtree.nex")
 ## Summary
 This exercise should have given you the skills to understand, plot and manipulate phylogenies in R.
 
-## Practice exercise
+## Practical exercise
 
-Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that we will talk more about this tree in later exercises, but it comes from @feng2017phylogenetics.
+Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that we will talk more about this tree in later exercises, but it comes from @feng2017phylogenomics.
 
 1. Read the tree into R.
 2. Use R functions to determine: 
@@ -594,4 +594,4 @@ Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that 
     c) Can you change the colour of the tips and branches?
 4. Save the tree to file as "mysuperdoopertree.nex"    
     
-EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send us a screenshot!
+EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send me a screenshot on Twitter at @nhcooper123!
