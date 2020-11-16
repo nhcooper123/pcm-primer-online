@@ -1,3 +1,6 @@
+# Data to share with people wanting to run analyses
+PCM_Primer/*
+
 # History files
 .Rhistory
 .Rapp.history
