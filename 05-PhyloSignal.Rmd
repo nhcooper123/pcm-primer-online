@@ -118,7 +118,7 @@ The first thing we need to do is to create an object in R that only contains the
 We can use the function `pull` to extract just the eye size values, and we can log transform all these numbers using `log` if we want to work with log eye size values.
 
 ```{r}
-# Create logGL containing just log eye size length values
+# Create logEye containing just log eye size length values
 logEye <- log(pull(mydata, eyesize))
 # Look at the first few rows
 head(logEye)
