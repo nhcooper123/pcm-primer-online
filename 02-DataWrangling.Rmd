@@ -92,7 +92,7 @@ Here `mutate` modifies the variable *Value*. The `ifelse` statement tells R that
 
 Finally, `select` is used to remove the *Units* and *Source* columns. These are important to keep in our raw data, but we don't need them for our analyses, so it's neater to remove them.
 
-```{block, type = "info"}
+```{block, type = "detail"}
 The observant among you may have noticed I used `dplyr::select` not just `select` in the code above. This tells R to look in the package `dplyr` and use the `select` function from that package. There are several different packages with `select` functions, and I use another one later in this book. To ensure that R knows to use the `dplyr` version here I have used the `::`.
 ```
 

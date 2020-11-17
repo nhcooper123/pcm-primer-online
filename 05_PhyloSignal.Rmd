@@ -2,7 +2,9 @@
 
 Phylogenetic signal is the pattern where close relatives have more similar trait values than more distant relatives. The aims of this exercise are to learn how to use R to estimate phylogenetic signal using Pagel's $\lambda$ [@pagel1997inferring, @pagel1999inferring] and Blomberg's *K* [@blomberg2003testing]. 
 
+```{block, type = "info"}
 We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
+```
 
 You will also need to install the following packages: 
 

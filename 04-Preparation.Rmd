@@ -10,7 +10,9 @@ The R packages `dplyr`, `tidyr` are great for data cleaning and tidying. See [ht
 
 In this exercise we will take an existing tree and some data and prepare them for a PCM analysis. Note that prior to this step, it is important that your data is in a tidy format, and has been thoroughly checked for errors. The exercise below only shows you how to deal with additional issues caused by using trees and then matching species data to those trees. We assume the tree and data themselves are fit for purpose.
 
+```{block, type = "info"}
 We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
+```
 
 ## Before you start
 - Open the `04_Preparation.RProj` file in the `04_Preparation` folder to open your R Project for this exercise.
@@ -23,7 +25,6 @@ You will also need to install the following packages:
 * `tidyverse`
 * `treeplyr`
 
-***
 ## Preparation 
 ### Load the required packages
 To begin we need to load the packages for this practical.
@@ -111,7 +112,7 @@ As you can see, the data contains 215 species, and the following 11 variables:
 * `rootmass` - cube root of the body mass.        
 * `eyesize` - eye size (in mm) for the species. This is an everage across left and right eyes from three individuals per species.
 
-```{block, type = "info"}
+```{block, type = "detail"}
 Note that in some comparative datasets (most of mine for instance) the species names column (here `Binomial`) also contains the names of the species in the tree so we would match up that column to the species names in the tree (see below). In this dataset and others, the authors have instead included the names of the tips of the tree as a separate column (here `tiplabel`). This is often done when the tips of the tree are not species names, but are instead some kind of code. This is common where the tree contains multiple tips for one species, or where the tip labels contain additional information (here they include family names). A final approach used by some authors is to have the species names as the row names of the dataset. Any approach is fine, but make sure you know which column contains the names that should match up with the tree.
 ```
 
@@ -226,7 +227,7 @@ mytree <- frogstuff$phy
 mydata <- frogstuff$dat
 ```
 
-For the data, I'm also going to add one last trick to make our lives easier. `treeplyr` relies on the `tidyverse` set of packages, which create special dataframes of a class called *tibbles*. Tibbles are great, *but* some older PCM functions cannot work with them, and need the data to be in an ordinary dataframe instead. We can fix this using `as.data.frame`.
+For the data, I'm also going to add one last trick to make our lives easier. `treeplyr` relies on the `tidyverse` set of packages, which create special data frames of a class called *tibbles*. Tibbles are great, *but* some older PCM functions cannot work with them, and need the data to be in an ordinary data frame instead. We can fix this using `as.data.frame`.
 
 ```{r}
 # Look at the class of mydata

@@ -15,8 +15,6 @@ You will also need to install the following packages:
 * `ggimage`
 * `phytools`
 
-***
-
 ## What do phylogeny files look like?
 
 There are many different formats that you might get a phylogeny in, but the most common formats of the tree files we read into R are Newick and NEXUS. Here we will just focus on these two. If you need to read in lots of different kinds of tree files check out the documentation for [ggtree](https://yulab-smu.github.io/treedata-book/chapter1.html).
@@ -460,7 +458,9 @@ groupOTU(p, feathers, 'feathers') +
 
 Note the warning here that tells us not to use `filter_`. This is from the internal `ggtree` code and can be ignored for now. Either this will be updated in the future, or `ggtree` will change how this is done. So if this code breaks completely try the `ggtree` help files for a solution.
 
-There are many more things you can do with `ggtree`, all based on this idea of adding layers. See the [manual for `ggtree`](http://yulab-smu.top/treedata-book/index.html) for more details.
+```{block, type = "info"}
+There are many more things you can do with `ggtree`, all based on this idea of adding layers. See the manual for `ggtree` at http://yulab-smu.top/treedata-book/index.html for more details.
+```
 
 ## Phylogeny manipulation
 
@@ -553,10 +553,14 @@ bird.orders_plusbigbird <- bind.tip(bird.orders, tip.label = "Big_Bird",
 
 plot(bird.orders_plusbigbird)
 ```
-You can see that Big Bird has been added to the Galliformes branch. In the `bind.tip` function, `position` is the length of the new branch. Here we used 4.5, but you could use other numbers if you needed the branch to be longer or shorter (i.e. if you knew the divergence between Galliformes and Big Bird was longer ago or more recent). Note that the value of `position` is limited by the length of the branch you are adding the new species to. If you see the error below it means you've given `position` a value which is longer that the existing branch, and you'll need to make it a bit smaller.
+You can see that Big Bird has been added to the Galliformes branch. In the `bind.tip` function, `position` is the length of the new branch. Here we used 4.5, but you could use other numbers if you needed the branch to be longer or shorter (i.e. if you knew the divergence between Galliformes and Big Bird was longer ago or more recent). 
+
+```{block, type = "detail"}
+Note that the value of `position` is limited by the length of the branch you are adding the new species to. If you see the error below it means you've given `position` a value which is longer that the existing branch, and you'll need to make it a bit smaller.
 
 > `Error in bind.tree(tree, tip, where = where, position = pp) : 
   'position' is larger than the branch length`
+```
 
 ### Writing phylogenies to file
 After manipulating a phylogeny, if you want to save the new tree you can use `write.tree` or `write.nexus` as preferred. You can then use this modified tree for you analyses or plots, meaning that you don't have to do all the manipulation again every time you want to use it.

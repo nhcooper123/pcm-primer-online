@@ -179,4 +179,5 @@ Unfortunately, if you accidentally fail to finish a line of code (for example by
 
 Don't worry, this happens all the time! If you're getting error messages and can't see why, just check that the Console is showing the prompt `>` not the `+` at the start of your line of code. If you see the `+`, just hit the Escape key to get back to the prompt `>` and then go back to your code.
 
-> Hopefully this covers the main introductory elements of R and means you should be able to run the code in the exercises.
+## Summary
+This covers the main introductory elements of R and means you should be able to run the code in the exercises.
