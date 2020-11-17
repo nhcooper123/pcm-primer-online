@@ -14,8 +14,9 @@ colorlinks: yes
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
+  .packages(), 
+  'bookdown', 'knitr', 'rmarkdown', 'phytools', 'tidyverse', 'caper', 'ape', 'measurements',
+  'patchwork', 'ggtree', 'geiger', 'treeplyr', 'MCMCglmm', 'coda'), 'packages.bib')
 ```
 
 # Preface {-}
@@ -41,14 +42,23 @@ This is a good way to learn/teach these materials.
 See [here](http://rmarkdown.rstudio.com/r_notebooks.html) for more details.
 
 ## Boxes {-}
+
+Throughout the *Primer* are boxes of text highlighting particularly important issues:
+
 Throughout the book are boxes of text highlighting particularly important issues:
 
 ```{block, type="info"}
-**Information** Extra information about how the method or code works for those who are interested. These boxes may also show you how to solve problems that may not affect every user.
+**Note** boxes. These boxes highlight important details that we don't want you to miss!
+
+Extra information about how the method or code works for those who are interested. These boxes may also show you how to solve problems that may not affect every user.
+```
+
+```{block, type="detail"}
+**Extra details** boxes. These boxes contain detailed explanations of things for readers who like to fully understand the complexities of what they are doing, for example fully worked through examples, or technical details that we have not explained in detail in the text.
 ```
 
 ```{block, type="warning"}
-**Warning** These boxes highlight important points that need to be considered when working through your own analyses. They reveal areas where it is important to be careful and think about what you are doing and **why**. The image used here is a Jurassic Park era velociraptor to remind you of the "Jurassic Park caveat", i.e. that just because you *can* perform an analysis in R doesn't mean that you *should*. Always consider the question at hand, your study group, and the quality of the data you are using before embarking on a new comparative analyses. With thanks to Dr Ian Malcolm and Dr Michael Crichton.
+**Caveats** boxes. These boxes highlight important points that need to be considered when working through your own analyses. They reveal areas where it is important to be careful and think about what you are doing and **why**. The image is a Jurassic Park era velociraptor to remind you of the "Jurassic Park caveat", i.e. that just because you *can* perform an analysis in R doesn't mean that you *should* (thanks to Dr Ian Malcolm and Dr Michael Crichton)! Always consider the question at hand, your study group, and the quality of the data you are using before embarking on a new comparative analysis. 
 ```
 
 ## Citing R and R packages {-}
