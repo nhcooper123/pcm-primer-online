@@ -48,13 +48,11 @@ Throughout the *Primer* are boxes of text highlighting particularly important is
 Throughout the book are boxes of text highlighting particularly important issues:
 
 ```{block, type="info"}
-**Note** boxes. These boxes highlight important details that we don't want you to miss!
-
-Extra information about how the method or code works for those who are interested. These boxes may also show you how to solve problems that may not affect every user.
+**Information** boxes. These boxes highlight important details. These boxes may also show you how to solve problems that may not affect every user.
 ```
 
 ```{block, type="detail"}
-**Extra details** boxes. These boxes contain detailed explanations of things for readers who like to fully understand the complexities of what they are doing, for example fully worked through examples, or technical details that we have not explained in detail in the text.
+**Extra details** boxes. These boxes contain detailed explanations of things for those who like to fully understand the complexities of what they are doing, for example technical details of the code that I have not explained in detail in the text.
 ```
 
 ```{block, type="warning"}
