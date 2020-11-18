@@ -124,7 +124,7 @@ We'll then create a vector of five colours for the Habits. These need to be in a
 habit.colors <- c("darkblue", "plum", "chocolate", "lightblue", "lightgreen")
 ```
 
-Finally we can plot the tree with coloured tip labels to match the ecomorphs. I've rearranged the colour order in the legend so it makes more sense biologically (i.e. putting the aquatic and Semi-aquatic next to each other rather than ordering it alphabetically). To make things a bit easier to see I've left off the tip labels.
+Finally we can plot the tree with coloured tip labels to match the habits. I've rearranged the colour order in the legend so it makes more sense biologically (i.e. putting the aquatic and Semi-aquatic next to each other rather than ordering it alphabetically). To make things a bit easier to see I've left off the tip labels.
 
 ```{r}
 # Plot the tree with colours at the tips to represent Habit
