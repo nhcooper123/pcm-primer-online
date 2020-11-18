@@ -354,7 +354,6 @@ OUM
 ```
 
 ## Summary
-
-
+You should now know how to fit some of the more complex models of evolution in R.
 
 ## Practical exercises
