@@ -1,4 +1,4 @@
-Species,Habit,Diet,ReproductiveMode,HeadLength,HeadWidth,HeadHeight,EyeDistance,TotalLength
+Species,Ecomorph,Diet,ReproductiveMode,HeadLength,HeadWidth,HeadHeight,EyeDistance,TotalLength
 Adelophis_foxi,Burrowing,annelids,Viviparous,12.56,6.6,5.43,4.01,105
 Afronatrix_anoscopus_2,Aquatic,aquatic generalist,Oviparous,25.1,15.8,10.3,7.4,194
 Amphiesma_beddomei,Terrestrial,anurans,Oviparous,15.06,7.82,5.4,4.85,106

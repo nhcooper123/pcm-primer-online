@@ -101,36 +101,29 @@ Now we're ready to run our analyses!
 
 For fitting simple models of evolution to discrete data we will use the `fitDiscrete` function in the R package `geiger`. `fitDiscrete` is a likelihood based method, so the output will give the maximum likelihood (ML) estimates of the parameters. 
 
-As an example, let's look at the evolution of habit in our snake data. Before we start let's make sure we have an idea of what these data look like.
+As an example, let's look at the evolution of ecomorphs in our snake data. Before we start let's make sure we have an idea of what these data look like.
 
 ```{r, message = FALSE}
-# How many species are in each category of Habit?
+# How many species are in each category of ecomorph?
 mydata %>%
-  group_by(Habit) %>%
+  group_by(Ecomorph) %>%
   summarise(number = n())
 ```
 
-We can also visualize these variables on our tree by plotting them with colours. We need to ensure the data and the tree tip labels are in the same order. We already did this using `make.treedata` but just be sure we can use: 
-
-```{r}
-# Reorder the data so it's the same order as in the tree
-mydata <- mydata[match(mytree$tip.label, mydata$Species), ]
-```
-
-We'll then create a vector of five colours for the Habits. These need to be in alphabetical order, so the colours should be in the order Aquatic, Aquatic burrower, Burrower, Semi-aquatic, Terrestrial.
+We can also visualize these variables on our tree by plotting them with colours. We'll then create a vector of five colours for the ecomorphs. These need to be in alphabetical order, so the colours should be in the order Aquatic, Aquatic burrower, Burrower, Semi-aquatic, Terrestrial.
 
 ```{r}
 # Set up list of colours
-habit.colors <- c("darkblue", "plum", "chocolate", "lightblue", "lightgreen")
+ecomorph.colors <- c("darkblue", "plum", "chocolate", "lightblue", "lightgreen")
 ```
 
-Finally we can plot the tree with coloured tip labels to match the habits. I've rearranged the colour order in the legend so it makes more sense biologically (i.e. putting the aquatic and Semi-aquatic next to each other rather than ordering it alphabetically). To make things a bit easier to see I've left off the tip labels.
+Finally we can plot the tree with coloured tip labels to match the ecomorphs. I've rearranged the colour order in the legend so it makes more sense biologically (i.e. putting the aquatic and Semi-aquatic next to each other rather than ordering it alphabetically). To make things a bit easier to see I've left off the tip labels.
 
 ```{r}
-# Plot the tree with colours at the tips to represent Habit
+# Plot the tree with colours at the tips to represent ecomorph
 plot(mytree, cex = 0.5, adj = c(0.2), type = "fan", 
      no.margin = TRUE, show.tip.label = FALSE)
-tiplabels(pch = 16, col = habit.colors[mydata$Habit])
+tiplabels(pch = 16, col = ecomorph.colors[mydata$Ecomorph])
 legend("bottomleft", pch = 15, bty = "n",
        legend = c("Aquatic", "Semi-aquatic", "Aquatic burrower", 
                   "Burrower", "Terrestrial"), 
@@ -138,7 +131,7 @@ legend("bottomleft", pch = 15, bty = "n",
                "chocolate", "lightgreen"))
 ```
 
-Some habits are clustered, but others appear across the phylogeny (this is the result of some pretty cool convergent evolution - check out DEEPAK CITE PAPER for more details).
+Some ecomorphs are clustered, but others appear across the phylogeny (this is the result of some pretty cool convergent evolution - check out DEEPAK CITE PAPER for more details).
 
 ### Fitting the ER, SYM and ARD models of evolution using `fitDiscrete`
 
@@ -154,19 +147,19 @@ For more details on these models please see the *Primer*.
 
 We are going to use the package `geiger` to fit models in this exercise, so we need the additional preparation step we first met in chapter `05-PhyloSignal`. We need to create an object in R that only contains the variable required, and the species names (so we can match it up to the tree). 
 
-We use the function `pull` to extract just the habit values. We then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels, but luckily `make.treedata` does this automatically.
+We use the function `pull` to extract just the ecomorph values. We then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels, but luckily `make.treedata` does this automatically.
 
 ```{r}
-# Create habit containing just habit values
-habit <- pull(mydata, Habit)
-# Make sure habit is a character, not a factor
-habit <- as.character(habit)
+# Create ecomorph containing just ecomorph values
+ecomorph <- pull(mydata, Ecomorph)
+# Make sure ecomorph is a character, not a factor
+ecomorph <- as.character(ecomorph)
 # Look at the first few rows
-head(habit)
+head(ecomorph)
 # Give log head length names = species names at the tips of the phylogeny
-names(habit) <- mydata$tiplabel
+names(ecomorph) <- mydata$tiplabel
 # Look at the first few rows
-head(habit)
+head(ecomorph)
 ```
 
 Now we have a list of values with associated species names.
@@ -174,7 +167,7 @@ Now we have a list of values with associated species names.
 To fit the ER model we can then use the code below. 
 ```{r}
 # Fit the ER model
-equal <- fitDiscrete(mytree, habit, model = "ER")
+equal <- fitDiscrete(mytree, ecomorph, model = "ER")
 ```
 
 Let's look at the output for the equal rates model:
@@ -189,10 +182,10 @@ This looks very similar to the output from `fitContinuous` in the `08-ModelsCont
 Why are the diagonal elements of the $Q$ matrix -0.034973712? The rows of the $Q$ matrix must sum to zero: -0.034973712 + (4 * 0.008743428) = 0. 
 ```
 
-To fit the SYM model we just switch the model name. Note that this might be a bit slow on your computer as we have quite a lot of different habits, so a lot of different rates to fit. A good point to grab a coffee/tea/biscuit!
+To fit the SYM model we just switch the model name. Note that this might be a bit slow on your computer as we have quite a lot of different ecomorphs, so a lot of different rates to fit. A good point to grab a coffee/tea/biscuit!
 ```{r}
 # Fit the SYM model
-sym <- fitDiscrete(mytree, habit, model = "SYM")
+sym <- fitDiscrete(mytree, ecomorph, model = "SYM")
 # Look at the output
 sym
 ```
@@ -209,7 +202,7 @@ Finally let's fit the ARD model. Again this may take some time! Go and grab a te
 
 ```{r}
 # Fit the ARD model
-ard <- fitDiscrete(mytree, habit, model = "ARD")
+ard <- fitDiscrete(mytree, ecomorph, model = "ARD")
 # Look at the output
 ard
 ```
@@ -239,7 +232,7 @@ sym$opt$aic
 ard$opt$aic
 ```
 
-The “best” model is the one with the smallest AIC. Here the best model of evolution appears to be the SYM model, whereby rates of transition are the same in both directions, but are different for the different pairs of habits. 
+The “best” model is the one with the smallest AIC. Here the best model of evolution appears to be the SYM model, whereby rates of transition are the same in both directions, but are different for the different pairs of ecomorphs. 
 
 Alternatively we can use $\Delta$AIC or AIC weights to compare our models using the following code and the `geiger` function `aicw`:
 ```{r}
@@ -255,17 +248,17 @@ I'm not a big fan of ancestral state estimation as you probably realised from th
 
 We'll use `ape`'s `ace` function here. There are other options out there, for example in the `phytools` package, but `ace` will work for our purposes. 
 
-To perform ancestral state estimation of Habits for snakes we can use the `habit` object we made earlier and used to fit the ER, SYM and ARD models. Recall that `habit` is just the Habit column from the snake heads dataset, in the same order as the tips in the tree, with names equal to the tip labels/Species names in the tree.
+To perform ancestral state estimation of ecomorphs for snakes we can use the `ecomorph` object we made earlier and used to fit the ER, SYM and ARD models. Recall that `ecomorph` is just the Ecomorph column from the snake heads dataset, in the same order as the tips in the tree, with names equal to the tip labels/Species names in the tree.
 
 ```{r}
-# Take a quick look at the first few rows of habit
-head(habit)
+# Take a quick look at the first few rows of ecomorph
+head(ecomorph)
 ```
 
-To perform an ancestral state estimation of Habits under the symmetric model (the best fitting model for the data as discovered above) we use this code:
+To perform an ancestral state estimation of ecomorphs under the symmetric model (the best fitting model for the data as discovered above) we use this code:
 ```{r, message = FALSE}
-# Ancestral state estimation of Habit under the SYM model
-ancestral_habits <- ace(habit, mytree, type = "discrete", model = "SYM")
+# Ancestral state estimation of ecomorph under the SYM model
+ancestral_ecomorphs <- ace(ecomorph, mytree, type = "discrete", model = "SYM")
 ```
 
 You should notice a series of warning messages appear that say `NaNs produced` and `NA/Inf replaced by maximum positive value`. Don't worry about this – it happens when rates for one transition are particularly low (and we know from above that many of the transition rates were < 0.001) but doesn't really affect our node state estimates. 
@@ -276,19 +269,19 @@ You should notice a series of warning messages appear that say `NaNs produced` a
 
 We can look at the first few rows of our ancestral state estimates by typing:
 ```{r, eval = FALSE}
-head(ancestral_habits$lik.anc)
+head(ancestral_ecomorphs$lik.anc)
 ```
 
-In this matrix the rows correspond to nodes in the tree (although the numbering is bit off; we don't need to worry about this here but it will come up in the next exercise) and the five columns give the *scaled likelihoods* that the node is in each of the different Habits. 
+In this matrix the rows correspond to nodes in the tree (although the numbering is bit off; we don't need to worry about this here but it will come up in the next exercise) and the five columns give the *scaled likelihoods* that the node is in each of the different ecomorphs. 
 
 The scaled likelihoods are like probabilities, so for the first node, the probability of it being Aquatic is highest (probability = 0.5417), followed by the probability of it being Semi-aquatic (0.3587), Terrestrial (0.0755), Burrowing (0.0206), or Aquatic Burrowing (0.0035). These scaled likelihoods can be visualized with pie charts on the tree we plotted earlier byt adding the `nodelabels` line of code below.
 
 ```{r}
-# Plot the tree with colours at the tips and nodes to represent Habit
+# Plot the tree with colours at the tips and nodes to represent ecomorph
 plot(mytree, cex = 0.5, adj = c(0.2), type = "fan", 
      no.margin = TRUE, show.tip.label = FALSE)
-tiplabels(pch = 16, col = habit.colors[mydata$Habit])
-nodelabels(pie = ancestral_habits$lik.anc, piecol = habit.colors, cex = 0.5)
+tiplabels(pch = 16, col = ecomorph.colors[mydata$Ecomorph])
+nodelabels(pie = ancestral_ecomorphs$lik.anc, piecol = ecomorph.colors, cex = 0.5)
 legend("bottomleft", pch = 15, bty = "n",
        legend = c("Aquatic", "Semi-aquatic", "Aquatic burrower", 
                   "Burrower", "Terrestrial"), 
@@ -296,7 +289,7 @@ legend("bottomleft", pch = 15, bty = "n",
                "chocolate", "lightgreen"))
 ```
 
-Aquatic is most commonly estimated as the ancestral Habit for natricine snakes, with Semi-aquatic as a close second, and with multiple transitions to other Habits throughout the tree. 
+Aquatic is most commonly estimated as the ancestral ecomorph for natricine snakes, with Semi-aquatic as a close second, and with multiple transitions to other ecomorphs throughout the tree. 
 
 ```{block, type = "warning"}
 Ancestral state estimates (**not** reconstructions) are, at best, weighted averages of your trait based on branch lengths of the phylogeny and the model of evolution used. If your phylogeny or traits or model have error (and they always will) then your ancestral state estimates should be interpreted with care.
