@@ -1,7 +1,9 @@
 # Phylogenetic generalised linear mixed models in R
+The aims of this exercise are to learn how to use R to perform Phylogenetic Generalised Linear Mixed models (PGLMM)in R using `MCMCglmm`.
 
-
-We will again be using the evolution of eye size in frogs as an example. The data and modified tree come from Thomas et al 2020 (CITE PROPERLY), and the original tree comes from Feng et al (2019; CITE PROPERLY). I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Thomas et al 2020 (CITE PROPERLY)!
+```{block, type = "info"}
+We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
+```
 
 You will also need to install the following packages: 
 
@@ -10,8 +12,8 @@ You will also need to install the following packages:
 * `geiger`
 * `treeplyr`
 * `MCMCglmm`
+* `coda`
 
-***
 ## Why fit phylogenetic generalised linear mixed models?
 
 Up this point we have been working with models where our diagnostic plots look pretty good, and where the residuals are roughly normally distributed. Unfortunately this is not the case for all models, especially those with particular kinds of response variables. 
@@ -25,8 +27,6 @@ Another way we can incorporate phylogenetic information into a model is by using
 Luckily, there is a package in R called `MCMCglmm` that performs *generalised linear mixed models* (GLMM), i.e. mixed effects models that are generalised to deal with response variables that result in non-normally distributed residuals. This package also allows us to add our phylogenetic information as a random effect in the model. Great!
 
 Unfortunately, fitting these models is quite tricky, in part because of the *MCMC* part of the `MCMCglmm` package name. MCMC stands for Markov Chain Monte Carlo, and this is a Bayesian method which means it works somewhat differently to the models we've met before. I'll try to explain as we go along, and see the *Primer* for more details.
-
-***
 
 ## A really quick reminder of how Bayesian analyses work, with apologies to Bayesian scholars for the simplification!
 
@@ -42,7 +42,9 @@ Before we look at the results, we need to check that the robot did a good job an
 
 This is a simplification of course! But the take home is that to fit MCMCglmm models we need to consider priors, burnin, number of iterations, thinning, convergence and the posterior. In addition to the model, data and phylogeny that we've been considering in previous examples... 
 
-***
+```{block, type = "info"}
+If you want to learn more about Bayesian statistics we highly recommend @mcelreath2020statistical and the accompanying online course. 
+```
 
 Now let's try a practical example...
 
@@ -57,11 +59,12 @@ library(ape)
 library(geiger)
 library(treeplyr)
 library(MCMCglmm)
+library(coda)
 ```
 
 Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. Hopefully you're pretty comfortable with this by now.
 
-```{r}
+```{r, message = FALSE}
 # Read in the data
 frogdata <- read_csv("data/frog-eyes.csv")
 # Check everything loaded corrected
@@ -96,8 +99,8 @@ frogstuff$phy
 # Look at the data
 glimpse(frogstuff$dat)
 
-# Make a new column called Binomial with the tip labels in it
-frogstuff$dat$Species <- frogstuff$phy$tip.label
+# Make a new column called tiplabel with the tip labels in it
+frogstuff$dat$tiplabel <- frogstuff$phy$tip.label
 # Force mydata to be a data frame
 mydata <- as.data.frame(frogstuff$dat)
 # Save tree as mytree
@@ -170,7 +173,7 @@ nitt <- 1000000
 ```
 
 ### burnin
-The variables nitt and burnin are used to calibrate the MCMCM algorithm: it will iterate for burnin iterations before recording samples (to ensure convergence), and then iterate nitt times. The parameter thin helps us to save memory by saving only every `thin' value and thus, dropping highly auto-correlated values2. 
+The variables `nitt`, `burnin` and `thin` are used to calibrate the MCMCM algorithm. If we set `burnin = 1000`, `nitt = 1,000,000` and `thin = 500`, it will iterate for 1000 iterations (burnin) before recording samples (to ensure convergence), and then iterate 1,000,000 times. The parameter `thin` helps us to save memory by saving only every 500th value in this example and thus, dropping highly auto-correlated values. 
 
 ```{r}
 # Set burnin
@@ -188,24 +191,31 @@ thin <- 500
 
 OK now let's fit a simple model that we've looked at before, eye size as a function of body size...
 
-To tell `MCMCglmm` that we want to fit a model with a phylogeny we use `random = ~ Species`. `Species` is the name of the column in our dataset that matches the tip labels of the phylogeny. We use `ginverse = list(Species = inv.phylo)` to tell it to use `inv.phylo`, the inverse phylogenetic variance-covariance matrix we made above.
+To tell `MCMCglmm` that we want to fit a model with a phylogeny we use `random = ~ tiplabel`. `tiplabel` is the name of the column in our dataset that matches the tip labels of the phylogeny. We use `ginverse = list(tiplabel = inv.phylo)` to tell it to use `inv.phylo`, the inverse phylogenetic variance-covariance matrix we made above.
   
-```{r}
+```{r, eval = FALSE}
+# Fit MCMCglmm model
 model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass), 
                    data = mydata, 
-                   random = ~ Species,
-                   ginverse = list(Species = inv.phylo), 
+                   random = ~ tiplabel,
+                   ginverse = list(tiplabel = inv.phylo), 
                    prior = prior,
-                   nitt = nitt, thin = thin, burnin = burnin)
-  
-```
-  
-This may take a long time to run. You'll know it is working because you'll see text appearing, e.g. `MCMC iteration = 1000`, every time the MCMC takes a sample for the posterior. You can turn this off with `verbose = FALSE` if it gets annoying.
+                   nitt = nitt, thin = thin, burnin = burnin,
+                   verbose = TRUE)
 
-Go and get a cup of tea and some cake...
+# Save the model
+saveRDS(model_mcmcglmm, file = "data/model_mcmcglmm_output1.rda")
+```
+
+This will take a long time to run, dependent on your computer power. You'll know it is working because you'll see text appearing, e.g. `MCMC iteration = 1000`, every time the MCMC takes a sample for the posterior. You can turn this off with `verbose = FALSE` if it gets annoying. In fact this takes so long to run (at least an hour on my machine), that to save you some time here I've run the model myself and saved it using `saveRDS`. __You do not need to run the code above if you don't have an hour to spare!__. We can then read it back in using:
+
+```{r}
+# Read in the saved model output run in advance to save time
+model_mcmcglmm <- readRDS("data/model_mcmcglmm_output1.rda")
+```
 
 ## Did the model converge?
-Before we look at the outputs we need to know if the model converged. If it didn't you'll need to fiddle with your parameters and run it again (usually the first thing to try is increasing nitt - this also means you might want to increase burnin and thin too). 
+Before we look at the outputs we need to know if the model converged. If it didn't you'll need to fiddle with your parameters and run it again (usually the first thing to try is increasing `nitt` - this also means you might want to increase `burnin` and `thin` too). 
 
 We can check for convergence in two ways. First we can look at the model diagnostics using `plot` as we have done for other models in earlier exercises.
 
@@ -278,6 +288,7 @@ never overlap zero.
 
 If we really care about whether a random effect is "significant", we can fit a model *without* the random effect, and a model *with* the random effect, and then compare them using DIC (smaller DIC = better model). To get the DIC of the model we just do:
 ```{r}
+# Extract DIC
 model_mcmcglmm$DIC
 ```
 
@@ -288,12 +299,11 @@ We can estimate the posterior probability of the phylogenetic signal $\lambda$ a
 
 ```{r}
 # Get lambda
-lambda <- model_mcmcglmm$VCV[,'Species']/
-          (model_mcmcglmm$VCV[,'Species'] + model_mcmcglmm$VCV[,'units'])
+lambda <- model_mcmcglmm$VCV[,'tiplabel']/
+          (model_mcmcglmm$VCV[,'tiplabel'] + model_mcmcglmm$VCV[,'units'])
 ```
 
 We can then get the mean and mode (for Bayesian analyses the mode is often a better measure of central tendency than the mean as it tells us where the peak of the posterior distribution is) of the posterior distribution for $\lambda$, along with its 95% credible interval:
-
 ```{r}
 # Posterior mean of lambda
 mean(lambda)
@@ -307,6 +317,7 @@ HPDinterval(lambda)
 
 We could also quickly plot the whole posterior, with the mode and 95% credible intervals.
 ```{r, message = FALSE}
+# Plot the posterior
 ggplot(as.data.frame(lambda), aes(x = lambda))+
   geom_density() +
   geom_vline(xintercept = posterior.mode(lambda), colour = "red") +
@@ -319,7 +330,7 @@ ggplot(as.data.frame(lambda), aes(x = lambda))+
 
 Note that this isn't precisely $\lambda$ as formulated by Pagel. It's the proportion of the variance components (G + R) compromised by the phylogenetic variance component (G). But we can interpret it in the same way, i.e. 0 = no phylogenetic signal, 1 = expectation under Brownian motion.
 
-```{block = "info"}
+```{block, type = "info"}
 The MCMCglmm results are very close to what we got from PGLS 
 where intercept = 1.03, slope = 0.277, and lambda was 0.976 (95% CI: 0.924 - 1).
 ```
@@ -327,32 +338,42 @@ where intercept = 1.03, slope = 0.277, and lambda was 0.976 (95% CI: 0.924 - 1).
 ## Checking the effects of priors
 
 You shouldn't stop here! It's important to repeat the analysis with different priors to see if that would influence your conclusions. Generally I'd increase the value for `nu`, maybe to 1 and see what happens.
-
-```{r}
+```{r, eval = FALSE}
 # Set up new priors for MCMCglmm
 # Inverse Wishart with V = 1 and nu = 1
 prior <- list(G = list(G1 = list(V = 1, nu = 1)),
               R = list(V = 1, nu = 1))
 
 # Run the model
-model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass), 
+model_mcmcglmm2 <- MCMCglmm(log(eyesize) ~ log(mass), 
                    data = mydata, 
                    random = ~ Species,
                    ginverse = list(Species = inv.phylo), 
                    prior = prior,
                    nitt = nitt, thin = thin, burnin = burnin,
                    verbose = FALSE)
+
+# Save the model
+saveRDS(model_mcmcglmm2, file = "data/model_mcmcglmm_output2.rda")
 ```  
-Let's look at the results:
+
+Again this takes ages to run (at least an hour on my machine), so to save you some time here I've run the model myself and saved it using `saveRDS`. __You do not need to run the code above if you don't have an hour to spare!__. We can then read it back in using:
 
 ```{r}
+# Read in the saved model output run in advance to save time
+model_mcmcglmm2 <- readRDS("data/model_mcmcglmm_output2.rda")
+```
+
+Let's look at the results:
+```{r}
 # Fixed effects results
-summary(model_mcmcglmm)$solutions
+summary(model_mcmcglmm2)$solutions
 
 # Look at G-structure and R-structure 95% credible intervals
-posterior.mode(model_mcmcglmm$VCV)
-HPDinterval(model_mcmcglmm$VCV)
+posterior.mode(model_mcmcglmm2$VCV)
+HPDinterval(model_mcmcglmm2$VCV)
 ```
+
 There's no major change. Phew! We can therefore say that the difference in the priors has little effect on the outcome of the analysis (this is usual for an analysis where lots of data are available relative to the complexity of the model, but it is important to check!). 
 
 Hopefully you now see why these models are complicated and should be considered very carefully before using them. You should never skip the checking and tinkering steps. 
@@ -383,6 +404,7 @@ If we had proportion data instead, for example the number of individuals with bl
 We tell R we want to use a binomial error structure using `family = "binomial"`, and we include successes (number of frogs with red eyes) and failures (number of frogs with blue eyes) as one variable as the response using `cbind` to stick them together. If you're not sure why we would do this, go back and read up on GLMs. 
 
 ```{r, eval = FALSE}
+# Fit MCMCglmm
 model_eyes <- MCMCglmm(cbind(numberred, numberblue) ~ log(mass), 
                    data = mydata, family = "binomial",
                    random = ~ Species,
@@ -398,7 +420,6 @@ Again, other than these changes, everything runs as above including the priors a
 I won't run these models here; this is just to give you an indication of how we can add complexity to these models.
 
 Adding fixed effects to models is easy, we just add things as we would in any other model in R. For example, if we wanted to fit this model from the PGLS exercise:
-
 ```{r, eval = FALSE}
 model.pgls2 <- pgls(log(eyesize) ~ log(mass) * as.factor(Adult_habitat), 
                    data = frog, lambda = "ML")
@@ -419,7 +440,6 @@ model_multiple<- model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass) *
 If we want to add more random effects we need to be a bit more careful because we need to remember to define the priors too. So let's say we wanted to fit a model with phylogeny as a random effect *and* a random effect of Sex. We'd now have two random effects in the G-structure.
 
 We would define the priors as follows. Note that Sex is referred to as G2.
-
 ```{r, eval = FALSE}
 prior2 <- list(G = list(G1 = list(V = 1, n = 0.002), 
                G2 = list(V = 1, n = 0.002)), 
@@ -436,9 +456,11 @@ model_new <- model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass),
                    nitt = nitt, thin = thin, burnin = burnin)
 ```
 
-Note that this gets more complex if you want to fit hierachical or repeated measures type models so we recommend reading the materials below, and getting a thorough understanding of mixed models, before attempting this.
+Note that this gets more complex if you want to fit hierarchical or repeated measures type models so we recommend reading the materials below, and getting a thorough understanding of mixed models, before attempting this.
 
-## Recommended reading
+## Summary
 
-http://www.wildanimalmodels.org/tiki-download_wiki_attachment.php?attId=24
+I also recommend reading the following if you want to know more: http://www.wildanimalmodels.org/tiki-download_wiki_attachment.php?attId=24
 https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf
+
+## Practical exercises
