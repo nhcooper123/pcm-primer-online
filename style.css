@@ -16,13 +16,13 @@ pre code {
 .rmdinfo {
   padding: 1em 1em 1em 1em;
   margin-bottom: 10px;
-  background: #d7f2f3;
+  background: #94D2BE;
 }
 
 .rmdwarning {
   padding: 1em 1em 1em 10em;
   margin-bottom: 10px;
-  background: #d2d1f9 5px center/9em no-repeat;
+  background: #B4656F 5px center/9em no-repeat;
 }
 
 .rmdwarning {
@@ -32,21 +32,21 @@ pre code {
 .rmddetail {
   padding: 1em 1em 1em 1em;
   margin-bottom: 10px;
-  background: #eceedc;
+  background: #EACC7C;
 }
 
 
 .info {
   padding: 1em 1em 1em 1em;
   margin-bottom: 10px;
-  background: #d7f2f3;
+  background: #94D2BE;
 
 }
 
 .warning {
   padding: 1em 1em 1em 10em;
   margin-bottom: 10px;
-  background: #d2d1f9 5px center/9em no-repeat;
+  background: #B4656F 5px center/9em no-repeat;
 }
 
 .warning {
@@ -56,6 +56,6 @@ pre code {
 .detail {
   padding: 1em 1em 1em 1em;
   margin-bottom: 10px;
-  background: #eceedc;
+  background: #EACC7C;
 }
 
