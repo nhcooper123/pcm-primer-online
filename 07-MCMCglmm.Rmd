@@ -81,6 +81,9 @@ is.binary.tree(frogtree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(frogtree)
+# Check whether the tree is ultrametric
+# We want this to be TRUE 
+is.ultrametric(frogtree)
 
 # Check whether the names match in the data and the tree
 check <- name.check(phy = frogtree, data = frogdata, 

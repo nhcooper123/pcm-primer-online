@@ -44,7 +44,7 @@ snaketree <- read.nexus("data/snake-tree.nex")
 str(snaketree)
 ```
 
-Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted. 
+Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and ultrametric. 
 
 ```{r}
 # Check whether the tree is binary
@@ -53,6 +53,9 @@ is.binary.tree(snaketree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(snaketree)
+# Check whether the tree is ultrametric
+# We want this to be TRUE 
+is.ultrametric(snaketree)
 ```
 
 Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before going any further. I haven't printed `check` here as we already did this in the previous exercise and it's a long list but we have already checked these in advance. Do not skip this step for your own analyses!

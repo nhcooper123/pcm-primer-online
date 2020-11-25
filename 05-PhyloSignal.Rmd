@@ -49,7 +49,7 @@ frogtree <- read.nexus("data/frog-tree.nex")
 str(frogtree)
 ```
 
-Remember to check the tree is dichotomous, i.e. has no polytomies, and rooted. 
+Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and ultrametric. 
 
 ```{r}
 # Check whether the tree is binary
@@ -58,6 +58,9 @@ is.binary.tree(frogtree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(frogtree)
+# Check whether the tree is ultrametric
+# We want this to be TRUE 
+is.ultrametric(frogtree)
 ```
 
 Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before going any further.

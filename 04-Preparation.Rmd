@@ -83,6 +83,19 @@ is.rooted(frogtree)
 
 Our tree is rooted so it's ready to go.
 
+Finally we might want to check that the tree is ultrametric. Most functions will assume this, and although we can see the tree looks ultrametric when we plotted it above, we should still check.
+
+```{r}
+# Check the tree is ultrametric
+is.ultrametric(frogtree)
+```
+
+If this is `FALSE` there are two options. If the tree really is non-ultrametric, for example if it contains fossil species, then we can't use it in methods that require an ultrametric tree. However, there are cases (the dragonfly tree in *Chapter 11* is one example) where the tree is non-ultrametric due to a rounding error. In the latter case we can use the `phytools` function `force.ultrametric` to fix this.
+
+```{block, type = "detail"}
+**When can a tree that looks ultrametric appear to be non-ultrametric?** Most of the methods we use expect trees to be ultrametric, i.e. that all the tips line up, generally at the present day (time 0). Sometimes (see *Chapter 11* the tree and it looks ultrametric, but when we check using `is.ultrametric` the answer returned is `FALSE`. What is going on? The tree is actually ultrametric, and will run in most analyses with R treating it as an ultrametric tree. The reason `is.ultrametric` tells us it is not ultrametric is related to rounding errors. When you save a tree file, it will save the branch lengths to a certain level of accuracy, but not always the full level of accuracy if your branch lengths have lots and lots of decimal places. When you read these trees back into R, a teeny tiny bit of the accuracy is lost which sometimes means that when R adds up the root-to-tip distances for each tip, they aren't all exactly the same length, so therefore technically the tree is not ultrametric. For most implementations this tiny difference is not a big deal. A quick fix to this problem is to use the function `force.ultrametric` which essentially fudges the numbers to force the tree to be ultrametric. __If your tree is genuinely non-ultrametric you should not use this function__ as it can introduce negative branch lengths which will break most functions you might want to use in R.
+```
+
 ## Reading the data into R
 The data are in a comma-delimited text file called `frog-eyes.csv`. Load these data as follows.
 
@@ -311,6 +324,10 @@ is.binary.tree(frogtree)
 # Check whether the tree is rooted
 # We want this to be TRUE
 is.rooted(frogtree)
+
+# Check whether the tree is ultrametric
+# We want this to be TRUE 
+is.ultrametric(frogtree)
 
 # Read in the data
 frogdata <- read_csv("data/frog-eyes.csv")
