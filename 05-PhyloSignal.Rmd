@@ -6,6 +6,10 @@ Phylogenetic signal is the pattern where close relatives have more similar trait
 We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
 ```
 
+## Before you start
+- Open the `05_PhyloSignal.RProj` file in the `05_PhyloSignal` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
+
 You will also need to install the following packages: 
 
 * `tidyverse`
@@ -313,7 +317,6 @@ Always carefully consider what variation in values of $\lambda$ and *K* and *D* 
 You should now know how to estimate the phylogenetic signal of your variables using R.
 
 ## Practical exercises
-
-In the data folder there is another tree (`consensusTree_10kTrees_Version2.nex`) and dataset (`primate-life-history-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
+In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
 
 Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in the previous exercise which should save you some time). Then use `phylosig` to estimate $\lambda$ and *K* for log gestation length.
