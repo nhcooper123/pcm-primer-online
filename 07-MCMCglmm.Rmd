@@ -28,6 +28,10 @@ Luckily, there is a package in R called `MCMCglmm` that performs *generalised li
 
 Unfortunately, fitting these models is quite tricky, in part because of the *MCMC* part of the `MCMCglmm` package name. MCMC stands for Markov Chain Monte Carlo, and this is a Bayesian method which means it works somewhat differently to the models we've met before. I'll try to explain as we go along, and see the *Primer* for more details.
 
+```{block, type = "warning"}
+Bayesian phylogenetic generalised mixed models are very powerful tools, but can be complicated to understand and difficult to use properly. Before jumping in to these it is vital that you have a good understanding of **generalised linear models (GLMs)**, and **generalised linear mixed models (GLMMs)** including **how to fit and interpret the outputs of these models in R**. This is beyond the scope of this book. If you feel uncomfortable with these we suggest you go back and learn these methods first. You also need a basic understanding of **Bayesian statistics**.
+```
+
 ## A really quick reminder of how Bayesian analyses work, with apologies to Bayesian scholars for the simplification!
 
 Bayesian methods calculate the probability of the model given the data, *P(model|data)*, i.e. the reverse of Maximum Likelihood. 
@@ -350,8 +354,8 @@ prior <- list(G = list(G1 = list(V = 1, nu = 1)),
 # Run the model
 model_mcmcglmm2 <- MCMCglmm(log(eyesize) ~ log(mass), 
                    data = mydata, 
-                   random = ~ Species,
-                   ginverse = list(Species = inv.phylo), 
+                   random = ~ tiplabel,
+                   ginverse = list(tiplabel = inv.phylo), 
                    prior = prior,
                    nitt = nitt, thin = thin, burnin = burnin,
                    verbose = FALSE)
@@ -381,15 +385,17 @@ There's no major change. Phew! We can therefore say that the difference in the p
 
 Hopefully you now see why these models are complicated and should be considered very carefully before using them. You should never skip the checking and tinkering steps. 
 
-## More complicated modifications
+## An example using a PGLMM
 
-### An example using a GLMM
+```{block, type = "warning"}
+**A reminder**. Before jumping in to these models it is vital that you have a good understanding of **generalised linear models (GLMs)**, and **generalised linear mixed models (GLMMs)** including **how to fit and interpret the outputs of these models in R**. This is beyond the scope of this book. If you feel uncomfortable with these we suggest you go back and learn these methods first.
+```
+
 The example above is technically only a LMM (linear mixed model) as we used a model with Gaussian or Normal errors. But what if our response is a count? Or a proportion? We can then use the GLMM architecture of `MCMCglmm` to help.
 
-For Poisson models we actually only need to change one thing, we need to add `family = "poisson"` to tell `MCMCglmm` to fit this model. This is the same as in standard `glm` analyses in R. Make sure you understand GLMs before attempting GLMMs!
+For Poisson models (used generally when the response variable is a count) we actually only need to change one thing, we need to add `family = "poisson"` to tell `MCMCglmm` to fit this model. This is the same as in standard `glm` analyses in R. Make sure you understand GLMs before attempting PGLMMs!
 
 For a fake example here, if we had a variable called `number_of_eggs` that contained count data, we could fit a model like this:
-
 ```{r, eval = FALSE}
 model_eggs <- MCMCglmm(number_of_eggs ~ log(mass), 
                    data = mydata, family = "poisson",
@@ -402,7 +408,7 @@ model_eggs <- MCMCglmm(number_of_eggs ~ log(mass),
 
 Other than these changes, everything runs as above including the priors and all the model diagnostics and checking.
 
-If we had proportion data instead, for example the number of individuals with blue eyes and the number with red eyes, we could use a binomial model. Again this works just like in a basic `glm` model. Make sure you understand GLMs before attempting GLMMs!
+If we had proportion data instead, for example the number of individuals with blue eyes and the number with red eyes, we could use a binomial model. Again this works just like in a basic `glm` model. Again, make sure you understand GLMs before attempting PGLMMs!
 
 We tell R we want to use a binomial error structure using `family = "binomial"`, and we include successes (number of frogs with red eyes) and failures (number of frogs with blue eyes) as one variable as the response using `cbind` to stick them together. If you're not sure why we would do this, go back and read up on GLMs. 
 
@@ -417,19 +423,22 @@ model_eyes <- MCMCglmm(cbind(numberred, numberblue) ~ log(mass),
                    verbose = FALSE)
 ```  
 
-Again, other than these changes, everything runs as above including the priors and all the model diagnostics and checking.
+Again, other than these changes, everything runs as above including the priors and all the model diagnostics and checking. Remember the parameter estimates for binomial GLMs are log odds ratios, so might look a little strange. Again, go back and read up on GLMs if this is all sounding unfamiliar to you.
 
-### Adding extra fixed and random effects
+```{block, type = "info"}
+If you're worried about whether you've fitted the right model, and the additional Bayesian components of `MCMCglmm` are causing you confusion, it's fine to fit the model using a standard GLM (using the `glm` function in R) to see if the results are similar. Remember that we expect the results to be somewhat different because `glm` does not account for phylogeny.
+```
+
+## Adding extra fixed and random effects
 I won't run these models here; this is just to give you an indication of how we can add complexity to these models.
 
-Adding fixed effects to models is easy, we just add things as we would in any other model in R. For example, if we wanted to fit this model from the PGLS exercise:
+Adding fixed effects to models is easy, we just add variables as we would in any other model in R. For example, if we wanted to fit this model from the PGLS exercise:
 ```{r, eval = FALSE}
 model.pgls2 <- pgls(log(eyesize) ~ log(mass) * as.factor(Adult_habitat), 
                    data = frog, lambda = "ML")
 ```
 
 We could fit a `MCMCglmm` model like this:
-
 ```{r, eval = FALSE}
 model_multiple<- model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass) * 
                                          as.factor(Adult_habitat), 
@@ -440,7 +449,9 @@ model_multiple<- model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass) *
                    nitt = nitt, thin = thin, burnin = burnin)
 ```
 
-If we want to add more random effects we need to be a bit more careful because we need to remember to define the priors too. So let's say we wanted to fit a model with phylogeny as a random effect *and* a random effect of Sex. We'd now have two random effects in the G-structure.
+Note that we are adding *fixed effects* in this example. If we want to add more *random effects* we need to be a bit more careful because we need to remember to define the priors for those random effects too. 
+
+Let's say we wanted to fit a model with phylogeny as a random effect *and* a random effect of Sex. We'd now have two random effects in the G-structure.
 
 We would define the priors as follows. Note that Sex is referred to as G2.
 ```{r, eval = FALSE}
