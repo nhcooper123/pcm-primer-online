@@ -91,7 +91,7 @@ n_dragonflies <- Ntip(dragonflytree)
 # Extract the total age of the tree
 age_dragonflies <- max(nodeHeights(dragonflytree))
 # Extract the speciation rate (number of new tips per unit time), assuming it follows an exponential curve (as expected under pure-birth)
-lambda_dragonflies <-(log(n_dragonflies)-log(2))/age
+lambda_dragonflies <-(log(n_dragonflies)-log(2))/age_dragonflies
 
 # Simulate 10 pure-birth trees using the above parameters
 sim_trees <- pbtree(b = lambda_dragonflies, 
