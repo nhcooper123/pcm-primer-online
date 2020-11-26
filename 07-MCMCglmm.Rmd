@@ -245,6 +245,17 @@ plot(model_mcmcglmm$VCV)
 ```
 We interpret these in the same way as above except the first row is the random effect that contains the information from the phylogeny, and the second row is the residual variance. This is called units in `MCMCglmm`.
 
+```{block, type = "info"}
+**Mean centring and scaling your variables to unit variance**. Often people advise that you rescale numeric variables so they are mean centred and scaled to unit variance. This can be really helpful if you've got models with multiple numeric variables that are quite different in scale (i.e. one ranges from 1 to 3 and one from 100 to 1000). If your models are not converging this may also help. To do this in R using functions from the `tidyverse` package:
+
+`mydata <-
+  mydata %>%
+  mutate(variable1_Z = scale(log(mydata$variable1))) %>%
+  mutate(variable2_Z = scale(abs(mydata$variable2)))`
+  
+Just remember to reverse the transformation when trying to interpret any parameter estimates on the scale of the original variable.
+```
+
 These plots look fine to me! :). Remember because of the nature of MCMC we won't have the exact same plots here, don't worry!
 
 We can also calculate the effective sample size (ESS) as follows.
