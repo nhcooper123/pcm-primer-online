@@ -4,7 +4,7 @@ Below are all the questions and answers to the practical exercises at the end of
 
 ## Data Wrangling
 
-Using the `frog-eyes-raw-data.csv` data and R, create a new dataframe that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from (Thomas et al 2020 ADD CITATION)
+Using the `frog-eyes-raw-data.csv` data and R, create a new dataframe that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from @thomas2020eye.
 
 There are multiple ways of doing this, but the easiest is as follows:
 ```{r, eval = FALSE}
