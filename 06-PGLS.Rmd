@@ -270,7 +270,7 @@ Note that because our $\lambda$ value is so close to 1, and this is the upper bo
 
 ### A PGLS example with more than one predictor variable
 
-In reality we are often interested in fitting models with more than one predictor variable. In the case of our frog eye size example, we've shown that smaller frogs have smaller eyes than larger frogs, but we imagine that the habitat the frogs live in might also influence eye size. For example, frogs living underground might have smaller eyes for their body size compared to frogs living in trees because they don't use their eyes as much (see @thomas2020eyes to see whether this is indeed the case!).
+In reality we are often interested in fitting models with more than one predictor variable. In the case of our frog eye size example, we've shown that smaller frogs have smaller eyes than larger frogs, but we imagine that the habitat the frogs live in might also influence eye size. For example, frogs living underground might have smaller eyes for their body size compared to frogs living in trees because they don't use their eyes as much (see @thomas2020eye to see whether this is indeed the case!).
 
 We can fit a more complex model to test whether eye size is correlated with both mass and adult habitat as follows:
 
