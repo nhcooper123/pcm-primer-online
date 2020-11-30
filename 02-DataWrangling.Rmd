@@ -8,9 +8,9 @@ library(measurements)
 library(knitr)
 ```
 
-## Before you start
+## Before you start {-}
 
-- Open the `02_DataWrangling.RProj` file in the `02_DataWrangling` folder to open your R Project for this exercise.
+- Open the `02-DataWrangling.RProj` file in the `02-DataWrangling` folder to open your R Project for this exercise.
 - Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
@@ -211,5 +211,4 @@ chameleon_final
 This exercise should have given you the skills to being wrangling data in R.
 
 ## Practical exercise
-
 Using the `frog-eyes-raw-data.csv` dataset and R, create a new dataset that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. We will talk more about this dataset in later exercises, but it comes from @thomas2020eye.

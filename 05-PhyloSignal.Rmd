@@ -6,8 +6,8 @@ Phylogenetic signal is the pattern where close relatives have more similar trait
 We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
 ```
 
-## Before you start
-- Open the `05_PhyloSignal.RProj` file in the `05_PhyloSignal` folder to open your R Project for this exercise.
+## Before you start {-}
+- Open the `05-PhyloSignal.RProj` file in the `05-PhyloSignal` folder to open your R Project for this exercise.
 - Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
@@ -21,7 +21,6 @@ You will also need to install the following packages:
 
 
 ## Preparation
-
 To begin we need to load the packages for this practical.
 
 ```{r, message = FALSE}
@@ -34,7 +33,7 @@ library(phytools)
 library(caper)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
 
 It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
@@ -274,7 +273,7 @@ frog$dropped$tips
 
 This also shows nothing because we already fixed the tree so that all the species in the tree are in the data.
 
-One last bit of prep required is that *D* cannot be estimated where trees have zero length branches. In `04-Preparation.Rmd` you may recall that we dealt with polytomies by replacing them with zero length branches using the `ape` function `mutli2di`. To remove the zero length branches we are going to use the opposite function: `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
+One last bit of prep required is that *D* cannot be estimated where trees have zero length branches. In `04-Preparation` you may recall that we dealt with polytomies by replacing them with zero length branches using the `ape` function `mutli2di`. To remove the zero length branches we are going to use the opposite function: `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
 
 ```{r}
 frog$phy <- di2multi(frog$phy)
@@ -319,4 +318,10 @@ You should now know how to estimate the phylogenetic signal of your variables us
 ## Practical exercises
 In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
 
-Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in the previous exercise which should save you some time). Then use `phylosig` to estimate $\lambda$ and *K* for log gestation length.
+Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in the previous exercise which should save you some time). Then answer the following questions.
+
+1. What is $\lambda$ for log gestation length?
+
+2. What is *K* for log gestation length?
+
+3. What is D for social status?

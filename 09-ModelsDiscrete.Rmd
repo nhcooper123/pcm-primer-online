@@ -6,6 +6,10 @@ The aims of this exercise are to learn how to use R to fit macroevolutionary mod
 We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from DEEPAK [CITE PAPER], and the tree comes from DEEPAK [CITE PAPER]. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out DEEPAK [CITE PAPER]!
 ```
 
+## Before you start {-}
+- Open the `09-ModelsDiscrete.RProj` file in the `09-ModelsDiscrete` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
+
 You will also need to install the following packages: 
 
 * `ape`
@@ -25,7 +29,7 @@ library(treeplyr)
 library(phytools)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
 
 It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
@@ -302,5 +306,16 @@ Ancestral state estimates (**not** reconstructions) are, at best, weighted avera
 You should now know how to fit simple models of evolution to discrete trait data in R.
 
 ## Practical exercises
+In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
 
+Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). Fit equal rates, symmetric rates and all rates different models to the social status variable for Primates (`SocialStatus`). Note that social status has two states: non-social (1) or social (2).
 
+Then answer the following questions.
+
+1. Which model fits best? 
+
+2. What is the transition rate from non-social (1) to social (2), and vice versa, in the all rates different model? What does this mean biologically?
+
+3. Plot ancestral state estimates of social status (from the ARD model) on the phylogeny. Is the root node estimated as being non-social or social?
+
+4. Why didn't I ask you to fit the symmetric model?

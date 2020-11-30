@@ -10,6 +10,10 @@ In `09-ModelsDiscrete` we fitted three simple models of evolution to discrete da
 We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from DEEPAK [CITE PAPER], and the tree comes from DEEPAK [CITE PAPER]. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out DEEPAK [CITE PAPER]!
 ```
 
+## Before you start {-}
+- Open the `10-ModelsBeyond.RProj` file in the `10-ModelsBeyond` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
+
 You will also need to install the following packages: 
 
 * `ape`
@@ -31,7 +35,7 @@ library(phytools)
 library(OUwie)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
 
 It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
@@ -360,3 +364,17 @@ OUM
 You should now know how to fit some of the more complex models of evolution in R.
 
 ## Practical exercises
+In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
+
+Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). 
+
+Using log body size (`AdultBodyMass_g`) as your continuous trait, and social status (`SocialStatus`) to define the selective regimes, fit (A) a multi-rate Brownian motion model and (B) an OU model with trait optima or long-term mean values for different evolutionary regimes but the same $\sigma^2$ and $\alpha$. Note that social status has two states: non-social (1) or social (2). Assume it is evolving according to an all rates different model.
+Then answer the following questions:
+
+1. Which is the best fitting model?
+
+2. If you were running these analyses for a publication, what additional models would you compare these models to?
+
+3. In the multi rate Brownian model, which social status state has the higher rate of log body mass evolution?
+
+4. Look at the parameter estimates of the multi peak OU model. Do you see anything worrying there? It might help to look at a histogram showing the body sizes of species in the non-social and the social categories.

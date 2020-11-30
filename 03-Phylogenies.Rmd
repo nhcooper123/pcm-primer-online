@@ -2,8 +2,8 @@
 
 Using phylogenies in R can feel daunting at first, even if you're already familiar with R. Luckily, lots of nice R packages exist to help us work with them, and fairly new packages like `ggtree` mean we can now make beautiful phylogeny plots without needing to resort to other software. In this chapter I'll introduce you to how R stores phylogenies, and then show you how to plot them and manipulate them before using them in your PCMs. Most of the examples come from the *Primer*.
 
-## Before you start
-- Open the `03_Phylogenies.RProj` file in the `03_Phylogenies` folder to open your R Project for this exercise.
+## Before you start {-}
+- Open the `03-Phylogenies.RProj` file in the `03-Phylogenies` folder to open your R Project for this exercise.
 - Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
@@ -575,18 +575,18 @@ write.nexus(bird.orders_plusbigbird, file = "bigbirdtree.nex")
 This exercise should have given you the skills to understand, plot and manipulate phylogenies in R.
 
 ## Practical exercise
+Read in the `frog-tree.nex` phylogeny from the folder. This comes from @feng2017phylogenomics. Then do the following.
 
-Using the `frog-tree.nex` phylogeny, see if you can do the following. Note that we will talk more about this tree in later exercises, but it comes from @feng2017phylogenomics.
-
-1. Read the tree into R.
-2. Use R functions to determine: 
+1. Use R functions to determine: 
     a) how many species are in the tree?
     b) is the tree fully resolved?
     c) is the tree rooted?
-3. Use `plot.phylo` to plot the tree.
+
+2. Use `plot.phylo` to plot the tree.
     a) Can you change the size of the tip labels?
     b) Can you make a fan-shaped plot? 
     c) Can you change the colour of the tips and branches?
-4. Save the tree to file as "mysuperdoopertree.nex"    
+
+3. Save the tree to file as "mysuperdoopertree.nex"  
     
 EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send me a screenshot on Twitter at nhcooper123!

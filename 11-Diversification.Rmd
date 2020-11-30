@@ -464,4 +464,38 @@ There is some overlap, but it's clear that the prior is different to the posteri
 You should now know how to plot LTT plots, calculate the $\gamma$ statistic, and analyses the outputs of BAMM using `BAMMtools` in R.
 
 ## Practical exercises
-In the data folder there is another tree () and BAMM outputs dataset ()
+`BAMMtools` has a several inbuilt example datasets. For this practical exercise we will use the cetacean (`whales`; from @steeman2009radiation) and the ray-finned fishes (`fishes`; from @rabosky2013rates) datasets.
+
+Load the whales and fishes trees and BAMM outputs data into R (__there is no `mcmc.fishes` file___) as follows.
+```{r}
+# Load whales data from BAMMtools
+data(whales)
+data(mcmc.whales)
+data(events.whales)
+
+# Load fishes data from BAMMtools
+data(fishes)
+data(mcmc.fishes)
+data(events.fishes)
+
+# Read in the tree, mcmc, and edata for whales
+whales_tree <- whales
+whales_mcmc <- mcmc.whales
+whales_edata <- getEventData(whales, eventdata = events.whales, burnin = 0.1)
+
+# Read in the tree, mcmc, and edata for fishes
+fishes_tree <- fishes
+fishes_edata <- getEventData(fishes, eventdata = events.fishes, burnin = 0.1)
+```
+
+Then answer the following questions: 
+
+1. How can we tell that the BAMM model for whales has converged? What is the effective sample size for number of shifts?
+
+2. What is the most common number of rate shifts in the posterior for the whales data?
+
+3. Plot the 95% credible set of rate shift configurations for whales.
+
+4. Plot the mean phylorate plot for fishes.
+
+5. What are the mean speciation rate and the 90% posterior density for mean speciation rate in fishes?

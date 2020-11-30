@@ -5,6 +5,10 @@ The aims of this exercise are to learn how to use R to perform Phylogenetic Gene
 We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
 ```
 
+## Before you start {-}
+- Open the `07-MCMCglmm.RProj` file in the `07-MCMCglmm` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
+
 You will also need to install the following packages: 
 
 * `tidyverse`
@@ -66,7 +70,7 @@ library(MCMCglmm)
 library(coda)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation.Rmd` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. Hopefully you're pretty comfortable with this by now.
+Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. Hopefully you're pretty comfortable with this by now.
 
 ```{r, message = FALSE}
 # Read in the data
@@ -119,7 +123,7 @@ mytree <- frogstuff$phy
 ### Inverse phylogenetic variance-covariance matrix 
 For `MCMCglmm` we need the inverse of the phylogenetic variance-covariance matrix. 
 
-To do this, we first need the tree to have no zero-length branches. In `04-Preparation.Rmd` you may recall that we deal with polytomies by replacing them with zero length branches using the `ape` function `mutli2di`. To remove the zero length branches we are going to use the opposite function: `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
+To do this, we first need the tree to have no zero-length branches. In `04-Preparation` you may recall that we deal with polytomies by replacing them with zero length branches using the `ape` function `mutli2di`. To remove the zero length branches we are going to use the opposite function: `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
 
 ```{r}
 # Remove zero length branches and replace with polytomies
