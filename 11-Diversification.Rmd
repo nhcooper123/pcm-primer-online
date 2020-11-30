@@ -6,6 +6,10 @@ The aims of this exercise are to learn how to use R to perform some simple diver
 We will be using the diversification rates of dragonflies (Anisoptera) as an example. The tree comes from @letsch2016not and is available to download from @letsch2016data. I'm only using one of their trees. If you want to see the full results check out @letsch2016not!
 ```
 
+## Before you start {-}
+- Open the `11-Diversification.RProj` file in the `11-Diversification` folder to open your R Project for this exercise.
+- Make yourself a new R script for your code.
+
 You will also need to install the following packages: 
 
 * `ape`
