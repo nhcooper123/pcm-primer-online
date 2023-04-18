@@ -1,0 +1,41 @@
+# Common mistakes using PCMs in R
+
+Throughout these exercises I've tried to mention common mistakes you might come across when working with your own data. I've collated some of them here 
+
+## What to do if your code does not run
+
+1. Run through everything
+
+Restart R studio
+
+
+## Common errors and how to fix them
+
+### Standard R issues
+
+1. Typos.
+
+2. Incorrectly spelled variable names
+
+3. Missing brackets, parentheses, commas, quotation marks.
+
+4. The dreaded `+`
+
+5. Cannot find `name of function`
+
+6. Cannot find the dataset
+  - unzipped
+  - in the right place?
+  
+### Issues with the tree or data
+
+
+
+### More specific PCM issues
+
+- is the data a data frame?
+- have you added row names as species names, and do they match the tree?
+- optim errors
+
+
+
