@@ -2,6 +2,7 @@
 PCM_Primer/*
 
 # History files
+.DS_Store
 .Rhistory
 .Rapp.history
 
