@@ -4,16 +4,15 @@ Using phylogenies in R can feel daunting at first, even if you're already famili
 
 ## Before you start {-}
 - Open the `03-Phylogenies.RProj` file in the `03-Phylogenies` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `ape`
-* `tidyverse`
-* `ggtree`
-* `patchwork`
-* `ggimage`
-* `phytools`
+* `tidyverse` - for reading, manipulating and plotting data
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `ggtree` - for plotting trees
+* `patchwork` - to plot multi-panel plots
+* `ggimage` - to add images to plots
+* `phytools` - to add species to phylogenies 
 
 ## What do phylogeny files look like?
 
@@ -228,7 +227,7 @@ legend("topleft", fill = mycolours,
 `cex = 1.2` increases the point size, and `adj = 1` moves the tip labels sideways a bit so they don't obscure the ends of the branches.
 
 ### Basic phylogeny plotting with `ggtree`
-I won't go into a huge amount of detail about `ggtree` because the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) is really comprehensive, and for the most part you won't need to know how to do most of the things it can do. Instead I'll give a basic introduction, and then show you how to make some of the plots used in chapter 2 of the *Primer*. I will also provide the code used to build figures in the *Primer* where appropriate in later exercises. 
+I won't go into a huge amount of detail about `ggtree` because the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) is really comprehensive, and for the most part you won't need to know how to do most of the things it can do. Instead I'll give a basic introduction, and then show you how to make some of the plots used in Chapter 2 of the *Primer*. I will also provide the code used to build figures in the *Primer* where appropriate in later exercises. 
 
 #### A quick intro to `ggplot2`
 
@@ -262,6 +261,7 @@ ggplot(data = monsterdata, aes(x = monster, y = scariness)) +
   theme_bw() +
   ylim(0, 100)
 ```
+
 A couple of points to note:
 
 In `ggplot2`, *theme* is used to define the overall look of the plot. We can use the `theme` function modify everything individually, but there are some built in themes that do lots of things at once. `theme_bw` is one of my favourites as it gets rid of the horrible grey background that is a `ggplot2` default, but keeps the nice background grid.
@@ -292,6 +292,7 @@ With `patchwork`, we can use `+` to plot things next to each other, or `/` to pl
 library(patchwork)
 myplot1 + myplot2
 ```
+
 ```{r}
 myplot1 / (myplot1 + myplot2)
 ```
@@ -408,7 +409,7 @@ p4 <-
 
 What about highlighting clades? We can use `geom_hilight` to add coloured shading to all species from a defined node, and/or `geom_cladelabel` to label clades (A and B below) from a defined node. The offset in `geom_cladelabel` defines how far from the phylogeny tips the lines should be drawn. Again, you'll need to play with this to get the best figure possible.
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning = FALSE}
 # Plot with images at tips
 ggtree(tree) + 
   theme_tree() +
@@ -456,8 +457,6 @@ groupOTU(p, feathers, 'feathers') +
   theme(legend.position = "top")
 ```
 
-Note the warning here that tells us not to use `filter_`. This is from the internal `ggtree` code and can be ignored for now. Either this will be updated in the future, or `ggtree` will change how this is done. So if this code breaks completely try the `ggtree` help files for a solution.
-
 ```{block, type = "info"}
 There are many more things you can do with `ggtree`, all based on this idea of adding layers. See the manual for `ggtree` at http://yulab-smu.top/treedata-book/index.html for more details.
 ```
@@ -472,12 +471,12 @@ data(bird.orders)
 ```
 
 ### Removing polytomies
-Most R functions require your tree to be dichotomous, i.e. to have no polytomies. To check whether your tree is dichotomous use `is.binary.tree`. 
+Most R functions require your tree to be dichotomous, i.e. to have no polytomies. To check whether your tree is dichotomous use `is.binary`. 
 
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(bird.orders) 
+is.binary(bird.orders) 
 ```
 
 If this is FALSE, use `multi2di` to make the tree dichotomous. This function works by randomly resolving polytomies with zero-length branches. This doesn't change the tree overall, it's just a clever trick to get the functions to work.
@@ -528,6 +527,7 @@ You can also remove multiple tips at once...
 bird.orders <- drop.tip(bird.orders, tip = c("Struthioniformes", "Tinamiformes"))
 plot(bird.orders)
 ```
+
 However, if you're looking to do something more complex like removing entire groups it's probably easier to use the functions in the next exercise.
 
 #### Adding species
@@ -544,6 +544,7 @@ node <- which(bird.orders$tip.label == "Galliformes")
 # Which node is it?
 node
 ```
+
 We then add the species to this node using the `bind.tip` function in `phytools`:
 
 ```{r}
@@ -553,6 +554,7 @@ bird.orders_plusbigbird <- bind.tip(bird.orders, tip.label = "Big_Bird",
 
 plot(bird.orders_plusbigbird)
 ```
+
 You can see that Big Bird has been added to the Galliformes branch. In the `bind.tip` function, `position` is the length of the new branch. Here we used 4.5, but you could use other numbers if you needed the branch to be longer or shorter (i.e. if you knew the divergence between Galliformes and Big Bird was longer ago or more recent). 
 
 ```{block, type = "detail"}
@@ -589,4 +591,4 @@ Read in the `frog-tree.nex` phylogeny from the folder. This comes from @feng2017
 
 3. Save the tree to file as "mysuperdoopertree.nex"  
     
-EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR go make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send me a screenshot on Twitter at nhcooper123!
+EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send me a screenshot on Twitter at nhcooper123!
