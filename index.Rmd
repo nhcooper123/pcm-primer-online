@@ -23,7 +23,7 @@ knitr::write_bib(c(
 
 The material in this online book is designed to support the *Primer on Phylogenetic Comparative Methods for the Biological Sciences* by Natalie Cooper and Rob P Freckleton. These materials were primarily written by me (Natalie), so don't blame Rob for any errors! 
 
-All practical exercises use R [@rcoreteam2020], so some knowledge of R is required. I have provided the basics in the first chapter. The online book focuses on practical implementations of methods for the most part. For information on the theoretical underpinnings of the topics covered here please refer to the *Primer*. 
+All practical exercises use R [@rcoreteam2023], so some knowledge of R is required. I have provided the basics in the first chapter. The online book focuses on practical implementations of methods for the most part. For information on the theoretical underpinnings of the topics covered here please refer to the *Primer*. 
 
 ## Datasets and scripts {-}
 [UPDATE THIS WHEN FINISHED WITH OUP LINK]
@@ -35,7 +35,7 @@ It is possible to use these materials in a number of ways.
 
 1. Follow the [online workbook](https://nhcooper123.github.io/pcm-primer-online/) in a web browser, copy-pasting code into an R script and then running it in the R console.
 
-2. Open the .Rmd (R Markdown) file for each exercise in RStudio and use it as an RNotebook. This allows you to run chunks of code in the script and for the results to appear below the code. You need to open the .Rmd file in folder for that exercise. 
+2. Open the .Rmd (R Markdown) file for each exercise in RStudio and use it to run the code. This allows you to run chunks of code in the script and for the results to appear below the code. You need to open the .Rmd file in folder that contains the correct datasets for that exercise. 
 
 To run the code, you just click the little green triangles to the far right of each code chunk (grey boxes with R code in them) to run the code as shown below. 
 
@@ -75,15 +75,15 @@ Apologies in advance to the non-vertebrate, non-animal fans out there. To make u
 
 Who doesn't love frogs? Frogs are cool. One of the coolest things about them is that they have weird bulgy eyes...or do they? Some species have teeny tiny eyes, while others have massive eyes. In fact frogs have some of the biggest eyes relative to their body size across all vertebrates. @thomas2020eye predicted that this variation might be due to where they live, their mating habits, the time of day they are active, and their body size. In our examples we'll test some of these hypotheses using phylogenetic comparative methods.
 
-The data and modified tree for the XX species in this example come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. If you want to see the full results check out @thomas2020eye! And there's a nice summary of the paper [here](https://www.nhm.ac.uk/discover/news/2020/september/frogs-have-some-of-the-biggest-eyes-amongst-vertebrates.html).
+The data and modified tree for this example come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. If you want to see the full results check out @thomas2020eye! And there's a nice summary of the paper [here](https://www.nhm.ac.uk/discover/news/2020/september/frogs-have-some-of-the-biggest-eyes-amongst-vertebrates.html).
 
 ### Natricine snake head shape evolution {-}
 
-![Snakes have different head shapes in different habitats. These are (clockwise starting in the top left) terrestrial/semiaquatic, aquatic, aquatic burrowing, and burrowing natricines. Image credits: Deepak???](images/snakes.jpg)
+![Snakes have different head shapes in different habitats. These are (clockwise starting in the top left) terrestrial/semiaquatic, aquatic, aquatic burrowing, and burrowing natricines. Image credits: @deepak2023](images/snakes.jpg)
 
-Snakes are also cool, especially natricines which are the group that contains both the delightful European grass snake (*Natrix natrix*) and the ubiquitous garter snakes (genus *Thamnophis*) of North America. Natricine snakes are found across the globe, and have a range of interesting ecologies and more morphological variation than you might expect, especially in their head shape. Deepak [CITE PAPER] predicted that these variations in head shape would be more closely related to the ecomorph they belonged to (i.e. whether the snake was terrestrial, aquatic, burrowing or aquatic burrowing) than their evolutionary history. They expected that head shape might be an example of convergent evolution. In our examples we'll test some of these hypotheses using phylogenetic comparative methods.
+Snakes are also cool, especially natricines which are the group that contains both the delightful European grass snake (*Natrix natrix*) and the ubiquitous garter snakes (genus *Thamnophis*) of North America. Natricine snakes are found across the globe, and have a range of interesting ecologies and more morphological variation than you might expect, especially in their head shape. @deepak2023 predicted that these variations in head shape would be more closely related to the ecomorph they belonged to (i.e. whether the snake was terrestrial, aquatic, burrowing or aquatic burrowing) than their evolutionary history. They expected that head shape might be an example of convergent evolution. In our examples we'll test some of these hypotheses using phylogenetic comparative methods.
 
-The data for the XX species in this example comes from DEEPAK [CITE PAPER], and the tree comes from DEEPAK [CITE PAPER]. If you want to see the full results check out DEEPAK [CITE PAPER]! And there's a nice summary of the paper [here]().
+The data for this example comes from @deepak2023, and the tree comes from @deepak2021. If you want to see the full results check out @deepak2023! And there's a nice summary of the paper [here]().
 
 ### Diversification in dragonflies {-}
 
@@ -98,11 +98,11 @@ Lots of people work on R and R packages for free. They're the reason that R is s
 
 The citation for R will usually look something like this
 
-> All analyses used R version 4.0 (R Core Team 2020). 
+> All analyses used R version 4.2.0 (R Core Team 2022). 
 
-Your version number might be different (4.0 is the current version at the time of writing this book). You only need to do this once, usually in the methods section. The full citation for the bibliography is usually something like: 
+Your version number might be different (4.2.0 is the current version at the time of writing this book). You only need to do this once, usually in the methods section. The full citation for the bibliography is usually something like: 
 
-> R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+> R Core Team (2023). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
 
 If you don't remember this, or can't work out what version of R you are using, the R folk have you covered. To get the citation you can use:
 ```{r}
@@ -138,7 +138,7 @@ packageVersion("caper")
 An additional benefit to citing R packages is that it helps people understand exactly what you did. It's possible there are multiple ways to run a PGLS model, but if your report says you used `caper`, it's easy for a reader to check how `caper` does it and to know exactly what you did. This helps people reproduce your analysis, and can also help you prove to anyone assessing your work that you know what you are doing!
 
 ## Acknowledgements {-}
-Thanks to the many generations of students who have taken courses with me and helped me to hone these materials. And to the many others out there teaching PCMs and writing tutorials that helped me learn these methods in the first place, especially Luke Harmon, Brian O'Meara, Dave Orme, Sam Price, Dan Rabosky, Liam Revell and Graham Slater. Also thanks to you for test running this version of these materials.
+Thanks to the many generations of students who have taken courses with me and helped me to hone these materials. And to the many others out there teaching PCMs and writing tutorials that helped me learn these methods in the first place, especially Luke Harmon, Brian O'Meara, David Orme, Sam Price, Dan Rabosky, Liam Revell and Graham Slater. Also thanks to everyone for test running these materials.
 
 Particular thanks to the authors of the R packages used and cited in this book. None of this would be possible without them. __Do not forget to cite the packages you use in your own work__. And if you meet one of them in person, buy them a beer/cake/coffee to say thank you!
 
