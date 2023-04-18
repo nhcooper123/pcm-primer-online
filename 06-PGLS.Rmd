@@ -7,15 +7,13 @@ We will be using the evolution of eye size in frogs as an example. The data and 
 
 ## Before you start {-}
 - Open the `06-PGLS.RProj` file in the `06-PGLS` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `ape`
-* `geiger`
-* `treeplyr`
-* `caper`
-* `tidyverse`
+* `tidyverse` - for reading, manipulating and plotting data
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `geiger` - to check species in the tree and data match
+* `caper` - to fit PGLS models
 
 ## Preparation
 
@@ -25,7 +23,6 @@ To begin we need to load the packages for this practical.
 # Load the packages
 library(ape)
 library(geiger)
-library(treeplyr)
 library(caper)
 library(tidyverse)
 ```
@@ -54,7 +51,7 @@ Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and u
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(frogtree)
+is.binary(frogtree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(frogtree)
@@ -74,37 +71,34 @@ check
 ```
 Here all the excluded species are excluded because they are genuinely missing, not because of any typos, so we can move on.
 
-Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
+Next we remove species that are not in the tree and data.
 
 ```{r}
-# Combine and match the tree and data
-frogstuff <- make.treedata(tree = frogtree,  data = frogdata, 
-                              name_column = "tiplabel")
+# Remove species missing from the data
+mytree <- drop.tip(frogtree, check$tree_not_data)
 
-# Look at the tree
-frogstuff$phy
+# Remove species missing from the tree
+matches <- match(frogdata$tiplabel, check$data_not_tree, nomatch = 0)
+mydata <- subset(frogdata, matches == 0)
+```
+
+Finally we save check the data and the tree, and convert the data to a data frame.
+
+```{r}
+# Look at the tree summary
+str(mytree)
+
 # Look at the data
-glimpse(frogstuff$dat)
-```
+glimpse(mydata)
 
-Then we replace the removed species names column, and save the data as a data frame for later analyses.
-
-```{r}
-# Make a new column called tiplabel with the tip labels in it
-frogstuff$dat$tiplabel <- frogstuff$phy$tip.label
-# Force mydata to be a data frame
-mydata <- as.data.frame(frogstuff$dat)
-```
-
-Finally we save the tree:
-
-```{r}
-# Save tree as mytree
-mytree <- frogstuff$phy
+# Convert to a dataframe
+mydata <- as.data.frame(mydata)
+# Check this is now a data frame
+class(mydata)
 ```
 
 ```{block, type = "info"}
-Note that is is possible to use the `make.treedata` object directly to run some analyses, but we have saved these separately here as many PCMs cannot work with this.
+Note that is is possible to directly to do this in `caper` using the `comparative.data` function, but it is good practice to do this to check the data and taxa match as you expected them to before you start your analyses.
 ```
 
 Now we're ready to run our analyses!
@@ -136,12 +130,12 @@ PGLS offers some important advantages over independent contrasts. The model of t
 
 ### Fitting PGLS models in R
 
-To perform PGLS models in R, `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`. This is similar to what we did with `make.treedata`, but it does some stuff that is particular to how `caper` works so we still need to do this here.
+To perform PGLS models in R, `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`.
 
-Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. Here we won't drop any species because we already did this using `make.treedata`.
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. Here we won't drop any species because we already did this above.
 
 ```{r}
-frog <- comparative.data(phy = mytree, data = mydata, 
+frog <- comparative.data(phy = mytree, data = as.data.frame(mydata), 
                             names.col = tiplabel, vcv = TRUE, 
                             na.omit = FALSE, warn.dropped = TRUE)
 ```
@@ -344,6 +338,7 @@ ggplot(mydata, aes(x = log(mass), y = log(eyesize), colour = Adult_habitat)) +
   geom_smooth(method = 'lm', se = FALSE, formula = 'y ~ x') +
   theme_bw()
 ```
+
 We can see that the slope for fossorial (burrowing) species is shallower than for other species, suggesting that eye size increases more slowly with increasing mass in that group.
 
 ```{block, type = "warning"}

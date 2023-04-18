@@ -3,19 +3,18 @@
 The aims of this exercise are to learn how to use R to fit macroevolutionary models in R to discrete traits.
 
 ```{block, type = "info"}
-We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from DEEPAK [CITE PAPER], and the tree comes from DEEPAK [CITE PAPER]. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out DEEPAK [CITE PAPER]!
+We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from @deepak2023, and the tree comes from @deepak2021. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @deepak2023!
 ```
 
 ## Before you start {-}
 - Open the `09-ModelsDiscrete.RProj` file in the `09-ModelsDiscrete` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `ape`
-* `geiger`
-* `treeplyr`
-* `phytools`
+* `tidyverse` - for reading, manipulating and plotting data
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `geiger` - to fit models of evolution
+* `phytools` - for plots of transition rates
 
 ## Preparation
 
@@ -23,9 +22,9 @@ To begin we need to load the packages for this practical.
 
 ```{r, message = FALSE}
 # Load the packages
+library(tidyverse)
 library(ape)
 library(geiger)
-library(treeplyr)
 library(phytools)
 ```
 
@@ -53,7 +52,7 @@ Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and u
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(snaketree)
+is.binary(snaketree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(snaketree)
@@ -71,36 +70,29 @@ check <- name.check(phy = snaketree, data = snakedata,
 # check
 ```
 
-Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
+Finally remove species that are not in the tree and the data and ensure the data is a data frame.
 
 ```{r}
-# Combine and match the tree and data
-snakestuff <- make.treedata(tree = snaketree,  data = snakedata, 
-                              name_column = "Species")
+# Remove species missing from the data
+mytree <- drop.tip(snaketree, check$tree_not_data)
 
-# Look at the tree
-snakestuff$phy
+# Remove species missing from the tree
+matches <- match(snakedata$Species, check$data_not_tree, nomatch = 0)
+mydata <- subset(snakedata, matches == 0)
+
+# Look at the tree summary
+str(mytree)
+
 # Look at the data
-glimpse(snakestuff$dat)
+glimpse(mydata)
+
+# Convert to a dataframe
+mydata <- as.data.frame(mydata)
+# Check this is now a data frame
+class(mydata)
 ```
 
 Overall we have 162 species in the data and the tree.
-
-Then we replace the removed species names column, and save the data as a data frame for later analyses.
-
-```{r}
-# Make a new column called tiplabel with the tip labels in it
-snakestuff$dat$tiplabel <- snakestuff$phy$tip.label
-# Force mydata to be a data frame
-mydata <- as.data.frame(snakestuff$dat)
-```
-
-Finally we save the tree:
-
-```{r}
-# Save tree as mytree
-mytree <- snakestuff$phy
-```
 
 Now we're ready to run our analyses!
 
@@ -124,7 +116,16 @@ We can also visualize these variables on our tree by plotting them with colours.
 ecomorph.colors <- c("darkblue", "plum", "chocolate", "lightblue", "lightgreen")
 ```
 
-Finally we can plot the tree with coloured tip labels to match the ecomorphs. I've rearranged the colour order in the legend so it makes more sense biologically (i.e. putting the aquatic and Semi-aquatic next to each other rather than ordering it alphabetically). To make things a bit easier to see I've left off the tip labels.
+We then need to make sure the variable `Ecomorph` is a factor rather than a character as R deals with these differently and we need it to be a factor for the next bit of code to work. We can do this using the function `as.factor` and we can change it in `mydata` usign the `tidyverse` function `mutate`. 
+
+```{r}
+# Make Ecomorph a factor
+mydata <- 
+  mydata %>%
+  mutate(Ecomorph = as.factor(Ecomorph))
+```
+
+Finally we can plot the tree with coloured tip labels to match the ecomorphs. I've rearranged the colour order in the legend so it makes more sense biologically (i.e. putting the aquatic and semi-aquatic next to each other rather than ordering it alphabetically). To make things a bit easier to read I've left off the tip labels. I've done this using `ape` plotting functions but you can also do this using `ggtree`.
 
 ```{r}
 # Plot the tree with colours at the tips to represent ecomorph
@@ -138,7 +139,7 @@ legend("bottomleft", pch = 15, bty = "n",
                "chocolate", "lightgreen"))
 ```
 
-Some ecomorphs are clustered, but others appear across the phylogeny (this is the result of some pretty cool convergent evolution - check out DEEPAK CITE PAPER for more details).
+Some ecomorphs are clustered, but others appear across the phylogeny (this is the result of some pretty cool convergent evolution - check out @deepak2023 for more details).
 
 ### Fitting the ER, SYM and ARD models of evolution using `fitDiscrete`
 
@@ -154,7 +155,17 @@ For more details on these models please see the *Primer*.
 
 We are going to use the package `geiger` to fit models in this exercise, so we need the additional preparation step we first met in chapter `05-PhyloSignal`. We need to create an object in R that only contains the variable required, and the species names (so we can match it up to the tree). 
 
-We use the function `pull` to extract just the ecomorph values. We then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels, but luckily `make.treedata` does this automatically.
+We use the function `pull` to extract just the ecomorph values. We then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels so we need to reorder the data first...
+
+```{r}
+# Check first few tip labels and species
+mytree$tip.label[1:5]
+mydata$Species[1:5]
+# These are different so we reorder the data by the tips
+mydata <- mydata[match(mytree$tip.label, mydata$Species), ]
+# Check this now matches the tip label order
+mydata$Species[1:5]
+```
 
 ```{r}
 # Create ecomorph containing just ecomorph values
@@ -164,7 +175,7 @@ ecomorph <- as.character(ecomorph)
 # Look at the first few rows
 head(ecomorph)
 # Give log head length names = species names at the tips of the phylogeny
-names(ecomorph) <- mydata$tiplabel
+names(ecomorph) <- mydata$Species
 # Look at the first few rows
 head(ecomorph)
 ```
@@ -226,6 +237,7 @@ This is quite complex because in the ARD model we have different rates for each 
 # Plot Q matrix as network without zeros
 plot.gfit(ard, show.zeros = FALSE)
 ```
+
 ```{block, type = "detail"}
 For now these plots are pretty simple, but you can add some code to make the arrows different sizes etc. if you need to using the code here http://blog.phytools.org/2020/09/graphing-fitted-m-k-model-with.html. Also check out future versions of `phytools` which should have these functions added.
 ```

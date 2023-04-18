@@ -8,16 +8,14 @@ We will be using the evolution of eye size in frogs as an example. The data and 
 
 ## Before you start {-}
 - Open the `05-PhyloSignal.RProj` file in the `05-PhyloSignal` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `tidyverse`
-* `ape`
-* `geiger`
-* `treeplyr`
-* `phytools`
-* `caper`
+* `tidyverse` - for reading, manipulating and plotting data
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `geiger` - to check species in the tree and data match
+* `phytools` - to estimate $lambda$ and K
+* `caper` - to estimate D
 
 
 ## Preparation
@@ -28,7 +26,6 @@ To begin we need to load the packages for this practical.
 library(tidyverse)
 library(ape)
 library(geiger)
-library(treeplyr)
 library(phytools)
 library(caper)
 ```
@@ -57,7 +54,7 @@ Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and u
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(frogtree)
+is.binary(frogtree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(frogtree)
@@ -77,36 +74,35 @@ check
 ```
 Here all the excluded species are excluded because they are genuinely missing, not because of any typos, so we can move on.
 
-Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
+Next we exclude species that are not in both the tree and the data, using the following code:
 
 ```{r}
-# Combine and match the tree and data
-frogstuff <- make.treedata(tree = frogtree,  data = frogdata, 
-                              name_column = "tiplabel")
+# Remove species missing from the data
+mytree <- drop.tip(frogtree, check$tree_not_data)
 
-# Look at the tree
-frogstuff$phy
+# Remove species missing from the tree
+matches <- match(frogdata$tiplabel, check$data_not_tree, nomatch = 0)
+mydata <- subset(frogdata, matches == 0)
+```
+
+Finally we check the tree and data have the same number of species:
+
+```{r}
+# Look at the tree summary
+str(mytree)
+
 # Look at the data
-glimpse(frogstuff$dat)
+glimpse(mydata)
 ```
 
-Then we replace the removed species names column, and save the data as a dataframe for later analyses.
+Don't forget to ensure the data are a data frame:
 
 ```{r}
-# Make a new column called tiplabel with the tip labels in it
-frogstuff$dat$tiplabel <- frogstuff$phy$tip.label
-# Force mydata to be a data frame
-mydata <- as.data.frame(frogstuff$dat)
+# Convert to a dataframe
+mydata <- as.data.frame(mydata)
+# Check this is now a data frame
+class(mydata)
 ```
-
-Finally we save the tree:
-
-```{r}
-# Save tree as mytree
-mytree <- frogstuff$phy
-```
-
-Note that is is possible to use the `make.treedata` object directly to run some analyses, but we have saved these separately here as many PCMs cannot work with this.
 
 Now we're ready to run our analyses!
 
@@ -214,45 +210,44 @@ mydata %>%
   summarise(n())
 ```
 
-There are 36 species without data for this variable. If we were doing something like PGLS (see next exercise), `caper` would be fine with this, but for `phylo.d` we can only work with data without NAs. To fix this, we can use `filter` to exclude the species with NAs, but we also want to remove these species from the tree. It's easiest to go back to our `treeplyr` functions to do this.
+There are 36 species without data for this variable. If we were doing something like PGLS (see next exercise), `caper` would be fine with this, but for `phylo.d` we can only work with data without NAs. To fix this, we can use `filter` to exclude the species with NAs, but we will also need to remove these species from the tree. 
 
-Let's first go back to `frogstuff`, the combined object with our data and our tree in it, so we can exclude the species without `Sex_dichromatism` data, making `frogstuff2`.
+Let's first go back to `mydata` so we can exclude the species without `Sex_dichromatism` data, making `frogdata2`.
 ```{r}
 # Filter out species with no Sex_dichromatism data
-frogstuff2 <-
-  frogstuff %>%
+mydata2 <-
+  mydata %>%
   filter(!is.na(Sex_dichromatism))
 ```
 
-Now we can go back to our usual workflow, but using `frogstuff2`.
-
-Replace the removed species names column, save the data as a dataframe for later analyses, and save the tree.
-
+Next we need to check the matching species in the tree and the new dataset and remove the missing species from the tree:
 ```{r}
-# Make a new column called tiplabel with the tip labels in it
-frogstuff2$dat$tiplabel <- frogstuff2$phy$tip.label
-# Force mydata to be a data frame
-mydata <- as.data.frame(frogstuff2$dat)
-# Save tree as mytree
-mytree <- frogstuff2$phy
+# Check whether the names match in the data and the tree
+check2 <- name.check(phy = mytree, data = mydata2, 
+                    data.names = mydata2$tiplabel)
+# Remove species missing from the data
+mytree2 <- drop.tip(mytree, check2$tree_not_data)
 ```
+
+Now we can go back to our workflow, but using `mydata2` and `mytree2`.
 
 We also need the variable Sex_dichromatism to be either 0 or 1. We can do this fairly easily using mutate to create a new variable called `sex_di_binary`. 
 ```{r}
-mydata <- 
-  mydata %>%
+mydata2 <- 
+  mydata2 %>%
   # Make a new variable called sex_di_binary
   # which is Sex_dichromatism expressed as numbers
-  # Absent = 1 and Present = 2. To make these 0 and 1 instead we just use -1
-  mutate(sex_di_binary = as.numeric(Sex_dichromatism) - 1)
+  # i.e. Absent = 1 and Present = 2. 
+  # To make these 0 and 1 instead we just use -1
+  mutate(sex_di_binary = as.numeric(as.factor(Sex_dichromatism)) - 1)
 ```
 
-To use `phylo.d` we need the `caper` package. `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`. This is similar to what we did with `make.treedata`, but it does some stuff that is particular to how `caper` works so we still need to do this here.
+To use `phylo.d` we need the `caper` package. `caper` requires you to first combine the phylogeny and data into one object using the function `comparative.data`.
 
-Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function in the next exercise). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. 
+Note that `vcv = TRUE` stores a variance covariance matrix of your tree (you will need this for the `pgls` function in the next exercise). `na.omit = FALSE` stops the function from removing species without data for all variables. `warn.dropped = TRUE` will tell you if any species are not in both the tree and the data and are therefore dropped from the comparative data object. We need to use `as.data.frame` before `data2` as using the `tidyverse` functions above to change the sexual dimorphism scores has made it a combined data frame and tibble (a special kind of data frame for the `tidyverse`) but `comparative.data` only wants the data frame.
 
 ```{r}
-frog <- comparative.data(phy = mytree, data = mydata, 
+frog <- comparative.data(phy = mytree2, data = as.data.frame(mydata2), 
                             names.col = tiplabel, vcv = TRUE, 
                             na.omit = FALSE, warn.dropped = TRUE)
 ```
@@ -300,7 +295,7 @@ We can make a really quick plot to check we agree with that statement (never tak
 mycolours <- c("black", "red")
 
 plot(frog$phy, show.tip.label = TRUE, tip.color =     
-       mycolours[as.numeric(mydata$sex_di_binary)+1], 
+       mycolours[as.numeric(mydata2$sex_di_binary)+1], 
        no.margin = TRUE, cex = 0.4)
 # Add a legend
 legend("bottomleft", fill = mycolours, 
@@ -308,12 +303,13 @@ legend("bottomleft", fill = mycolours,
        bty = "n")
 
 ```
+
 ```{block, type = "warning"}
 Always carefully consider what variation in values of $\lambda$ and *K* and *D* across traits and groups really means. It may not tell you as much about your system as you think it does. Phylogenetic signal is only a pattern, not a process!
 ```
 
 ## Summary
-You should now know how to estimate the phylogenetic signal of your variables using R.
+You should now be able to estimate the phylogenetic signal of your variables using R.
 
 ## Practical exercises
 In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 

@@ -7,16 +7,14 @@ We will be using the evolution of eye size in frogs as an example. The data and 
 
 ## Before you start {-}
 - Open the `07-MCMCglmm.RProj` file in the `07-MCMCglmm` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `tidyverse`
-* `ape`
-* `geiger`
-* `treeplyr`
-* `MCMCglmm`
-* `coda`
+* `tidyverse` - for reading, manipulating and plotting data
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `geiger` - to fit models of evolution
+* `MCMCglmm` - to fit GLMMs
+* `coda` - to assess convergence of MCMC runs
 
 ## Why fit phylogenetic generalised linear mixed models?
 
@@ -65,7 +63,6 @@ To begin we need to load the packages for this practical.
 library(tidyverse)
 library(ape)
 library(geiger)
-library(treeplyr)
 library(MCMCglmm)
 library(coda)
 ```
@@ -85,7 +82,7 @@ str(frogtree)
 
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(frogtree)
+is.binary(frogtree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(frogtree)
@@ -99,23 +96,22 @@ check <- name.check(phy = frogtree, data = frogdata,
 # Look at check
 check
 
-#Here all the excluded species are excluded because they are genuinely missing, not # because of any typos, so we can move on.
+# Remove species missing from the data
+mytree <- drop.tip(frogtree, check$tree_not_data)
 
-# Combine and match the tree and data
-frogstuff <- make.treedata(tree = frogtree,  data = frogdata, 
-                              name_column = "tiplabel")
+# Remove species missing from the tree
+matches <- match(frogdata$tiplabel, check$data_not_tree, nomatch = 0)
+mydata <- subset(frogdata, matches == 0)
 
-# Look at the tree
-frogstuff$phy
+# Look at the tree summary
+str(mytree)
+
 # Look at the data
-glimpse(frogstuff$dat)
-
-# Make a new column called tiplabel with the tip labels in it
-frogstuff$dat$tiplabel <- frogstuff$phy$tip.label
-# Force mydata to be a data frame
-mydata <- as.data.frame(frogstuff$dat)
-# Save tree as mytree
-mytree <- frogstuff$phy
+glimpse(mydata)
+# Convert to a dataframe
+mydata <- as.data.frame(mydata)
+# Check this is now a data frame
+class(mydata)
 ```
 
 ## MCMCglmm specific preparation
@@ -123,7 +119,7 @@ mytree <- frogstuff$phy
 ### Inverse phylogenetic variance-covariance matrix 
 For `MCMCglmm` we need the inverse of the phylogenetic variance-covariance matrix. 
 
-To do this, we first need the tree to have no zero-length branches. In `04-Preparation` you may recall that we deal with polytomies by replacing them with zero length branches using the `ape` function `mutli2di`. To remove the zero length branches we are going to use the opposite function: `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
+To do this, we first need the tree to have no zero-length branches. In `04-Preparation` you may recall that we deal with polytomies by replacing them with zero length branches using the `ape` function `multi2di`. To remove the zero length branches we are going to use the opposite function: `di2multi`. This deletes all zero length branches and collapses them back into polytomies.
 
 ```{r}
 # Remove zero length branches and replace with polytomies
@@ -155,9 +151,9 @@ The default prior for the fixed effects is a Normal distribution with a mean (`m
 
 For the random effects we need to define a set of priors for the variance components of each random effect. `MCMCglmm` uses something called an *inverse Wishart* distribution for the random effects prior, and this is described by two parameters: the variance (`V`) and degree of belief (`nu`). This distribution tends to be right-skewed when `nu` is small.
 
-***PLOT inverse Wishart***
+![The inverse Wishart distribution](images/invwishart.png)
 
-Often in examples you'll see people using priors where `V = 1` and `nu = 0.02`. This prior specification is used a lot because it was believed to be relatively uninformative (it is also equivalent to an inverse-gamma prior with shape and scale of 0.001, for anyone more familiar with that distribution). It is generally is fairly uninformative, but can behave inappropriately when the posterior distribution for the variances has support close to zero. In these cases it's worth looking at the parameter expanded priors section of the `MCMCglmm` course notes ([https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf) for some solutions.
+Often in examples you'll see people using priors where `V = 1` and `nu = 0.02`. This prior specification is used a lot because it was believed to be relatively uninformative (it is also equivalent to an inverse-gamma prior with shape and scale of 0.001, for anyone more familiar with that distribution). It is generally is fairly uninformative, but can behave inappropriately when the posterior distribution for the variances has support close to zero. In these cases it's worth looking at the parameter expanded priors section of the [`MCMCglmm` course notes](https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf) for some solutions.
 
 Using priors where `V = 1` and `nu = 0.02` tells R that it shouldn't pay too much attention to our prior of `V = 1`, because our degree of belief is very low (`nu = 0.02`). This is why we say it is a fairly uniformative prior. Why do we want priors to be uniformative? We don't always. If we have a pretty good idea of what answer we should get through theory, we might use more informative priors. However, in the analyses we do in most of biology, we don't have good theory to back them up, so using an uniformative prior means we're allowing the model to find the best answer without biasing the possible choices. 
 
@@ -215,7 +211,7 @@ model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass),
                    verbose = TRUE)
 
 # Save the model
-saveRDS(model_mcmcglmm, file = "data/model_mcmcglmm_output1.rda")
+#saveRDS(model_mcmcglmm, file = "data/model_mcmcglmm_output1.rda")
 ```
 
 This will take a long time to run, dependent on your computer power. You'll know it is working because you'll see text appearing, e.g. `MCMC iteration = 1000`, every time the MCMC takes a sample for the posterior. You can turn this off with `verbose = FALSE` if it gets annoying. In fact this takes so long to run (at least an hour on my machine), that to save you some time here I've run the model myself and saved it using `saveRDS`. __You do not need to run the code above if you don't have an hour to spare!__. We can then read it back in using:
@@ -305,8 +301,7 @@ We also need the 95% credible intervals for these components:
 HPDinterval(model_mcmcglmm$VCV)
 ```
 
-While testing the significance of fixed effects by evaluating whether or not their posterior distributions overlap zero is simple and valid, this approach does not work for variance components. Variance components should be positive so even when a random effect is not meaningful, the posterior distribution will
-never overlap zero. 
+While testing the significance of fixed effects by evaluating whether or not their posterior distributions overlap zero is simple and valid, this approach does not work for variance components. Variance components should be positive so even when a random effect is not meaningful, the posterior distribution will never overlap zero. 
 
 If we really care about whether a random effect is "significant", we can fit a model *without* the random effect, and a model *with* the random effect, and then compare them using DIC (smaller DIC = better model). To get the DIC of the model we just do:
 ```{r}
@@ -441,7 +436,7 @@ model_eyes <- MCMCglmm(cbind(numberred, numberblue) ~ log(mass),
 Again, other than these changes, everything runs as above including the priors and all the model diagnostics and checking. Remember the parameter estimates for binomial GLMs are log odds ratios, so might look a little strange. Again, go back and read up on GLMs if this is all sounding unfamiliar to you.
 
 ```{block, type = "info"}
-If you're worried about whether you've fitted the right model, and the additional Bayesian components of `MCMCglmm` are causing you confusion, it's fine to fit the model using a standard GLM (using the `glm` function in R) to see if the results are similar. Remember that we expect the results to be somewhat different because `glm` does not account for phylogeny.
+If you're worried about whether you've fitted the right model, and the additional Bayesian components of `MCMCglmm` are causing you confusion, it's fine to fit the model using a standard GLM (using the `glm` function in R) to see if the results are similar. Remember that we expect the results to be somewhat different because `glm` does not incorporate the phylogeny.
 ```
 
 ## Adding extra fixed and random effects

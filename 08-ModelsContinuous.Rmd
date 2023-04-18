@@ -3,18 +3,18 @@
 The aims of this exercise are to learn how to use R to fit macroevolutionary models in R to continuous traits.
 
 ```{block, type = "info"}
-We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from DEEPAK [CITE PAPER], and the tree comes from DEEPAK [CITE PAPER]. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out DEEPAK [CITE PAPER]!
+We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from @deepak2023, and the tree comes from @deepak2021. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @deepak2023!
 ```
 
 ## Before you start {-}
 - Open the `08-ModelsContinuous.RProj` file in the `08-ModelsContinuous` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `ape`
-* `geiger`
-* `treeplyr`
+* `tidyverse` - for reading, manipulating and plotting data
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `geiger` - to fit models of evolution
+* `patchwork` - to plot multi-panel plots
 
 ## Preparation
 
@@ -22,9 +22,10 @@ To begin we need to load the packages for this practical.
 
 ```{r, message = FALSE}
 # Load the packages
+library(tidyverse)
 library(ape)
 library(geiger)
-library(treeplyr)
+library(patchwork)
 ```
 
 Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
@@ -51,7 +52,7 @@ Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and u
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(snaketree)
+is.binary(snaketree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(snaketree)
@@ -69,42 +70,34 @@ check <- name.check(phy = snaketree, data = snakedata,
 # Look at check
 check
 ```
-There are a lot of species in the tree that are not in the data and vice versa! But (you'll have to take my word for it!) all the excluded species are excluded because they are genuinely missing, not because of any typos, so we can move on. 
+There are a lot of species in the tree that are not in the data (n = 87) and vice versa (n = 44)! But (you'll have to take my word for it!) all the excluded species are excluded because they are genuinely missing, not because of any typos, so we can move on. 
 
 ```{block, type = "info"}
 Having a lot of species missing from trees and data is not uncommon. To build trees we usually need molecular data which may be absent for newly collected specimens, or for older specimens. Likewise, it can be really difficult to gather all the data required for all of the species in a group - we know very little about the natural history of some species for example. This is nothing to panic about in your own datasets, but knowing which species are in the tree could help you target species to collate extra data for.
 ```
 
-Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
+Finally remove species not in the data and the tree and ensure the data is a data frame.
 
 ```{r}
-# Combine and match the tree and data
-snakestuff <- make.treedata(tree = snaketree,  data = snakedata, 
-                              name_column = "Species")
+# Remove species missing from the data
+mytree <- drop.tip(snaketree, check$tree_not_data)
 
-# Look at the tree
-snakestuff$phy
+# Remove species missing from the tree
+matches <- match(snakedata$Species, check$data_not_tree, nomatch = 0)
+mydata <- subset(snakedata, matches == 0)
+
+# Look at the tree summary
+str(mytree)
+
 # Look at the data
-glimpse(snakestuff$dat)
+glimpse(mydata)
+# Convert to a dataframe
+mydata <- as.data.frame(mydata)
+# Check this is now a data frame
+class(mydata)
 ```
 
 Overall we have 162 species in the data and the tree.
-
-Then we replace the removed species names column, and save the data as a data frame for later analyses.
-
-```{r}
-# Make a new column called tiplabel with the tip labels in it
-snakestuff$dat$tiplabel <- snakestuff$phy$tip.label
-# Force mydata to be a data frame
-mydata <- as.data.frame(snakestuff$dat)
-```
-
-Finally we save the tree:
-
-```{r}
-# Save tree as mytree
-mytree <- snakestuff$phy
-```
 
 Now we're ready to run our analyses!
 
@@ -114,7 +107,20 @@ For fitting models of evolution to continuous data we will use the `fitContinuou
 
 As an example, let's look at the evolution of head length in our snake data. Snake head shape is closely related to the ecology of the species, so we are interested in understanding how it evolves. These first analyses are quite simple, but would be the first step in a more detailed analysis.
 
-### loook at the data????
+### Look at the data
+It's always a good idea to take a quick look at the data before we start analyses. Here we're going to focus on the `HeadLength` variable. Let's plot it. Note that we generally log transform continuous variables so we can look at rates of change rather than absolute change, so let's plot the log transformed data too. Recall that `log` in R gives the natural log.
+
+```{r}
+p1 <- ggplot(mydata, aes(x = HeadLength)) +
+  geom_histogram(bins = 20, fill = "darkblue") +
+  theme_bw(base_size = 14)
+
+p2 <- ggplot(mydata, aes(x = log(HeadLength))) +
+  geom_histogram(bins = 20, fill = "orangered") +
+  theme_bw(base_size = 14)
+
+p1 + p2
+```
 
 ### Fitting the Brownian motion and OU models of evolution using `fitContinuous`
 
@@ -133,7 +139,7 @@ For more details on these models please see the *Primer*.
 We are going to use the package `geiger` to fit models in this exercise, which means there is an important additional preparation step that you may remember from when we used the package `phytools` and the function `phylosig` when were looking at phylogenetic signal in `05-PhyloSignal`.
 
 ```{block, type = "info"}
-At this point you may be thinking, argh why can't all R packages work in the same way? This is because different packages were written by different people. We all have different programming styles, preferences and biases (some people *really* hate the `tidyverse` and `ggplot2` for example!) and these feed into the code we write. My advice is to follow these tutorials (and others) carefully, and don't worry about the differences too much. To put a positive spin on this, yes there may be lots of different ways to do things in R but at least they exist! Back in the day people published methods without the accompanying R packages. If you were lucky you might get some FORTRAN or C++ or C code, but generally you'd be expected to program the new methods yourself if you wanted to use them. Dealing with the idiosyncrasies of different people's R packages is a breeze compared to that! 
+At this point you may be thinking, argh why can't all R packages work in the same way? This is because different packages were written by different people. We all have different programming styles, preferences and biases (some people *really* hate the `tidyverse` and `ggplot2` for example!) and these feed into the code we write. My advice is to follow these tutorials (and others) carefully, and don't worry about the differences too much. To put a positive spin on this, yes there may be lots of different ways to do things in R but at least they exist! In the recent past people published methods without the accompanying R packages. If you were lucky you might get some FORTRAN or C++ or C code, but generally you'd be expected to program the new methods yourself if you wanted to use them. Dealing with the idiosyncrasies of different people's R packages is a breeze compared to that! 
 ```
 
 The first thing we need to do is to create an object in R that only contains the variable required, and the species names (so we can match it up to the tree). 
@@ -151,7 +157,7 @@ Notice that this is currently just a long list of numbers. We can then name thes
 
 ```{r}
 # Give log head length names = species names at the tips of the phylogeny
-names(logHL) <- mydata$tiplabel
+names(logHL) <- mydata$Species
 # Look at the first few rows
 head(logHL)
 ```
@@ -211,7 +217,7 @@ As for Brownian motion, the maximum likelihood estimates of the model parameters
 As `alpha = 9.014` here, it suggests that there is evolution towards a particular head length.
 
 ```{block, type = "detail"}
-I mentioned above that the OU model has four parameters, $\sigma^2$, $z(0)$, $\mu$ and $\alpha$. But only three appear on the output above. This is because  `fitContinuous` only estimates $\sigma^2$, $z(0)$, and $\alpha$. It does not estimate $\mu$ but in this implementation of the model, $\mu$ is equivalent to $X(0)$. 
+I mentioned above that the OU model has four parameters, $\sigma^2$, $z(0)$, $\mu$ and $\alpha$. But only three appear on the output above. This is because `fitContinuous` only estimates $\sigma^2$, $z(0)$, and $\alpha$. It does not estimate $\mu$ but in this implementation of the model, $\mu$ is equivalent to $X(0)$. 
 ```
 
 ```{block, type = "info"}
