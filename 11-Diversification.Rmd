@@ -8,15 +8,14 @@ We will be using the diversification rates of dragonflies (Anisoptera) as an exa
 
 ## Before you start {-}
 - Open the `11-Diversification.RProj` file in the `11-Diversification` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `ape`
-* `BAMMtools`
-* `coda`
-* `phytools`
-* `viridis`
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `BAMMtools` - functions to work with outputs from BAMM
+* `coda` - to assess convergence of MCMC runs
+* `phytools` - for lineage through time plots
+* `viridis` - colour palettes
 
 ## Preparation
 
@@ -45,7 +44,7 @@ Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and u
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(dragonflytree)
+is.binary(dragonflytree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(dragonflytree)
@@ -122,6 +121,8 @@ Finally, we can also use `ltt` to extract the value of the $\gamma$ statistic [@
 ltt(dragonflytree, gamma = TRUE, plot = FALSE)
 ```
 $\gamma = -5.9763$, and is significantly different from a pure-birth model of constant speciation rates ($p = 0$, i.e. $p < 0.001$). This confirms our suspicions from looking at the LTT plots above that dragonfly diversification rates have significantly decreased through time.
+
+*If you get an NA here for gamma, try restarting RStudio and starting the exercise again, this fixed the issue for me.*
 
 ## BAMM: Bayesian Analysis of Macroevolutionary Mixtures
 
@@ -309,7 +310,7 @@ summary(css)
 
 Here we see that there are 516 distinct shift configurations in our posterior. This highlights why using BAMM is a good idea - we can incorporate the distribution of results rather than giving just one best answer.
 
-We also see the nine of these account that for most of the probability of the data. In this case it's only ~36%. `BAMMtools` chooses the first nine because it's a good number to plot. You can plot fewer, to get six plots for example, using `plot.credibleshiftset(css, plot.max = 6)`.
+We also see the nine of these account that for most of the probability of the data. In this case it's only about 36%. `BAMMtools` chooses the first nine because it's a good number to plot. You can plot fewer, to get six plots for example, using `plot.credibleshiftset(css, plot.max = 6)`.
 
 We can generate phylorate plots for each of these shift configurations using `plot.credibleshiftset`
 
