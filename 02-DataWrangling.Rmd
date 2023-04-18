@@ -1,4 +1,4 @@
-# Data Wrangling comparative data in R
+# Data wrangling comparative data in R
 
 In the *Primer*, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the [tidyverse](https://www.tidyverse.org/) - these are amazing for data manipulation etc. It's beyond the scope of this *Primer* to cover these in detail, but we will show you what we did to get the tidied dataset in the book.
 
@@ -11,30 +11,29 @@ library(knitr)
 ## Before you start {-}
 
 - Open the `02-DataWrangling.RProj` file in the `02-DataWrangling` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `tidyverse`
-* `measurements`
+* `tidyverse` - for reading, manipulating and plotting data
+* `measurements` - to convert inches to cm
 
 ## Chameleon data 
 
 Let's imagine we have the following three sources of chameleon body length and life history data. 
 
-**SOURCE 1: Smith et al. 2020.** 
+**SOURCE 1: Picard et al. 2020.** 
 
 - *Chamaeleo chamaeleon*. 245 mm, 80 eggs, sexually dimorphic.
 - *Brookesia minima*. 33 mm, 2 eggs, sexually dimorphic.
 - *Calumma parsonii*. 650 mm, 50 eggs, sexually dimorphic.
 
-**SOURCE 2: Jones et al. 2020.**
+**SOURCE 2: Janeway et al. 1995.**
 
 - *Chamaeleo chamaeleon*. Up to 250 cm, Up to 100 eggs.
 - *Brookesia minima*. Up to 34 mm, 2 eggs.
 - *Calumma parsonii*. Up to 695 mm, Up to 50 eggs.
 
-**SOURCE 3: Han et al. 2020.**
+**SOURCE 3: Kirk et al. 1966.**
 
 - *Chamaeleo chamaeleon*. Approximately 10 inches.
 - *Brookesia minima*. Approximately 1 inch.
@@ -112,7 +111,7 @@ chameleon3 <-
   # Start with chameleon2
   chameleon2 %>%
   # Remove the Data Quality and Approximation columns
-  dplyr::select(-Data_Quality, -Approximation)
+  dplyr::select(-Quality, -Approx)
 
 # Look at the data
 head(chameleon3)
@@ -126,7 +125,7 @@ chameleon4 <-
   # Start with chameleon3
   chameleon3 %>%
   # Group the records together by Species, Measurement, and Data_Type
-  group_by(Species, Measurement, Data_Type) %>%
+  group_by(Species, Measurement, Type) %>%
   # Get the median and max for Value in each group constructed by Species, Measurement, and Data_Type.
   summarise(median = median(Value),
                 max = max(Value))
@@ -145,7 +144,7 @@ chameleon5 <-
   # Start with chameleon4
   chameleon4 %>%
   # Reshape the data so measurement X data types combinations are their own columns
-  pivot_wider(names_from = c(Measurement, Data_Type), values_from = c(median, max)) 
+  pivot_wider(names_from = c(Measurement, Type), values_from = c(median, max)) 
 
 # Look at the output
 chameleon5
@@ -187,14 +186,14 @@ chameleon_final <-
   # Convert inches into mm within the Value column
   mutate(Value = ifelse(Units == "inches", conv_unit(Value, "inch", "mm"), Value)) %>%
   # Remove the Units, Source, Data Quality and Approximation columns
-  dplyr::select(-Units, - Source, -Data_Quality, -Approximation) %>%
+  dplyr::select(-Units, -Source, -Quality, -Approx) %>%
   # Group the records together by Species, Measurement, and Data_Type
-  group_by(Species, Measurement, Data_Type) %>%
+  group_by(Species, Measurement, Type) %>%
   # Get the median and max for Value in each group constructed by Species, Measurement, and Data_Type.
   summarise(median = median(Value),
                 max = max(Value)) %>%
   # Reshape the data so measurement X data types combinations are their own columns
-  pivot_wider(names_from = c(Measurement, Data_Type), values_from = c(median, max)) %>%
+  pivot_wider(names_from = c(Measurement, Type), values_from = c(median, max)) %>%
   # Select only the required columns
   dplyr::select(Species, median_length = median_length_mean, max_length = max_length_max,
          median_clutchsize = `median_clutch size_mean`, max_clutchsize = `max_clutch size_max`,
@@ -208,7 +207,7 @@ chameleon_final
 # write_csv(x = chameleon_final, file = "data/chameleon-data-for-analyses.csv")
 ```
 ## Summary
-This exercise should have given you the skills to being wrangling data in R.
+This exercise should have introduced you to some basic skills for wrangling comparative data in R.
 
 ## Practical exercise
 Using the `frog-eyes-raw-data.csv` dataset and R, create a new dataset that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. We will talk more about this dataset in later exercises, but it comes from @thomas2020eye.
