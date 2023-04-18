@@ -7,20 +7,19 @@ Our question here still revolves around the snake head shape data. In `08-Models
 In `09-ModelsDiscrete` we fitted three simple models of evolution to discrete data to see how ecomorph changed across the tree. We found the best fitting model was the symmetric (SYM) model, where rates of transition between ecomorphs were the same in both directions, but were different for the different pairs of ecomorphs. A more interesting question is how do these different ecomorphs relate to the head shape data? Do aquatic species have wider heads than terrestrial species? Are burrowers evolving their head shape more quickly than semi-aquatic species? We can use more complex evolutionary models to approach these questions.
 
 ```{block, type = "info"}
-We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from DEEPAK [CITE PAPER], and the tree comes from DEEPAK [CITE PAPER]. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out DEEPAK [CITE PAPER]!
+We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from @deepak2023, and the tree comes from @deepak2021. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @deepak2023!
 ```
 
 ## Before you start {-}
 - Open the `10-ModelsBeyond.RProj` file in the `10-ModelsBeyond` folder to open your R Project for this exercise.
-- Make yourself a new R script for your code.
 
 You will also need to install the following packages: 
 
-* `ape`
-* `geiger`
-* `treeplyr`
-* `OUwie`
-* `phytools`
+* `tidyverse` - for reading, manipulating and plotting data
+* `ape` - functions for reading, plotting and manipulating phylogenies
+* `geiger` - to fit models of evolution
+* `OUwie` - to fit different kinds of OU models
+* `phytools` - for stochastic character mapping
 
 ## Preparation
 
@@ -28,9 +27,9 @@ To begin we need to load the packages for this practical.
 
 ```{r, message = FALSE}
 # Load the packages
+library(tidyverse)
 library(ape)
 library(geiger)
-library(treeplyr)
 library(phytools)
 library(OUwie)
 ```
@@ -55,10 +54,11 @@ str(snaketree)
 ```
 
 Remember to check the tree is dichotomous, i.e. has no polytomies, rooted, and ultrametric. 
+
 ```{r}
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(snaketree)
+is.binary(snaketree)
 # Check whether the tree is rooted 
 # We want this to be TRUE 
 is.rooted(snaketree)
@@ -67,42 +67,38 @@ is.rooted(snaketree)
 is.ultrametric(snaketree)
 ```
 
-Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before going any further.I haven't printed `check` here as we already did this in `08-ModelsContinuous` and it's a long list but we have already checked these in advance. Do not skip this step for your own analyses!
+Next check that the species names match up in the tree and the data. This should reveal any typos and/or taxonomic differences that need to be fixed before going any further. I haven't printed `check` here as we already did this in the previous exercise and it's a long list but we have already checked these in advance. Do not skip this step for your own analyses!
+
 ```{r}
 # Check whether the names match in the data and the tree
 check <- name.check(phy = snaketree, data = snakedata, 
                     data.names = snakedata$Species)
-# Look at check
 # check
 ```
 
-Next we combine the tree and data to exclude species that are not in both, using the `treeplyr` function `make.treedata`.
-```{r}
-# Combine and match the tree and data
-snakestuff <- make.treedata(tree = snaketree,  data = snakedata, 
-                              name_column = "Species")
+Finally remove species that are not in the tree and the data and ensure the data is a data frame.
 
-# Look at the tree
-snakestuff$phy
+```{r}
+# Remove species missing from the data
+mytree <- drop.tip(snaketree, check$tree_not_data)
+
+# Remove species missing from the tree
+matches <- match(snakedata$Species, check$data_not_tree, nomatch = 0)
+mydata <- subset(snakedata, matches == 0)
+
+# Look at the tree summary
+str(mytree)
+
 # Look at the data
-glimpse(snakestuff$dat)
+glimpse(mydata)
+
+# Convert to a dataframe
+mydata <- as.data.frame(mydata)
+# Check this is now a data frame
+class(mydata)
 ```
 
 Overall we have 162 species in the data and the tree.
-
-Then we replace the removed species names column, and save the data as a data frame for later analyses.
-```{r}
-# Make a new column called tiplabel with the tip labels in it
-snakestuff$dat$tiplabel <- snakestuff$phy$tip.label
-# Force mydata to be a data frame
-mydata <- as.data.frame(snakestuff$dat)
-```
-
-Finally we save the tree:
-```{r}
-# Save tree as mytree
-mytree <- snakestuff$phy
-```
 
 Now we're ready to run our analyses!
 
@@ -119,7 +115,17 @@ To fit these more complex models using `OUwie` we need to assign each node in th
 
 First we need to determine which model of evolution best fits the ecomorph data. We can do this using `fitDiscrete` in `geiger`. In fact this is exactly what we did in `09-ModelsDiscrete`, so I'll just quickly recap this here:
 
-To get the data into the correct format, we use the function `pull` to extract just the ecomorph values. We then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels, but luckily `make.treedata` does this automatically.
+To get the data into the correct format, we use the function `pull` to extract just the ecomorph values. We then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels so we will check this first.
+
+```{r}
+# Check first few tip labels and species
+mytree$tip.label[1:5]
+mydata$Species[1:5]
+# These are different so we reorder the data by the tips
+mydata <- mydata[match(mytree$tip.label, mydata$Species), ]
+# Check this now matches the tip label order
+mydata$Species[1:5]
+```
 
 ```{r}
 # Create ecomorph containing just ecomorph values
@@ -129,17 +135,17 @@ ecomorph <- as.character(ecomorph)
 # Look at the first few rows
 head(ecomorph)
 # Give log head length names = species names at the tips of the phylogeny
-names(ecomorph) <- mydata$tiplabel
+names(ecomorph) <- mydata$Species
 # Look at the first few rows
 head(ecomorph)
 ```
 
 To fit the ER, SYM and ARD models we can then use the code below. I've commented these out here on the assumption that you've already run this in `09-ModelsDiscrete`. The SYM and ARD models take a while to run so don't rerun thee unless you need to!
-```{r}
+```{r, eval = FALSE}
 # Fit the models
-# equal <- fitDiscrete(mytree, ecomorph, model = "ER")
-# sym <- fitDiscrete(mytree, ecomorph, model = "SYM")
-# ard <- fitDiscrete(mytree, ecomorph, model = "ARD")
+equal <- fitDiscrete(mytree, ecomorph, model = "ER")
+sym <- fitDiscrete(mytree, ecomorph, model = "SYM")
+ard <- fitDiscrete(mytree, ecomorph, model = "ARD")
 ```
 
 We can then use AIC to determine the "best model" from these three:
@@ -162,6 +168,23 @@ ancestral_ecomorphs <- ace(ecomorph, mytree, type = "discrete", model = "SYM")
 
 You should notice a series of warning messages appear that say `NaNs produced` and `NA/Inf replaced by maximum positive value`. These can be ignored (see `09-ModelsDiscrete`).
 
+Let's visualize the results on our tree by plotting them with colours. We'll then create a vector of five colours for the ecomorphs. These need to be in alphabetical order, so the colours should be in the order Aquatic, Aquatic burrower, Burrower, Semi-aquatic, Terrestrial.
+
+```{r}
+# Set up list of colours
+ecomorph.colors <- c("darkblue", "plum", "chocolate", "lightblue", "lightgreen")
+```
+
+We then need to make sure the variable `Ecomorph` is a factor rather than a character as R deals with these differently and we need it to be a factor for the next bit of code to work. We can do this using the function `as.factor` and we can change it in `mydata` usign the `tidyverse` function `mutate`. 
+
+```{r}
+# Make Ecomorph a factor
+mydata <- 
+  mydata %>%
+  mutate(Ecomorph = as.factor(Ecomorph))
+```
+
+And now we can plot...
 ```{r}
 # Plot the tree with colours at the tips and nodes to represent ecomorph
 plot(mytree, cex = 0.5, adj = c(0.2), type = "fan", 
@@ -182,12 +205,13 @@ trees.SYM <- make.simmap(mytree, ecomorph, model = "SYM", nsim = 500)
 # Store the results of the summary of the 500 trees
 summary.SYM <- summary(trees.SYM)
 ```
-
 Now we can use a simple trick to extract the most likely states. We use `apply` to extract the maximum value for each node from the `summary.SYM`.
+
+However, `summary.SYM` contains the summary of estimates at the tips *and* the nodes. A fully bifurcating/resolved tree has `n - 1` nodes. This means we have 161 nodes in our snake tree. `summary.SYM` reports the node values first, and then the tip values, so we only want entries 1  to 161. WE can write this in our code as: `summary.SYM$ace[1:161, ]`.
 
 ```{r}
 # Get the max likelihood state at each node
-best <- apply(summary.SYM$ace, 1, which.max)
+best <- apply(summary.SYM$ace[1:161, ], 1, which.max)
 # Look at first few rows of the output
 head(best)
 ```
@@ -204,7 +228,7 @@ Finally for `OUwie` to work we need to set up a dataset with *three columns*: th
 
 ```{r}
 # Make new dataset with just three columns for OUwie
-headw <- data.frame(species = mydata$tiplabel, 
+headw <- data.frame(species = mydata$Species, 
                     regime = mydata$Ecomorph, 
                     trait = log(mydata$HeadWidth))
 # look at the first few rows
@@ -247,7 +271,7 @@ Let's look at the results.
 OU
 ```
 
-The `Rates` section shows us what the parameter estimates are for $\sigma^2$ and $\alpha$. The `Optima` section tells us what the trait "optima" are for each regime. In a one peak OU model we only have one optimum, so here there is only one estimate for the overall long-term mean for log head width. Finally, the OU model output also reports the `Half life` of $\alpha$. This is how long it takes for the trait to get half way to its long-term mean. Here the half life is 0.07621254, i.e. it takes 0.07621254 units of branch length for log head width to get half way to the optima of head width. That's pretty fast!
+The `Rates` section shows us what the parameter estimates are for $\sigma^2$ and $\alpha$. The `Optima` section tells us what the trait "optima" are for each regime. In a one peak OU model we only have one optimum, so here there is only one estimate for the overall long-term mean for log head width. Finally, the OU model output also reports the `Half life` of $\alpha$. This is how long it takes for the trait to get half way to its long-term mean. Here the half life is 0.07621256, i.e. it takes 0.07621256 units of branch length for log head width to get half way to the optima of head width. That's pretty fast!
 
 ### Multi-rate BM (BMS) models
 Now we've fitted the simple models, let's make things more complex and, hopefully, more realistic. The first model we will fit is a BM model where different rates of evolution are allowed for each evolutionary regime. Here the evolutionary regimes are the ecomorphs. 
