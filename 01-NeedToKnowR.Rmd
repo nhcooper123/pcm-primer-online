@@ -39,7 +39,7 @@ head(cars)
 ## R Projects
 One feature of R that tends to trip up beginners is that to read data into R you need to tell R where to look for the data. In the past we might have solved this problem by setting the working directory, or writing the full path to a file into our code. This works fine, but if you later move the folder or the data, or send it to a collaborator/supervisor the code stops working. Luckily RStudio has a great solution to the problem: R Projects. If you're working in an R Project, R will automatically look for data in the folder you've chosen to be the project folder!
 
-What's a Project? A "Project" is just a folder that contains a sensible unit of work, for example your undergraduate or masters thesis, a chapter of your PhD thesis, a paper, or a coursework project. Projects will likely contain several files, including data and R scripts. You may also want to store information related to the report/thesis chapter/coursework that you're writing. 
+What's a Project? A "Project" is just a folder that contains a sensible unit of work, for example your undergraduate or Masters thesis, a chapter of your PhD thesis, a paper, or a coursework project. Projects will likely contain several files, including data and R scripts. You may also want to store information related to the report/thesis chapter/coursework that you're writing. 
 
 To make an R Project for practical exercises in `05-PGLSinR`, for example, go to the menu in RStudio and click **File > New Project**. You should now see a dialogue box with three options: *New Directory*, *Existing Directory*, or *Version Control* (*Directory* just means a folder on your computer). Because we already have a folder choose the option *Existing Directory*. The dialogue box moves on so we can use the *Browse* button to locate the folder `05-PGLSinR`. Finally, click the *Create Project* button.
 
@@ -69,7 +69,7 @@ If you want to add comments to the file (i.e., notes to remind yourself what the
 ```
 
 ## Installing and loading extra packages in R
-You'll notice at the start of each exercise we remind you of the packages you need to install and load. To run any specialised analysis in R, you need to download one or more additional packages on top of the basic R installation. __You need to be connected to the internet to do this__. 
+You'll notice at the start of each exercise I remind you of the packages you need to install and load. To run any specialised analysis in R, you need to download one or more additional packages on top of the basic R installation. __You need to be connected to the internet to do this__. 
 
 To install the package `ape`:
 
@@ -85,7 +85,7 @@ You can also install more than one package at a time:
 install.packages(c("ape", "picante"))
 ```
 
-Alternatively, you can use the *Packages* tab in RStudio (in the bottom left hand window in a standard RStudio set up). If you click the *Install* button this will open a pop up where you can type in a list of the packages you want to install, and then just click Install. If you do this, you'll see the appropriate `install.packages` code appear in your console.
+Alternatively, you can use the *Packages* tab in RStudio (in the bottom right hand window in a standard RStudio set up). If you click the *Install* button this will open a pop up where you can type in a list of the packages you want to install, and then just click Install. If you do this, you'll see the appropriate `install.packages` code appear in your console.
 
 If everything worked you will see some (often a lot if you're installing a big package like `tidyverse` or `ggtree`) text appearing in the console, and the occasional *warning* message but importantly __no error messages__. Don't let this worry you. If you're in doubt about whether a package has installed correctly, go to the next step (see *Loading packages into R* below) to check.
 
@@ -95,11 +95,11 @@ Some common issues that might arise when installing packages are:
 
 1. R asks if you would like to update other packages that the package you are installing needs to work. You might see the question `Update all/some/none? [a/s/n]:`. In that case type `a` and press enter, and R will update these packages too.
 
-2. R asks if you `Do you want to install from sources the packages which need compilation? (Yes/no/cancel)` or similar. In this case, type `Yes` or `y` or whatever the suggested option is for yes. __However__ if this doesn't work and the installation gives you an error, try installing again and this time choose the option for *no*. Some packages will need to be compiled from source. If you're using a Mac you may also need to install `clang` from this page https://cran.r-project.org/bin/macosx/tools/ before this will work.
+2. R asks if you `Do you want to install from sources the packages which need compilation? (Yes/no/cancel)` or similar. In this case, type `Yes` or `y` or whatever the suggested option is for yes. __However__ if this doesn't work and the installation gives you an error, try installing again and this time choose the option for *no*. Some packages will need to be compiled from source. If you're using a Mac you may also need to install `clang` from this page https://cran.r-project.org/bin/macosx/tools/ before this will work. This can be tricky on a Mac so you may need to use Google to find out how to fix things if this will nto work for you.
 
 3. An annoying error you may encounter (generally on a Mac), is that you keep seeing error messages when trying to install some packages, even after trying the solutions above. This might be because you're installing via the RStudio default server for packages. To fix this, change your default by going to **RStudio > Preferences > Packages**. You should see a box with **CRAN mirror** above it. Change this from `Global (CDN) RStudio` to your closest mirror on the list and click **Apply**. This should fix the problem and only needs to be done once. Note that this issue may be fixed soon by RStudio, but has been an issue in the current version.
 
-4. If you see `non-zero exit status` and the name of a package you weren't trying to install, it just means that this package is needed for the package you are trying to install to work. In these cases, try installing that package, then if that works try again with the package you wanted to try and install.
+4. If you see `non-zero exit status` and the name of a package you weren't trying to install, it just means that this package is needed for the package you are trying to install to work. In these cases, try installing that package, then if that works try again with the package you wanted to install.
 
 5. If it still won't work, it's also worth trying to install packages both in RStudio, and just in the normal version of R you downloaded. For this there is no Packages tab so you need to use `install.packages`.
 
@@ -132,7 +132,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("ggtree")
 ```
 
-You still need to load it using `library` as usual. Note that `ggtree` will produce a long message when you first load it telling you how to cite the package, and some functions it contains with the same names as functions in other packages (I've supressed this here). 
+You still need to load it using `library` as usual. Note that `ggtree` will produce a long message when you first load it telling you how to cite the package, and some functions it contains with the same names as functions in other packages (I've suppressed this here). 
 
 ```{r, message = FALSE}
 library(ggtree)
@@ -163,19 +163,19 @@ library(tidyverse)
 glimpse(primatedata)
 ```
 
-I've suppressed the output here to keep things simple. __Always__ look at your data before beginning any analysis to check it read in correctly. We will cover this in more detail in later sections.
+I've suppressed the output here to keep the document smaller. __Always__ look at your data before beginning any analysis to check it read in correctly. I will cover this in more detail in later sections.
 
 ## Errors and warnings
-*Errors* are where the code fails to run and you see an *error message* prefaced in R by `Error:`. Often these mistakes are caused by typos, missing commas, or missing brackets. R is *very* pedantic so this happens a lot! But they can also be caused by applying functions incorrectly or to the wrong kinds of data. Error messages are sometimes helpful, but often pretty baffling especially for beginners. 
+*Errors* are where the code fails to run and you see an *error message* prefaced in R by `Error:`. Often these mistakes are caused by typos, missing commas, or missing parentheses. R is *very* pedantic so this happens a lot! But they can also be caused by applying functions incorrectly or to the wrong kinds of data. Error messages are sometimes helpful, but often pretty baffling especially for beginners. 
 
 If you get an error message don't panic. Read the message and see if you can work out what the issue is. Check your code carefully for typos. Make sure you're using the correct data and variable names etc. If you can't work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is. If that still doesn't help, try asking colleagues or post a question online.
 
-The important thing about errors is that the code does not run. *Warnings*, on the other hand, appear when the code runs fine, but R wants to alert us to something, for example that the code might not be doing what you intended, or R has recognised that something you asked it to do is a bit risky. __Do not ignore warning messages!__. Always read the warning message and try to understand what it means. You may figure out that you can safely ignore the warning (we will try and note these situations in the exercises here). Otherwise you probably need to try and fix it.
+The important thing about errors is that the code does not run. *Warnings*, on the other hand, appear when the code runs fine, but R wants to alert us to something, for example that the code might not be doing what you intended, or R has recognised that something you asked it to do is a bit risky. __Do not ignore warning messages!__. Always read the warning message and try to understand what it means. You may figure out that you can safely ignore the warning (I will try and note these situations in the exercises here). Otherwise you probably need to try and fix it.
 
 ### Removing the `+` 
 Some R functions are pretty long, meaning that they need to appear on more than one line in the Console. In a long function, you therefore see a `+` in front of all lines except the first one. This tells you that R is running the code together.
 
-Unfortunately, if you accidentally fail to finish a line of code (for example by not closing " or brackets), R will assume you haven't finished and will add a `+` on the next line. If that wasn't your intention, and you try to run another bit of code on the next line, then that next line of code won't work leading to an error. 
+Unfortunately, if you accidentally fail to finish a line of code (for example by not closing " or parentheses), R will assume you haven't finished and will add a `+` on the next line. If that wasn't your intention, and you try to run another bit of code on the next line, then that next line of code won't work leading to an error. 
 
 Don't worry, this happens all the time! If you're getting error messages and can't see why, just check that the Console is showing the prompt `>` not the `+` at the start of your line of code. If you see the `+`, just hit the Escape key to get back to the prompt `>` and then go back to your code.
 
