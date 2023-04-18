@@ -1,19 +1,19 @@
-Species,Measurement,Value,Data_Type,Units,Data_Quality,Approximation,Source
-Chamaeleo chamaeleon,length,245,mean,mm,high,FALSE,Jones et al 2020
-Chamaeleo chamaeleon,clutch size,80,mean,eggs,high,FALSE,Jones et al 2020
-Chamaeleo chamaeleon,dimorphic,1,truefalse,"NA",high,FALSE,Jones et al 2020
-Brookesia minima,length,33,mean,mm,high,FALSE,Jones et al 2020
-Brookesia minima,clutch size,2,mean,eggs,high,FALSE,Jones et al 2020
-Brookesia minima,dimorphic,1,truefalse,"NA",high,FALSE,Jones et al 2020
-Calumma parsonii,length,650,mean,mm,high,FALSE,Jones et al 2020
-Calumma parsonii,clutch size,50,mean,eggs,high,FALSE,Jones et al 2020
-Calumma parsonii,dimorphic,1,truefalse,"NA",high,FALSE,Jones et al 2020
-Chamaeleo chamaeleon,length,250,max,mm,high,FALSE,Smith et al 2020
-Chamaeleo chamaeleon,clutch size,100,max,eggs,high,FALSE,Smith et al 2020
-Brookesia minima,length,34,max,mm,high,FALSE,Smith et al 2020
-Brookesia minima,clutch size,2,max,eggs,high,FALSE,Smith et al 2020
-Calumma parsonii,length,695,max,mm,high,FALSE,Smith et al 2020
-Calumma parsonii,clutch size,50,max,eggs,high,FALSE,Smith et al 2020
-Chamaeleo chamaeleon,length,10,mean,inches,medium,TRUE,Han et al 2020
-Brookesia minima,length,1,mean,inches,medium,TRUE,Han et al 2020
-Calumma parsonii,length,24,mean,inches,medium,TRUE,Han et al 2020
+Species,Measurement,Value,Type,Units,Quality,Approx,Source
+Chamaeleo chamaeleon,length,245,mean,mm,high,FALSE,Picard et al 2020
+Chamaeleo chamaeleon,clutch size,80,mean,eggs,high,FALSE,Picard et al 2021
+Chamaeleo chamaeleon,dimorphic,1,truefalse,NA,high,FALSE,Picard et al 2022
+Brookesia minima,length,33,mean,mm,high,FALSE,Picard et al 2023
+Brookesia minima,clutch size,2,mean,eggs,high,FALSE,Picard et al 2024
+Brookesia minima,dimorphic,1,truefalse,NA,high,FALSE,Picard et al 2025
+Calumma parsonii,length,650,mean,mm,high,FALSE,Picard et al 2026
+Calumma parsonii,clutch size,50,mean,eggs,high,FALSE,Picard et al 2027
+Calumma parsonii,dimorphic,1,truefalse,NA,high,FALSE,Picard et al 2028
+Chamaeleo chamaeleon,length,250,max,mm,high,FALSE,Janeway et al 1995
+Chamaeleo chamaeleon,clutch size,100,max,eggs,high,FALSE,Janeway et al 1996
+Brookesia minima,length,34,max,mm,high,FALSE,Janeway et al 1997
+Brookesia minima,clutch size,2,max,eggs,high,FALSE,Janeway et al 1998
+Calumma parsonii,length,695,max,mm,high,FALSE,Janeway et al 1999
+Calumma parsonii,clutch size,50,max,eggs,high,FALSE,Janeway et al 2000
+Chamaeleo chamaeleon,length,10,mean,inches,medium,TRUE,Kirk et al 1966
+Brookesia minima,length,1,mean,inches,medium,TRUE,Kirk et al 1967
+Calumma parsonii,length,24,mean,inches,medium,TRUE,Kirk et al 1968
