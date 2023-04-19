@@ -1,13 +1,14 @@
 # Common mistakes using PCMs in R
 
-Throughout these exercises I've tried to mention common mistakes you might come across when working with your own data. I've collated some of them here 
+Throughout these exercises I've tried to mention common mistakes you might come across when working with your own data. I've collated some of them here for easy reference. Note that all of these issues are really common; I do most of them on a daily basis! 
 
-## What to do if your code does not run
+## Good practice to prevent errors
 
-1. Run through everything
+There are a couple of ways you can help yourself avoid errors.
 
-Restart R studio
-
+1. Look at your data (and tree) before beginning any analysis to check it read in correctly.
+2. Check the exact spelling (and capitalisation) of your variable names. For example, in the datasets we have used the tip names have been called `tiplabel`, `Species` and `Binomial`. It's important to check what things are called in your data before you start the analyses. 3. Check (using `glimpse` or `str` or `class`) what *kind of data* R thinks each of your variables is. If a function expects a factor, it will not work if R thinks your variable is a character.
+4. Finally, make sure to run through your code slowly and carefully, making copious notes and comments to yourself (preceded by `#` so R ignores them) to remind yourself what you are doing and why. __Always__ check the output at every stage of the analysis. Every time you modify the data or tree, check that this happened as you expected. This can save you from lots of downstream issues.
 
 ## Common errors and how to fix them
 
@@ -15,17 +16,25 @@ Restart R studio
 
 1. Typos.
 
-2. Incorrectly spelled variable names
+2. Incorrectly spelled variable names.
 
 3. Missing brackets, parentheses, commas, quotation marks.
 
 4. The dreaded `+`
+- If you see the `+` rather than the prompt `>` at the start of the line of code you're trying to run, it suggests something didn't get completed in the code above. Maybe a missing parenthesis or comma or quotation mark? You should fix this before moving forwards. 
+- To quickly get rid of the `+` just put your cursor into the Console tab and then press Esc (escape).
 
-5. Cannot find `name of function`
+5. Cannot find `name of function`. 
+- Could this be a typo? Check the exact spelling of the function. 
+- Have you loaded the package that contains the function? Remember you need to tell R to load the packages **every time** you start a new R session and want to use functions from these packages using the function `library`.
+- Did you install the package that contains the function? Install the package using `install.packages("package name")`. See *Chapter 1* for more details of common problems installing packages.
 
-6. Cannot find the dataset
+6. R cannot find your data
   - unzipped
   - in the right place?
+  
+  7. Using the wrong data, or variable names
+  mydata issues
   
 ### Issues with the tree or data
 
@@ -35,7 +44,17 @@ Restart R studio
 
 - is the data a data frame?
 - have you added row names as species names, and do they match the tree?
+- is the tree and data in the same order?
 - optim errors
 
+## What to do if you get an Error message
 
+1. Don't panic! Error messages are common and there might be an easy fix. Read the message carefully s some will indicate the problem and you'll be able to fix it quickly.
+2. If you don't know what issue the message is referring to, first make sure the basics are correct. Check your code carefully for typos, missing parentheses etc. Ensure that you are using the right data and tree, and that you have used the correct variable names and function names etc. 
+3. Run through all your code again slowly to check you didn't miss an important step. Look at the data (and the tree) at every stage to make sure they are changing as you expect them to.
+4. Restart R Studio, and clear the Global Environment by clicking the little broom button on the top right hand panel in a standard R Studio set up. Then try to run the code again.
+5. If none of these basic fixes work move onto the Error message itself. Read the message again and see if you can work out what the issue is.
+6. If you can't work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is.
+7. Finally if none of this helps, ask colleagues or your supervisor. 
+8. REPREX
 
