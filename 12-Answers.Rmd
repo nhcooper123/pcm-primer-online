@@ -24,7 +24,7 @@ frog2 <-
   # Start with the frog dataframe
   frog %>%
   # Select only the columns of interest
-  select(genus_species, Family, rootmass, eyemean) %>%
+  dplyr::select(genus_species, Family, rootmass, eyemean) %>%
   # Group by species name, and Family (or summarise will try and average this too!)
   group_by(genus_species, Family) %>%
   # Summarise to get the mean values
@@ -339,7 +339,134 @@ summary(model.pgls)
 
 ## MCMCglmm
 
-No exercises
+In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
+
+Let's repeat the analyses we did in the PGLS chapter but using `MCMCglmm`. We will investigate the relationship between gestation length in Primates and their body size.
+
+Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). Fit a MCMCglmm model to investigate the relationship between log gestation length (`y = log(GestationLen_d)`) and log body size (`x = log(AdultBodyMass_g)`) in Primates. Don't forget to check that the model has converged, and to look at the model diagnostics and for autocorrelation.
+
+```{r, eval = FALSE}
+# Load the packages
+library(tidyverse)
+library(ape)
+library(geiger)
+library(MCMCglmm)
+library(coda)
+
+### Prepare the tree and the data as shown in the Preparation answer above ###
+### This should mean you now have mydata and mytree ready to work with ###
+
+## MCMCglmm specific preparation
+
+# Remove zero length branches and replace with polytomies
+mytree2 <- di2multi(mytree)
+
+# Remove node labels 
+mytree2$node.label <- NULL
+
+# Get the inverse vcv matrix for the phylogeny
+inv.phylo <- inverseA(mytree2, nodes = "TIPS", scale = TRUE)$Ainv
+
+# Set up priors for MCMCglmm
+# Inverse Wishart with V = 1 and nu = 0.02
+# i.e. fairly uninformative priors
+prior <- list(G = list(G1 = list(V = 1, nu = 0.02)),
+              R = list(V = 1, nu = 0.02))
+
+# Set number of iterations
+nitt <- 1000000
+
+# Set burnin
+burnin <- 1000
+
+# Sampling interval
+thin <- 500
+
+# Fit MCMCglmm model
+model_mcmcglmm <- MCMCglmm(log(GestationLen_d) ~ log(AdultBodyMass_g), 
+                           data = mydata, 
+                           random = ~ Binomial,
+                           ginverse = list(Binomial = inv.phylo), 
+                           prior = prior,
+                           nitt = nitt, thin = thin, burnin = burnin,
+                           verbose = TRUE)
+
+# Save the model
+# saveRDS(model_mcmcglmm, file = "data/model_mcmcglmm_primate.rda")
+```
+
+```{r}
+# Read in the saved model output run in advance to save time
+model_mcmcglmm <- readRDS("data/model_mcmcglmm_primate.rda")
+
+## Did the model converge?
+# Plot model diagnostics for MCMCglmm
+# For fixed effects
+plot(model_mcmcglmm$Sol)  
+
+# Plot model diagnostics for MCMCglmm
+# For random effects
+plot(model_mcmcglmm$VCV)  
+
+# Calculate ESS
+effectiveSize(model_mcmcglmm$Sol[, 1:model_mcmcglmm$Fixed$nfl, 
+                                 drop = FALSE])[[1]]
+
+# Look for autocorrelation
+autocorr(model_mcmcglmm$VCV)
+```
+
+1. What is $\lambda$ in the model? 
+```{r}
+# Get lambda
+lambda <- model_mcmcglmm$VCV[,'Binomial']/
+          (model_mcmcglmm$VCV[,'Binomial'] + model_mcmcglmm$VCV[,'units'])
+
+# Posterior mean of lambda
+mean(lambda)
+
+# Posterior mode of lambda
+posterior.mode(lambda)
+```
+
+*Posterior mean lambda is 0.870, the posterior mode is 0.893*
+
+2. What are the 95% credible intervals (HPD) around $\lambda$?
+```{r}
+# HPD interval
+HPDinterval(lambda)
+```
+
+*HPD interval of lambda is 0.762 to 0.961*
+
+3. Plot the $\lambda$ profile for the the maximum likelihood estimate of $\lambda$. 
+```{r}
+# Plot the posterior for lambda
+ggplot(as.data.frame(lambda), aes(x = lambda))+
+  geom_density() +
+  geom_vline(xintercept = posterior.mode(lambda), colour = "red") +
+  geom_vline(xintercept = HPDinterval(lambda)[[1]], 
+             linetype = "dotted", colour = "red") +
+  geom_vline(xintercept = HPDinterval(lambda)[[2]], 
+             linetype = "dotted", colour = "red") +
+  theme_bw()
+```
+
+
+4. Is there a relationship between log gestation length and log body size? What is the slope of this relationship? 
+```{r}
+## Results
+# Look at summary of fixed effect results
+summary(model_mcmcglmm)$solutions
+
+# Look at G-structure and R-structure posterior modes
+posterior.mode(model_mcmcglmm$VCV)
+
+# Look at G-structure and R-structure 95% credible intervals
+HPDinterval(model_mcmcglmm$VCV)
+```
+
+*Yes! The slope is 0.105 (0.065-0.146). This is close to what we got using PGLS.*
 
 ## Models of evolution with continuous traits
 In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 

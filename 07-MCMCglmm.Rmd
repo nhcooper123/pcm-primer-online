@@ -483,8 +483,24 @@ model_new <- model_mcmcglmm <- MCMCglmm(log(eyesize) ~ log(mass),
 Note that this gets more complex if you want to fit hierarchical or repeated measures type models so we recommend reading the materials below, and getting a thorough understanding of mixed models, before attempting this.
 
 ## Summary
+You should now know how to perform a GLMM analysis in R using the package `MCMCglmm`.
 
 I also recommend reading the following if you want to know more: http://www.wildanimalmodels.org/tiki-download_wiki_attachment.php?attId=24
 https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf
 
 ## Practical exercises
+In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
+
+Let's repeat the analyses we did in the PGLS chapter but using `MCMCglmm`. We will investigate the relationship between gestation length in Primates and their body size.
+
+Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). Fit a MCMCglmm model to investigate the relationship between log gestation length (`y = log(GestationLen_d)`) and log body size (`x = log(AdultBodyMass_g)`) in Primates. Don't forget to check that the model has converged, and to look at the model diagnostics and for autocorrelation.
+
+Then answer the following questions.
+
+1. What is $\lambda$ in the model? 
+
+2. What are the 95% credible intervals (HPD) around $\lambda$?
+
+3. Plot the $\lambda$ profile for the the maximum likelihood estimate of $\lambda$. 
+
+4. Is there a significant relationship between log gestation length and log body size? What is the slope of this relationship? 
