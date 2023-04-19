@@ -1,6 +1,8 @@
 # Answers to practical exercises
 
-Below are all the questions and answers to the practical exercises at the end of each exercise. 
+Below are all the questions and answers to the practical exercises at the end of each chapter. 
+
+Note that you will need to make sure R knows where to find your data. My data are all in a `data` folder within the R Project I'm working with. Assuming you have not moved the data from where you downloaded everything, you will have a separate R Project and data folder for each of the chapters of this online book. 
 
 ## Need to know R
 
@@ -9,8 +11,8 @@ No exercises
 ## Data wrangling
 Using the `frog-eyes-raw-data.csv` data and R, create a new dataframe that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. Note that we will talk more about this dataset in later exercises, but it comes from @thomas2020eye.
 
-There are multiple ways of doing this, but the easiest is as follows:
-```{r, eval = FALSE}
+There are many ways of doing this, but here's how I would do this:
+```{r, message = FALSE}
 # Load packages
 library(tidyverse)
 # Read in the data
@@ -47,35 +49,35 @@ library(ggtree)
 library(tidyverse)
 
 # Read in the tree
-tree <- read.nexus("data/frog-tree.nex")
+frogtree <- read.nexus("data/frog-tree.nex")
 
 # Look at it
-tree
+frogtree
 ```
 
 1. Use R functions to determine: 
 a) how many species are in the tree?
-```{r}
+```{r, eval = FALSE}
 # Look at the tree structure
-str(tree)
+str(frogtree)
 # Or the whole tree
-tree
+frogtree
 ```    
 
 *There are 214 tips*
 
 b) is the tree fully resolved?
-```{r}
+```{r, eval = FALSE}
 # Check whether the tree is binary/fully resolved
-is.binary.tree(tree)
+is.binary(frogtree)
 ```
 
 *Yes*
 
 c) is the tree rooted?
-```{r}
+```{r, eval = FALSE}
 # Check whether the tree is rooted
-is.rooted(tree)
+is.rooted(frogtree)
 ```    
 
 *Yes*
@@ -84,9 +86,9 @@ is.rooted(tree)
     a) Can you change the size of the tip labels?
     b) Can you make a fan-shaped plot? 
     c) Can you change the colour of the tips and branches?
-```{r}
+```{r, eval = FALSE}
 # Plot the tree
-plot(tree, 
+plot(frogtree, 
      no.margin = TRUE, # to make sure it fills the whole space
      type = "fan", # to make a fan tree
      cex = 0.6, # to reduce the tip label size (default = 1)
@@ -98,7 +100,7 @@ plot(tree,
 3. Save the tree to file as "mysuperdoopertree.nex"    
 ```{r, eval = FALSE}
 # Save the tree
-write.nexus(tree, file = "data/mysuperdoopertree.nex")
+write.nexus(frogtree, file = "data/mysuperdoopertree.nex")
 ``` 
 
 ## Preparation
@@ -110,7 +112,7 @@ Read in the tree and data then prepare them for a PCM analysis.
 library(ape)
 library(geiger)
 library(tidyverse)
-library(treeplyr)
+library(phytools)
 
 # Read in the tree
 primatetree <- read.nexus("data/primate-tree.nex")
@@ -122,13 +124,13 @@ plot(primatetree, cex = 0.2, typ = "fan", no.margin = TRUE)
 
 # Check whether the tree is binary
 # We want this to be TRUE
-is.binary.tree(primatetree) 
+is.binary(primatetree) 
 
 # It is FALSE so make the tree binary:
 primatetree <- multi2di(primatetree)
 
 # Check whether the tree is binary now...
-is.binary.tree(primatetree) 
+is.binary(primatetree) 
 
 # Check whether the tree is rooted
 # We want this to be TRUE
@@ -162,31 +164,23 @@ check
 # 149 species are in the tree but not the data
 # 0 species are in the data but not the tree
   
-# Combine and match the tree and data
-primatestuff <- make.treedata(tree = primatetree,  data = primatedata, 
-                              name_column = "Binomial")
+# Remove species missing from the data
+mytree <- drop.tip(primatetree, check$tree_not_data)
+
+# Remove species missing from the tree
+matches <- match(primatedata$Binomial, check$data_not_tree, nomatch = 0)
+mydata <- subset(primatedata, matches == 0)
 
 # Look at the tree summary
-primatestuff$phy
+str(mytree)
+
 # Look at the data
-glimpse(primatestuff$dat)
-## There are 77 species in the tree and the data
+glimpse(mydata)
 
-# Make a new column called tiplabel with the tip labels in it
-primatestuff$dat$tiplabel <- primatestuff$phy$tip.label
-
-# Save tree as mytree
-mytree <- primatestuff$phy
-# Save data as mydata
-mydata <- primatestuff$dat
-
-# Force mydata to be a data frame
+# Convert to a dataframe
 mydata <- as.data.frame(mydata)
-# Check mydata is now a dataframe
-str(mydata)
-
-## OPTIONAL
-# Make any required subsets of the tree/data
+# Check this is now a data frame
+class(mydata)
 
 ## OPTIONAL
 # Write the cleaned data to a new file
@@ -205,7 +199,6 @@ Read in the tree and data, then prepare them for a PCM analysis (you may have al
 # Load the packages
 library(ape)
 library(geiger)
-library(treeplyr)
 library(caper)
 library(tidyverse)
 library(phytools)
@@ -219,7 +212,7 @@ library(phytools)
 # First create logGestation containing just log gestation length values
 logGestation <- log(pull(mydata, GestationLen_d))
 # Give log Eye names = species names at the tips of the phylogeny
-names(logGestation) <- mydata$tiplabel
+names(logGestation) <- mydata$Binomial
 # Look at the first few rows
 head(logGestation)
 
@@ -242,10 +235,10 @@ KGestation
 *0.776*
 
 3. What is D for social status?
-```{r}
+```{r, eval = FALSE}
 # Prepare the data for use in caper
 primate <- comparative.data(phy = mytree, data = mydata, 
-                            names.col = tiplabel, vcv = TRUE, 
+                            names.col = Binomial, vcv = TRUE, 
                             na.omit = FALSE, warn.dropped = TRUE)
 
 # Force the phylogeny to have polytomies again nrather than zero length branches
@@ -259,7 +252,7 @@ Dsocial <- phylo.d(data = primate, names.col = tiplabel, binvar = SocialStatus,
 Dsocial
 ```
 
-*~ -0.72, this is a randomisation test so may vary*
+*About -0.70. This is a randomisation test so may vary slightly*
 
 ## PGLS
 In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
@@ -267,11 +260,10 @@ In the data folder there is another tree (`primate-tree.nex`) and dataset (`prim
 Let's investigate the relationship between gestation length in Primates and their body size. Theory leads us to believe that bigger mammals have longer gestation lengths (compare mice to elephants), but is this true in Primates?
 
 Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). Fit a PGLS model to investigate the relationship between log gestation length (`y = log(GestationLen_d)`) and log body size (`x = log(AdultBodyMass_g)`) in Primates. Don't forget to look at the model diagnostics! 
-```{r, message = FALSE}
+```{r, message = FALSE, eval = FALSE}
 # Load the packages
 library(ape)
 library(geiger)
-library(treeplyr)
 library(caper)
 library(tidyverse)
 
@@ -280,7 +272,7 @@ library(tidyverse)
 
 # Prepare the data for use in caper
 primate <- comparative.data(phy = mytree, data = mydata, 
-                            names.col = tiplabel, vcv = TRUE, 
+                            names.col = Binomial, vcv = TRUE, 
                             na.omit = FALSE, warn.dropped = TRUE)
 
 # Check the list of dropped species is what you expected
@@ -314,7 +306,7 @@ ggplot(mydata, aes(x = log(AdultBodyMass_g),
 Then answer the following questions.
 
 1. What is the maximum likelihood estimate of $\lambda$ in the model? 
-```{r}
+```{r, eval = FALSE}
 # Look at the model outputs. Lambda is near the middle
 summary(model.pgls)
 ```
@@ -322,15 +314,15 @@ summary(model.pgls)
 *0.892*
 
 2. What are the confidence intervals on the maximum likelihood estimate of $\lambda$. How would you interpret these?
-```{r}
+```{r, eval = FALSE}
 # Extract the confidence intervals on lambda
 pgls.confint(model.pgls, "lambda")$ci.val
 ```
 
-*0.753434, 0.966543. We are 95% certain that lambda is between these two values.*
+*0.753434, 0.966543. We are 95% certain that $\lambda$ is between these two values.*
 
 3. Plot the $\lambda$ profile for the the maximum likelihood estimate of $\lambda$. What does it look like?
-```{r}
+```{r, eval = FALSE}
 # Create a likelihood profile of the lambda estimate
 lambda.profile <- pgls.profile(model.pgls, "lambda")
 # Plot the likelihood profile
@@ -338,7 +330,7 @@ plot(lambda.profile)
 ```
 
 4. Is there a significant relationship between log gestation length and log body size? What is the slope of this relationship? 
-```{r}
+```{r, eval = FALSE}
 # Look at the model outputs. 
 summary(model.pgls)
 ```
@@ -358,17 +350,19 @@ Read in the tree and data, then prepare them for a PCM analysis (you may have al
 # Load the packages
 library(ape)
 library(geiger)
-library(treeplyr)
 library(caper)
 library(tidyverse)
 
 ### Prepare the tree and the data as shown in the Preparation answer above ###
 ### This should mean you now have mydata and mytree ready to work with ###
 
+# Reorder the data so the tree and data are in the same order
+mydata <- mydata[match(mytree$tip.label, mydata$Binomial), ]
+
 # Create logBodyMass containing just log body mass values
 logBodyMass <- log(pull(mydata, AdultBodyMass_g))
 # Give log body mass names = species names at the tips of the phylogeny
-names(logBodyMass) <- mydata$tiplabel
+names(logBodyMass) <- mydata$Binomial
 # Look at the first few rows
 head(logBodyMass)
 # Fit the Brownian model
@@ -408,7 +402,7 @@ OU
 OU$opt$alpha
 ```
 
-*8.080092e-49, i.e. very close to zero which makes it very close to a Brownian model*
+*<0.0001, i.e. very close to zero which makes it very close to a Brownian model*
 
 ## Models of evolution with discrete traits
 In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 
@@ -419,17 +413,20 @@ Read in the tree and data, then prepare them for a PCM analysis (you may have al
 # Load the packages
 library(ape)
 library(geiger)
-library(treeplyr)
 library(caper)
 library(tidyverse)
+library(phytools)
 
 ### Prepare the tree and the data as shown in the Preparation answer above ###
 ### This should mean you now have mydata and mytree ready to work with ###
 
+# Reorder the data so the tree and data are in the same order
+mydata <- mydata[match(mytree$tip.label, mydata$Binomial), ]
+
 # Create Social containing just social status values
 Social <- pull(mydata, SocialStatus)
 # Give social status names = species names at the tips of the phylogeny
-names(Social) <- mydata$tiplabel
+names(Social) <- mydata$Binomial
 # Look at the first few rows
 head(Social)
 # Fit the ER model
@@ -500,7 +497,6 @@ Using log body size (`AdultBodyMass_g`) as your continuous trait, and social sta
 # Load the packages
 library(ape)
 library(geiger)
-library(treeplyr)
 library(caper)
 library(tidyverse)
 library(OUwie)
@@ -508,10 +504,13 @@ library(OUwie)
 ### Prepare the tree and the data as shown in the Preparation answer above ###
 ### This should mean you now have mydata and mytree ready to work with ###
 
+# Reorder the data so the tree and data are in the same order
+mydata <- mydata[match(mytree$tip.label, mydata$Binomial), ]
+
 # Create Social containing just social status values
 Social <- pull(mydata, SocialStatus)
 # Give social status names = species names at the tips of the phylogeny
-names(Social) <- mydata$tiplabel
+names(Social) <- mydata$Binomial
 
 # Simulate node and tip values for 500 trees using the ARD model
 trees.ARD <- make.simmap(mytree, Social, model = "ARD", nsim = 500)
@@ -519,13 +518,13 @@ trees.ARD <- make.simmap(mytree, Social, model = "ARD", nsim = 500)
 summary.ARD <- summary(trees.ARD)
 
 # Get the max likelihood state at each node
-best <- apply(summary.ARD$ace, 1, which.max)
+best <- apply(summary.ARD$ace[1:76, ], 1, which.max)
 
-# Assign to the tree node labels
+# Assign regimes to the tree node labels
 mytree$node.label <- levels(as.factor(mydata$SocialStatus))[best]
 
 # Make new dataset with just three columns for OUwie
-bodymass <- data.frame(species = mydata$tiplabel, 
+bodymass <- data.frame(species = mydata$Binomial, 
                     regime = mydata$SocialStatus, 
                     trait = log(mydata$AdultBodyMass_g))
 
@@ -539,7 +538,7 @@ OUM <- OUwie(mytree, bodymass, model = "OUM")
 Then answer the following questions:
 
 1. Which is the best fitting model?
-```{r}
+```{r, eval = FALSE}
 # Extract AICc scores from the models
 aic.scores <- setNames(c(BMS$AICc, OUM$AICc), 
                            c("BMS", "OUM"))
@@ -553,7 +552,7 @@ aicw(aic.scores)
 *BM and single peak OU for sure. Possibly one or more of the more complex models if you had a good biological reason to*
 
 3. In the multi rate Brownian model, which social status state has the higher rate of log body mass evolution?
-```{r}
+```{r, eval = FALSE}
 # Look at the model output
 BMS
 ```
@@ -561,7 +560,7 @@ BMS
 *Non-social (1) has the higher rate of body mass evolution 0.04031313*
 
 4. Look at the parameter estimates of the multi peak OU model. Do you see anything worrying there? It might help to look at a histogram showing the body sizes of species in the non-social and the social categories.
-```{r}
+```{r, eval = FALSE}
 # Look at the output
 OUM
 
@@ -603,7 +602,7 @@ whales_tree <- whales
 whales_mcmc <- mcmc.whales
 whales_edata <- getEventData(whales, eventdata = events.whales, burnin = 0.1)
 
-# Read in the tree, mcmc, and edata for fishes
+# Read in the tree, and edata for fishes
 fishes_tree <- fishes
 fishes_edata <- getEventData(fishes, eventdata = events.fishes, burnin = 0.1)
 ```
@@ -613,12 +612,12 @@ Then answer the following questions:
 1. How can we tell that the BAMM model for whales has converged? What is the effective sample size for number of shifts?
 ```{r}
 # Take a look at the plot
-plot(mcmc$logLik ~ mcmc$generation)
+plot(whales_mcmc$logLik ~ whales_mcmc$generation)
 
 # What is 10% of rows?
-burnstart <- floor(0.1 * nrow(mcmc))
+burnstart <- floor(0.1 * nrow(whales_mcmc))
 # Remove the first 10% from the runs 
-postburn <- mcmc[burnstart:nrow(mcmc), ]
+postburn <- whales_mcmc[burnstart:nrow(whales_mcmc), ]
 
 # Extract ESS for the number of rate shifts parameter
 effectiveSize(postburn$N_shifts)
@@ -627,7 +626,7 @@ effectiveSize(postburn$N_shifts)
 effectiveSize(postburn$logLik)
 ```
 
-*The plot looks like a furry caterpillar (!), and effective sample sizes are well over 200. ESS = 1225.609*
+*The plot looks like a furry caterpillar (!), and effective sample sizes are well over 200.*
 
 2. What is the most common number of rate shifts in the posterior for the whales data?
 ```{r}
