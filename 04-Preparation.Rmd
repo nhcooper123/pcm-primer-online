@@ -22,6 +22,7 @@ You will also need to install the following packages:
 * `tidyverse` - for reading, manipulating and plotting data
 * `ape` - functions for reading, plotting and manipulating phylogenies
 * `geiger` - to check species in the tree and data match
+* `phytools` - for force.ultrametric
 
 ## Preparation 
 ### Load the required packages
