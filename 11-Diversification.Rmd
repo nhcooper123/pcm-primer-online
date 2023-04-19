@@ -14,7 +14,7 @@ You will also need to install the following packages:
 * `ape` - functions for reading, plotting and manipulating phylogenies
 * `BAMMtools` - functions to work with outputs from BAMM
 * `coda` - to assess convergence of MCMC runs
-* `phytools` - for lineage through time plots
+* `phytools` - for lineage through time plots and force.ultrametric
 * `viridis` - colour palettes
 
 ## Preparation
