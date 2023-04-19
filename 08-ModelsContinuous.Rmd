@@ -153,7 +153,17 @@ logHL <- log(pull(mydata, HeadLength))
 head(logHL)
 ```
 
-Notice that this is currently just a long list of numbers. We can then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels, but luckily `make.treedata` does this automatically.
+Notice that this is currently just a long list of numbers. We can then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels so we need to reorder the data first...
+
+```{r}
+# Check first few tip labels and species
+mytree$tip.label[1:5]
+mydata$Species[1:5]
+# These are different so we reorder the data by the tips
+mydata <- mydata[match(mytree$tip.label, mydata$Species), ]
+# Check this now matches the tip label order
+mydata$Species[1:5]
+```
 
 ```{r}
 # Give log head length names = species names at the tips of the phylogeny
