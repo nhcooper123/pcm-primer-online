@@ -1,13 +1,14 @@
 # Common mistakes using PCMs in R
 
-Throughout these exercises I've tried to mention common mistakes you might come across when working with your own data. I've collated some of them here for easy reference. Note that all of these issues are really common; I do most of them on a daily basis! 
+Throughout these exercises I've tried to mention common mistakes you might come across when working with your own data. I've collated some of them here for easy reference. Note that all of these issues are really common; I do most of them on a daily basis! So don't feel bad if you make them too. It's all part of learning!
 
 ## Good practice to prevent errors
 
 There are a couple of ways you can help yourself avoid errors.
 
 1. Look at your data (and tree) before beginning any analysis to check it read in correctly.
-2. Check the exact spelling (and capitalisation) of your variable names. For example, in the datasets we have used the tip names have been called `tiplabel`, `Species` and `Binomial`. It's important to check what things are called in your data before you start the analyses. 3. Check (using `glimpse` or `str` or `class`) what *kind of data* R thinks each of your variables is. If a function expects a factor, it will not work if R thinks your variable is a character.
+2. Check the exact spelling (and capitalisation) of your variable names. For example, in the datasets we have used the tip names have been called `tiplabel`, `Species` and `Binomial`. It's important to check what things are called in your data before you start the analyses. 
+3. Check (using `glimpse` or `str` or `class`) what *kind of data* R thinks each of your variables is. If a function expects a factor, it will not work if R thinks your variable is a character.
 4. Finally, make sure to run through your code slowly and carefully, making copious notes and comments to yourself (preceded by `#` so R ignores them) to remind yourself what you are doing and why. __Always__ check the output at every stage of the analysis. Every time you modify the data or tree, check that this happened as you expected. This can save you from lots of downstream issues.
 
 ## Common errors
@@ -35,49 +36,49 @@ There are a couple of ways you can help yourself avoid errors.
 - Is the data in the place R is looking for it? Check the Files tab in the bottom right hand panel in a standard R Studio set up. Can you see your data there? Is it in the correct folder? 
   
 7. Using the wrong data
-- Are you working with the correct data? If you use generic names like `mydata` and `mytree` (like I've done throughout this book) it's easy to accidentally use the wrong `mydata`. You can avoid this by giving your variables more descriptive names. 
+- Are you working with the correct data? If you use generic names like `mydata` and `mytree` (like I've done throughout this book) it's easy to accidentally use the wrong `mydata`. You can avoid this by giving your objects more descriptive names. 
   
 ### Issues with the tree or data
 
-1. Tree is not ultrametric.
-- Use `is.ultrametric` to check. 
+1. Tree is not ultrametric.  See *Chapters 3 and 4*.
+- Use `is.ultrametric` to check.
 - Fix using `force.ultrametric` in the `phytools` package.
 
-2. Tree is not rooted.
+2. Tree is not rooted. *Chapters 3 and 4*
 - Use `is.rooted` to check. 
 - Fix using `root`.
 
-3. Tree is not fully bifurcating, i.e. it has polytomies.
+3. Tree is not fully bifurcating, i.e. it has polytomies. *Chapters 3 and 4*
 - Use `is.binary` to check. 
 - Fix using `multi2di`.
 
-4. Species names in the tree and the data do not match.
+4. Species names in the tree and the data do not match.  See *Chapter 4*.
 - Use `name.check` in the `geiger` package to check.
 - If they do not match, but they should do, check for spaces rather than underscores in species names, differences in capitalisation, or any words (like family names or numbers) added to tip label names. Also ensure you use the variable name from the data set that contains the species names.
 
-5. Species names have not been added to the data.
+5. Species names have not been added to the data. See *Chapters 5 and 9*
 - Check you have the species names attached to any dataset/variable you are working with.
 - Some functions require that the species names are rownames. Others require a vector for the variable with names added using the `names` function. 
 
-6. Species in the tree and the data are not in the same order.
+6. Species in the tree and the data are not in the same order. See *Chapters 5 and 9*
 - Some functions require the data and the tree to be ordered so that species are in the same order in both.
-- Fix using ``
+- Fix using `mydata <- mydata[match(mytree$tip.label, mydata$Species), ]`
 
-7. Data is a tibble not a data frame.
-- Most functions for pcms require a data frame as input.
+7. Data is a tibble not a data frame. See *Chapter 4*
+- Most functions for PCMs require a data frame as input.
 - Check using `class` or `str`.
-- Convert to a data fram using `as.data.frame`
+- Convert to a data frame using `as.data.frame`
 
 8. Variable is character not a factor.
 - Check using `glimpse` or `str`.
 - Fix using `as.factor`.
 - If you need to convert something to numeric use `as.numeric`, or if you need to convert something to character use `as.character` and so on. 
 
-9. Optimisation errors.
+9. Optimisation errors. See *Chapters 6 and 8*
 - This generally happens when the likelihood profile for one of your parameters is really flat, and the model is getting stuck near one of the bounds (i.e. limits) of the parameter.
-- To fix this error you need to _change the bounds_ (i.e. upper and lower values) on the parameter being optimized. First establish which bound is the proble, then change it to something a little bigger/smaller than the default upper/lower bound until it works. See the appropriate chapters for more details on specific function.
+- To fix this error you need to _change the bounds_ (i.e. upper and lower values) on the parameter being optimized. First establish which bound is the problem, then change it to something a little bigger/smaller than the default upper/lower bound until it works. See the appropriate chapters for more details on specific function.
 
-10. Unrealistic parameter estimates.
+10. Unrealistic parameter estimates. See *Chapters 8 and 10*
 - As mentioned in the relevant chapters, you must check your parameter estimates make sense.
 - If these are wildly unrealistic it suggests you don't have enough data to fit a model of the complexity you're trying to fit.
 - There's no solution to this, aside from gathering more data.
@@ -89,11 +90,11 @@ There are a couple of ways you can help yourself avoid errors.
 3. Run through all your code again slowly to check you didn't miss an important step. Look at the data (and the tree) at every stage to make sure they are changing as you expect them to.
 4. Restart R Studio, and clear the Global Environment by clicking the little broom button on the top right hand panel in a standard R Studio set up. Then try to run the code again.
 5. If none of these basic fixes work move onto the Error message itself. Read the message again and see if you can work out what the issue is.
-6. If you can't work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is and help you find solutions on websites like Stack Overflow.
-7. Finally if none of this helps, ask for help. I would first advise asking local colleagues/supervisors etc. Then expanding to either emailing the package maintainer or raising an issue on GitHub. To get help you will need to provide a *reproducible example* so the person helping you can run the code on their computer. So you need to provide the code, the data (and the tree) *and* the error message you are getting.
+6. If you can't work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is and help you find solutions on websites like Stack Overflow (https://stackoverflow.com/).
+7. Finally if none of this helps, ask for help. I would first advise asking local colleagues/supervisors etc. Then expanding to either emailing the package maintainer or raising an issue on GitHub or posting a question on an online forum like Stack Overflow (https://stackoverflow.com/). To get help you will need to provide a *reproducible example* so the person helping you can run the code on their computer. So you need to provide the code, the data (and the tree) *and* the error message you are getting. Or a subsample of the data if they are very large.
 
 ## What to do if you get a Warning message
 
-1. Don't panic! Warning messages are common and there might be an easy fix. 
+1. Don't panic! Warning messages are common and there's probably an easy fix. 
 2. Read the warning carefully. Try to understand what it means. You may need to Google it. In many cases it is nothing to worry about, but it may be alerting you to a serious issue with your analysis.
 3. __Always__ check warning messages, do not ignore them.
