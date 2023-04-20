@@ -57,7 +57,7 @@ frogtree
 
 1. Use R functions to determine: 
 a) how many species are in the tree?
-```{r, eval = FALSE}
+```{r}
 # Look at the tree structure
 str(frogtree)
 # Or the whole tree
@@ -67,7 +67,7 @@ frogtree
 *There are 214 tips*
 
 b) is the tree fully resolved?
-```{r, eval = FALSE}
+```{r}
 # Check whether the tree is binary/fully resolved
 is.binary(frogtree)
 ```
@@ -75,7 +75,7 @@ is.binary(frogtree)
 *Yes*
 
 c) is the tree rooted?
-```{r, eval = FALSE}
+```{r}
 # Check whether the tree is rooted
 is.rooted(frogtree)
 ```    
@@ -86,7 +86,7 @@ is.rooted(frogtree)
     a) Can you change the size of the tip labels?
     b) Can you make a fan-shaped plot? 
     c) Can you change the colour of the tips and branches?
-```{r, eval = FALSE}
+```{r}
 # Plot the tree
 plot(frogtree, 
      no.margin = TRUE, # to make sure it fills the whole space
@@ -98,7 +98,7 @@ plot(frogtree,
 ```
 
 3. Save the tree to file as "mysuperdoopertree.nex"    
-```{r, eval = FALSE}
+```{r}
 # Save the tree
 write.nexus(frogtree, file = "data/mysuperdoopertree.nex")
 ``` 
@@ -235,7 +235,7 @@ KGestation
 *0.776*
 
 3. What is D for social status?
-```{r, eval = FALSE}
+```{r}
 # Prepare the data for use in caper
 primate <- comparative.data(phy = mytree, data = mydata, 
                             names.col = Binomial, vcv = TRUE, 
@@ -260,7 +260,7 @@ In the data folder there is another tree (`primate-tree.nex`) and dataset (`prim
 Let's investigate the relationship between gestation length in Primates and their body size. Theory leads us to believe that bigger mammals have longer gestation lengths (compare mice to elephants), but is this true in Primates?
 
 Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). Fit a PGLS model to investigate the relationship between log gestation length (`y = log(GestationLen_d)`) and log body size (`x = log(AdultBodyMass_g)`) in Primates. Don't forget to look at the model diagnostics! 
-```{r, message = FALSE, eval = FALSE}
+```{r, message = FALSE}
 # Load the packages
 library(ape)
 library(geiger)
@@ -306,7 +306,7 @@ ggplot(mydata, aes(x = log(AdultBodyMass_g),
 Then answer the following questions.
 
 1. What is the maximum likelihood estimate of $\lambda$ in the model? 
-```{r, eval = FALSE}
+```{r}
 # Look at the model outputs. Lambda is near the middle
 summary(model.pgls)
 ```
@@ -314,7 +314,7 @@ summary(model.pgls)
 *0.892*
 
 2. What are the confidence intervals on the maximum likelihood estimate of $\lambda$. How would you interpret these?
-```{r, eval = FALSE}
+```{r}
 # Extract the confidence intervals on lambda
 pgls.confint(model.pgls, "lambda")$ci.val
 ```
@@ -322,7 +322,7 @@ pgls.confint(model.pgls, "lambda")$ci.val
 *0.753434, 0.966543. We are 95% certain that $\lambda$ is between these two values.*
 
 3. Plot the $\lambda$ profile for the the maximum likelihood estimate of $\lambda$. What does it look like?
-```{r, eval = FALSE}
+```{r}
 # Create a likelihood profile of the lambda estimate
 lambda.profile <- pgls.profile(model.pgls, "lambda")
 # Plot the likelihood profile
@@ -330,7 +330,7 @@ plot(lambda.profile)
 ```
 
 4. Is there a significant relationship between log gestation length and log body size? What is the slope of this relationship? 
-```{r, eval = FALSE}
+```{r}
 # Look at the model outputs. 
 summary(model.pgls)
 ```
@@ -345,7 +345,7 @@ Let's repeat the analyses we did in the PGLS chapter but using `MCMCglmm`. We wi
 
 Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). Fit a MCMCglmm model to investigate the relationship between log gestation length (`y = log(GestationLen_d)`) and log body size (`x = log(AdultBodyMass_g)`) in Primates. Don't forget to check that the model has converged, and to look at the model diagnostics and for autocorrelation.
 
-```{r, eval = FALSE}
+```{r}
 # Load the packages
 library(tidyverse)
 library(ape)
@@ -665,7 +665,7 @@ OUM <- OUwie(mytree, bodymass, model = "OUM")
 Then answer the following questions:
 
 1. Which is the best fitting model?
-```{r, eval = FALSE}
+```{r}
 # Extract AICc scores from the models
 aic.scores <- setNames(c(BMS$AICc, OUM$AICc), 
                            c("BMS", "OUM"))
@@ -679,7 +679,7 @@ aicw(aic.scores)
 *BM and single peak OU for sure. Possibly one or more of the more complex models if you had a good biological reason to*
 
 3. In the multi rate Brownian model, which social status state has the higher rate of log body mass evolution?
-```{r, eval = FALSE}
+```{r}
 # Look at the model output
 BMS
 ```
@@ -687,7 +687,7 @@ BMS
 *Non-social (1) has the higher rate of body mass evolution 0.04031313*
 
 4. Look at the parameter estimates of the multi peak OU model. Do you see anything worrying there? It might help to look at a histogram showing the body sizes of species in the non-social and the social categories.
-```{r, eval = FALSE}
+```{r}
 # Look at the output
 OUM
 
