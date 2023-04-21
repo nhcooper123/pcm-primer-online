@@ -50,7 +50,7 @@ pre code {
 }
 
 .warning {
-  background-image: url("../images/warning2.jpg");
+  background-image: url("./images/warning2.jpg");
 }
 
 .detail {
