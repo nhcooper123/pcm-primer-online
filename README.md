@@ -1,6 +1,8 @@
 # PCM Primer Online Materials
 
-![Frogs love PCMs.](images/frogs_keyboard.JPG)
+<p align="center">
+  <img src="https://github.com/nhcooper123/pcm-primer-online/raw/master/images/frogs_keyboard.JPG" />
+</p>
 
 The materials in this repository are designed to support the *Primer on Phylogenetic Comparative Methods for the Biological Sciences* by Natalie Cooper and Rob P Freckleton, which is part of the new *Oxford Biology Primer series. Primers in Ecology and Evolutionary Biology*. In places the materials refer to this *Primer*. But you won't need the *Primer* to run the exercises. 
 
