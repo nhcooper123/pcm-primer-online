@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 13 Common mistakes using PCMs in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences</title>
+  <meta name="description" content="Chapter 13 Common mistakes using PCMs in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 13 Common mistakes using PCMs in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 13 Common mistakes using PCMs in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences" />
+  
+  
+  
+
+<meta name="author" content="Natalie Cooper" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="answers-to-practical-exercises.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">PCM Primer</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#datasets-and-scripts"><i class="fa fa-check"></i>Datasets and scripts</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-use-these-materials"><i class="fa fa-check"></i>How to use these materials</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#boxes"><i class="fa fa-check"></i>Boxes</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#example-datasets"><i class="fa fa-check"></i>Example datasets</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#frog-eye-size-evolution"><i class="fa fa-check"></i>Frog eye size evolution</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#natricine-snake-head-shape-evolution"><i class="fa fa-check"></i>Natricine snake head shape evolution</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#diversification-in-dragonflies"><i class="fa fa-check"></i>Diversification in dragonflies</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#citing-r-and-r-packages"><i class="fa fa-check"></i>Citing R and R packages</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><i class="fa fa-check"></i><b>1</b> What you need to be able to do in R before you start</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#installing-r-and-rstudio"><i class="fa fa-check"></i><b>1.1</b> Installing R (and RStudio)</a></li>
+<li class="chapter" data-level="1.2" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#downloading-the-data"><i class="fa fa-check"></i><b>1.2</b> Downloading the data</a></li>
+<li class="chapter" data-level="1.3" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#r-projects"><i class="fa fa-check"></i><b>1.3</b> R Projects</a></li>
+<li class="chapter" data-level="1.4" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#using-a-script"><i class="fa fa-check"></i><b>1.4</b> Using a script</a></li>
+<li class="chapter" data-level="1.5" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#installing-and-loading-extra-packages-in-r"><i class="fa fa-check"></i><b>1.5</b> Installing and loading extra packages in R</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#loading-packages-into-r"><i class="fa fa-check"></i><b>1.5.1</b> Loading packages into R</a></li>
+<li class="chapter" data-level="1.5.2" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#ggtree-a-special-case-for-package-installation"><i class="fa fa-check"></i><b>1.5.2</b> <code>ggtree</code>, a special case for package installation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#loading-and-viewing-your-data-in-r"><i class="fa fa-check"></i><b>1.6</b> Loading and viewing your data in R</a></li>
+<li class="chapter" data-level="1.7" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#errors-and-warnings"><i class="fa fa-check"></i><b>1.7</b> Errors and warnings</a>
+<ul>
+<li class="chapter" data-level="1.7.1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#removing-the"><i class="fa fa-check"></i><b>1.7.1</b> Removing the <code>+</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#summary"><i class="fa fa-check"></i><b>1.8</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html"><i class="fa fa-check"></i><b>2</b> Data wrangling comparative data in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#before-you-start"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="2.1" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#chameleon-data"><i class="fa fa-check"></i><b>2.1</b> Chameleon data</a></li>
+<li class="chapter" data-level="2.2" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#summary-1"><i class="fa fa-check"></i><b>2.2</b> Summary</a></li>
+<li class="chapter" data-level="2.3" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#practical-exercise"><i class="fa fa-check"></i><b>2.3</b> Practical exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html"><i class="fa fa-check"></i><b>3</b> Understanding, plotting and manipulating phylogenies in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#before-you-start-1"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="3.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#what-do-phylogeny-files-look-like"><i class="fa fa-check"></i><b>3.1</b> What do phylogeny files look like?</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#newick-trees"><i class="fa fa-check"></i><b>3.1.1</b> Newick trees</a></li>
+<li class="chapter" data-level="3.1.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#nexus-trees"><i class="fa fa-check"></i><b>3.1.2</b> NEXUS trees</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#how-are-phylogenies-formatted-in-r"><i class="fa fa-check"></i><b>3.2</b> How are phylogenies formatted in R?</a></li>
+<li class="chapter" data-level="3.3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#plotting-phylogenies"><i class="fa fa-check"></i><b>3.3</b> Plotting phylogenies</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#basic-phylogeny-plotting-with-ape"><i class="fa fa-check"></i><b>3.3.1</b> Basic phylogeny plotting with APE</a></li>
+<li class="chapter" data-level="3.3.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#basic-phylogeny-plotting-with-ggtree"><i class="fa fa-check"></i><b>3.3.2</b> Basic phylogeny plotting with <code>ggtree</code></a></li>
+<li class="chapter" data-level="3.3.3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#back-to-ggtree"><i class="fa fa-check"></i><b>3.3.3</b> Back to <code>ggtree</code></a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#phylogeny-manipulation"><i class="fa fa-check"></i><b>3.4</b> Phylogeny manipulation</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#removing-polytomies"><i class="fa fa-check"></i><b>3.4.1</b> Removing polytomies</a></li>
+<li class="chapter" data-level="3.4.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#rooting-your-phylogeny"><i class="fa fa-check"></i><b>3.4.2</b> Rooting your phylogeny</a></li>
+<li class="chapter" data-level="3.4.3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#manipulating-the-species-in-your-phlyogeny"><i class="fa fa-check"></i><b>3.4.3</b> Manipulating the species in your phlyogeny</a></li>
+<li class="chapter" data-level="3.4.4" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#writing-phylogenies-to-file"><i class="fa fa-check"></i><b>3.4.4</b> Writing phylogenies to file</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#summary-2"><i class="fa fa-check"></i><b>3.5</b> Summary</a></li>
+<li class="chapter" data-level="3.6" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#practical-exercise-1"><i class="fa fa-check"></i><b>3.6</b> Practical exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html"><i class="fa fa-check"></i><b>4</b> Preparing your tree and data for PCMs in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#before-you-start-2"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="4.1" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#preparation"><i class="fa fa-check"></i><b>4.1</b> Preparation</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#load-the-required-packages"><i class="fa fa-check"></i><b>4.1.1</b> Load the required packages</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#reading-and-checking-your-phylogeny-in-r"><i class="fa fa-check"></i><b>4.2</b> Reading and checking your phylogeny in R</a></li>
+<li class="chapter" data-level="4.3" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#reading-the-data-into-r"><i class="fa fa-check"></i><b>4.3</b> Reading the data into R</a></li>
+<li class="chapter" data-level="4.4" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#matching-your-data-to-your-phylogeny"><i class="fa fa-check"></i><b>4.4</b> Matching your data to your phylogeny</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#species-names-with-spaces"><i class="fa fa-check"></i><b>4.4.1</b> Species names with spaces</a></li>
+<li class="chapter" data-level="4.4.2" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#mismatches-between-species-in-your-data-and-phylogeny"><i class="fa fa-check"></i><b>4.4.2</b> Mismatches between species in your data and phylogeny</a></li>
+<li class="chapter" data-level="4.4.3" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#matching-the-tree-and-the-data"><i class="fa fa-check"></i><b>4.4.3</b> Matching the tree and the data</a></li>
+<li class="chapter" data-level="4.4.4" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#nas-in-your-data"><i class="fa fa-check"></i><b>4.4.4</b> NAs in your data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#quick-template-code"><i class="fa fa-check"></i><b>4.5</b> Quick template code</a></li>
+<li class="chapter" data-level="4.6" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#summary-3"><i class="fa fa-check"></i><b>4.6</b> Summary</a></li>
+<li class="chapter" data-level="4.7" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#practical-exercise-2"><i class="fa fa-check"></i><b>4.7</b> Practical exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html"><i class="fa fa-check"></i><b>5</b> Phylogenetic Signal in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#before-you-start-3"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="5.1" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#preparation-1"><i class="fa fa-check"></i><b>5.1</b> Preparation</a></li>
+<li class="chapter" data-level="5.2" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#estimating-phylogenetic-signal-for-continuous-variables"><i class="fa fa-check"></i><b>5.2</b> Estimating phylogenetic signal for continuous variables</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#pagels-lambda"><i class="fa fa-check"></i><b>5.2.1</b> Pagel’s <span class="math inline">\(\lambda\)</span></a></li>
+<li class="chapter" data-level="5.2.2" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#blombergs-k-blomberg-et-al-2003"><i class="fa fa-check"></i><b>5.2.2</b> Blomberg’s <em>K</em> (Blomberg et al 2003)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#estimating-phylogenetic-signal-for-non-continuous-variables"><i class="fa fa-check"></i><b>5.3</b> Estimating phylogenetic signal for non-continuous variables</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#d"><i class="fa fa-check"></i><b>5.3.1</b> <em>D</em></a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#summary-4"><i class="fa fa-check"></i><b>5.4</b> Summary</a></li>
+<li class="chapter" data-level="5.5" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#practical-exercises"><i class="fa fa-check"></i><b>5.5</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html"><i class="fa fa-check"></i><b>6</b> Phylogenetic Generalised Least Squares (PGLS) in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#before-you-start-4"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="6.1" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#preparation-2"><i class="fa fa-check"></i><b>6.1</b> Preparation</a></li>
+<li class="chapter" data-level="6.2" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#phylogenetic-generalized-least-squares-models-pgls"><i class="fa fa-check"></i><b>6.2</b> Phylogenetic generalized least squares models (PGLS)</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#fitting-pgls-models-in-r"><i class="fa fa-check"></i><b>6.2.1</b> Fitting PGLS models in R</a></li>
+<li class="chapter" data-level="6.2.2" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#model-diagnostics-for-pgls-models"><i class="fa fa-check"></i><b>6.2.2</b> Model diagnostics for PGLS models</a></li>
+<li class="chapter" data-level="6.2.3" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#likelihood-profiles-for-lambda-in-pgls-models"><i class="fa fa-check"></i><b>6.2.3</b> Likelihood profiles for <span class="math inline">\(\lambda\)</span> in PGLS models</a></li>
+<li class="chapter" data-level="6.2.4" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#a-pgls-example-with-more-than-one-predictor-variable"><i class="fa fa-check"></i><b>6.2.4</b> A PGLS example with more than one predictor variable</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#common-issues-when-running-pgls-models-in-r"><i class="fa fa-check"></i><b>6.3</b> Common issues when running PGLS models in R</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#optim-errors"><i class="fa fa-check"></i><b>6.3.1</b> Optim errors</a></li>
+<li class="chapter" data-level="6.3.2" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#big-problems-with-small-datasets"><i class="fa fa-check"></i><b>6.3.2</b> Big problems with small datasets</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#summary-5"><i class="fa fa-check"></i><b>6.4</b> Summary</a></li>
+<li class="chapter" data-level="6.5" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#practical-exercises-1"><i class="fa fa-check"></i><b>6.5</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html"><i class="fa fa-check"></i><b>7</b> Phylogenetic generalised linear mixed models in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#before-you-start-5"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="7.1" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#why-fit-phylogenetic-generalised-linear-mixed-models"><i class="fa fa-check"></i><b>7.1</b> Why fit phylogenetic generalised linear mixed models?</a></li>
+<li class="chapter" data-level="7.2" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#a-really-quick-reminder-of-how-bayesian-analyses-work-with-apologies-to-bayesian-scholars-for-the-simplification"><i class="fa fa-check"></i><b>7.2</b> A really quick reminder of how Bayesian analyses work, with apologies to Bayesian scholars for the simplification!</a></li>
+<li class="chapter" data-level="7.3" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#preparation-3"><i class="fa fa-check"></i><b>7.3</b> Preparation</a></li>
+<li class="chapter" data-level="7.4" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#mcmcglmm-specific-preparation"><i class="fa fa-check"></i><b>7.4</b> MCMCglmm specific preparation</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#inverse-phylogenetic-variance-covariance-matrix"><i class="fa fa-check"></i><b>7.4.1</b> Inverse phylogenetic variance-covariance matrix</a></li>
+<li class="chapter" data-level="7.4.2" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#priors"><i class="fa fa-check"></i><b>7.4.2</b> Priors</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#other-arguments-in-mcmcglmm"><i class="fa fa-check"></i><b>7.5</b> Other arguments in <code>MCMCglmm</code></a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#nitt"><i class="fa fa-check"></i><b>7.5.1</b> nitt</a></li>
+<li class="chapter" data-level="7.5.2" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#burnin"><i class="fa fa-check"></i><b>7.5.2</b> burnin</a></li>
+<li class="chapter" data-level="7.5.3" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#thin"><i class="fa fa-check"></i><b>7.5.3</b> thin</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#fitting-the-mcmcglmm-model"><i class="fa fa-check"></i><b>7.6</b> Fitting the MCMCglmm model</a></li>
+<li class="chapter" data-level="7.7" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#did-the-model-converge"><i class="fa fa-check"></i><b>7.7</b> Did the model converge?</a></li>
+<li class="chapter" data-level="7.8" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#mcmc-outputs"><i class="fa fa-check"></i><b>7.8</b> MCMC outputs</a></li>
+<li class="chapter" data-level="7.9" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#extracting-lambda-for-mcmcglmm-models"><i class="fa fa-check"></i><b>7.9</b> Extracting lambda for MCMCglmm models</a></li>
+<li class="chapter" data-level="7.10" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#checking-the-effects-of-priors"><i class="fa fa-check"></i><b>7.10</b> Checking the effects of priors</a></li>
+<li class="chapter" data-level="7.11" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#an-example-using-a-pglmm"><i class="fa fa-check"></i><b>7.11</b> An example using a PGLMM</a></li>
+<li class="chapter" data-level="7.12" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#adding-extra-fixed-and-random-effects"><i class="fa fa-check"></i><b>7.12</b> Adding extra fixed and random effects</a></li>
+<li class="chapter" data-level="7.13" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#summary-6"><i class="fa fa-check"></i><b>7.13</b> Summary</a></li>
+<li class="chapter" data-level="7.14" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#practical-exercises-2"><i class="fa fa-check"></i><b>7.14</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html"><i class="fa fa-check"></i><b>8</b> Macroevolutionary models for continuous traits</a>
+<ul>
+<li class="chapter" data-level="" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#before-you-start-6"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="8.1" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#preparation-4"><i class="fa fa-check"></i><b>8.1</b> Preparation</a></li>
+<li class="chapter" data-level="8.2" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#models-of-evolution-for-continuous-traits"><i class="fa fa-check"></i><b>8.2</b> Models of evolution for continuous traits</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#look-at-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Look at the data</a></li>
+<li class="chapter" data-level="8.2.2" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#fitting-the-brownian-motion-and-ou-models-of-evolution-using-fitcontinuous"><i class="fa fa-check"></i><b>8.2.2</b> Fitting the Brownian motion and OU models of evolution using <code>fitContinuous</code></a></li>
+<li class="chapter" data-level="8.2.3" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#comparing-models-of-evolution-using-aic"><i class="fa fa-check"></i><b>8.2.3</b> Comparing models of evolution using AIC</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#summary-7"><i class="fa fa-check"></i><b>8.3</b> Summary</a></li>
+<li class="chapter" data-level="8.4" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#practical-exercises-3"><i class="fa fa-check"></i><b>8.4</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html"><i class="fa fa-check"></i><b>9</b> Macroevolutionary models for discrete traits</a>
+<ul>
+<li class="chapter" data-level="" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#before-you-start-7"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="9.1" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#preparation-5"><i class="fa fa-check"></i><b>9.1</b> Preparation</a></li>
+<li class="chapter" data-level="9.2" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#models-of-evolution-for-discrete-traits"><i class="fa fa-check"></i><b>9.2</b> Models of evolution for discrete traits</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#fitting-the-er-sym-and-ard-models-of-evolution-using-fitdiscrete"><i class="fa fa-check"></i><b>9.2.1</b> Fitting the ER, SYM and ARD models of evolution using <code>fitDiscrete</code></a></li>
+<li class="chapter" data-level="9.2.2" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#comparing-models-of-evolution-using-aic-1"><i class="fa fa-check"></i><b>9.2.2</b> Comparing models of evolution using AIC</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#ancestral-state-estimations"><i class="fa fa-check"></i><b>9.3</b> Ancestral state estimations</a></li>
+<li class="chapter" data-level="9.4" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#summary-8"><i class="fa fa-check"></i><b>9.4</b> Summary</a></li>
+<li class="chapter" data-level="9.5" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#practical-exercises-4"><i class="fa fa-check"></i><b>9.5</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html"><i class="fa fa-check"></i><b>10</b> Beyond simple macroevolutionary models</a>
+<ul>
+<li class="chapter" data-level="" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#before-you-start-8"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="10.1" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#preparation-6"><i class="fa fa-check"></i><b>10.1</b> Preparation</a></li>
+<li class="chapter" data-level="10.2" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#more-complex-models-of-trait-evolution"><i class="fa fa-check"></i><b>10.2</b> More complex models of trait evolution</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#preparing-the-tree-and-data-for-ouwie"><i class="fa fa-check"></i><b>10.2.1</b> Preparing the tree and data for OUwie</a></li>
+<li class="chapter" data-level="10.2.2" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#running-models-using-ouwie"><i class="fa fa-check"></i><b>10.2.2</b> Running models using OUwie</a></li>
+<li class="chapter" data-level="10.2.3" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#single-rate-bm-models"><i class="fa fa-check"></i><b>10.2.3</b> Single rate BM models</a></li>
+<li class="chapter" data-level="10.2.4" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#single-optimum-ou-models"><i class="fa fa-check"></i><b>10.2.4</b> Single optimum OU models</a></li>
+<li class="chapter" data-level="10.2.5" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-rate-bm-bms-models"><i class="fa fa-check"></i><b>10.2.5</b> Multi-rate BM (BMS) models</a></li>
+<li class="chapter" data-level="10.2.6" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-optima-ou-oum-models"><i class="fa fa-check"></i><b>10.2.6</b> Multi-optima OU (OUM) models</a></li>
+<li class="chapter" data-level="10.2.7" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-rate-multi-optima-ou-motion-models-oumv"><i class="fa fa-check"></i><b>10.2.7</b> Multi-rate multi-optima OU motion models (OUMV)</a></li>
+<li class="chapter" data-level="10.2.8" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-alpha-multi-optima-ou-motion-models-ouma"><i class="fa fa-check"></i><b>10.2.8</b> Multi-alpha multi-optima OU motion models (OUMA)</a></li>
+<li class="chapter" data-level="10.2.9" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-rate-multi-optima-ou-motion-models-oumva"><i class="fa fa-check"></i><b>10.2.9</b> Multi-rate multi-optima OU motion models (OUMVA)</a></li>
+<li class="chapter" data-level="10.2.10" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#comparing-models-of-evolution-using-aic-2"><i class="fa fa-check"></i><b>10.2.10</b> Comparing models of evolution using AIC</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#summary-9"><i class="fa fa-check"></i><b>10.3</b> Summary</a></li>
+<li class="chapter" data-level="10.4" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#practical-exercises-5"><i class="fa fa-check"></i><b>10.4</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html"><i class="fa fa-check"></i><b>11</b> Diversification rate analyses</a>
+<ul>
+<li class="chapter" data-level="" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#before-you-start-9"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="11.1" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#preparation-7"><i class="fa fa-check"></i><b>11.1</b> Preparation</a></li>
+<li class="chapter" data-level="11.2" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#lineage-through-time-plots-and-the-gamma-statistic"><i class="fa fa-check"></i><b>11.2</b> Lineage through time plots and the <span class="math inline">\(\gamma\)</span> statistic</a></li>
+<li class="chapter" data-level="11.3" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#bamm-bayesian-analysis-of-macroevolutionary-mixtures"><i class="fa fa-check"></i><b>11.3</b> BAMM: Bayesian Analysis of Macroevolutionary Mixtures</a></li>
+<li class="chapter" data-level="11.4" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#running-bamm"><i class="fa fa-check"></i><b>11.4</b> Running BAMM</a></li>
+<li class="chapter" data-level="11.5" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#looking-at-the-output-of-bamm-using-bammtools-in-r"><i class="fa fa-check"></i><b>11.5</b> Looking at the output of BAMM using BAMMtools in R</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#assessing-mcmc-convergence"><i class="fa fa-check"></i><b>11.5.1</b> Assessing MCMC convergence</a></li>
+<li class="chapter" data-level="11.5.2" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#analysis-of-rate-shifts-in-the-dragonfly-phylogeny"><i class="fa fa-check"></i><b>11.5.2</b> Analysis of rate shifts in the dragonfly phylogeny</a></li>
+<li class="chapter" data-level="11.5.3" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#mean-phylorate-plot"><i class="fa fa-check"></i><b>11.5.3</b> Mean phylorate plot</a></li>
+<li class="chapter" data-level="11.5.4" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#best-single-distinct-shift-configuration"><i class="fa fa-check"></i><b>11.5.4</b> Best single distinct shift configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#credible-sets-of-shifts"><i class="fa fa-check"></i><b>11.6</b> Credible sets of shifts</a></li>
+<li class="chapter" data-level="11.7" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#clade-specific-evolutionary-rates"><i class="fa fa-check"></i><b>11.7</b> Clade specific evolutionary rates</a></li>
+<li class="chapter" data-level="11.8" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#rate-through-time-analysis"><i class="fa fa-check"></i><b>11.8</b> Rate-through-time analysis</a></li>
+<li class="chapter" data-level="11.9" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#macroevolutionary-cohort-analysis"><i class="fa fa-check"></i><b>11.9</b> Macroevolutionary cohort analysis</a></li>
+<li class="chapter" data-level="11.10" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#assumptions-and-issues-with-bamm"><i class="fa fa-check"></i><b>11.10</b> Assumptions and issues with BAMM</a></li>
+<li class="chapter" data-level="11.11" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#summary-10"><i class="fa fa-check"></i><b>11.11</b> Summary</a></li>
+<li class="chapter" data-level="11.12" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#practical-exercises-6"><i class="fa fa-check"></i><b>11.12</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html"><i class="fa fa-check"></i><b>12</b> Answers to practical exercises</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#need-to-know-r"><i class="fa fa-check"></i><b>12.1</b> Need to know R</a></li>
+<li class="chapter" data-level="12.2" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#data-wrangling"><i class="fa fa-check"></i><b>12.2</b> Data wrangling</a></li>
+<li class="chapter" data-level="12.3" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#phylogenies"><i class="fa fa-check"></i><b>12.3</b> Phylogenies</a></li>
+<li class="chapter" data-level="12.4" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#preparation-8"><i class="fa fa-check"></i><b>12.4</b> Preparation</a></li>
+<li class="chapter" data-level="12.5" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#phylogenetic-signal"><i class="fa fa-check"></i><b>12.5</b> Phylogenetic signal</a></li>
+<li class="chapter" data-level="12.6" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#pgls"><i class="fa fa-check"></i><b>12.6</b> PGLS</a></li>
+<li class="chapter" data-level="12.7" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#mcmcglmm"><i class="fa fa-check"></i><b>12.7</b> MCMCglmm</a></li>
+<li class="chapter" data-level="12.8" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#models-of-evolution-with-continuous-traits"><i class="fa fa-check"></i><b>12.8</b> Models of evolution with continuous traits</a></li>
+<li class="chapter" data-level="12.9" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#models-of-evolution-with-discrete-traits"><i class="fa fa-check"></i><b>12.9</b> Models of evolution with discrete traits</a></li>
+<li class="chapter" data-level="12.10" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#beyond-simple-macroevolutionary-models-of-trait-evolution"><i class="fa fa-check"></i><b>12.10</b> Beyond simple macroevolutionary models of trait evolution</a></li>
+<li class="chapter" data-level="12.11" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#diversification"><i class="fa fa-check"></i><b>12.11</b> Diversification</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html"><i class="fa fa-check"></i><b>13</b> Common mistakes using PCMs in R</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#good-practice-to-prevent-errors"><i class="fa fa-check"></i><b>13.1</b> Good practice to prevent errors</a></li>
+<li class="chapter" data-level="13.2" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#common-errors"><i class="fa fa-check"></i><b>13.2</b> Common errors</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#standard-r-issues"><i class="fa fa-check"></i><b>13.2.1</b> Standard R issues</a></li>
+<li class="chapter" data-level="13.2.2" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#issues-with-the-tree-or-data"><i class="fa fa-check"></i><b>13.2.2</b> Issues with the tree or data</a></li>
+</ul></li>
+<li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
+<li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="common-mistakes-using-pcms-in-r" class="section level1 hasAnchor" number="13">
+<h1><span class="header-section-number">Chapter 13</span> Common mistakes using PCMs in R<a href="common-mistakes-using-pcms-in-r.html#common-mistakes-using-pcms-in-r" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Throughout these exercises I’ve tried to mention common mistakes you might come across when working with your own data. I’ve collated some of them here for easy reference. Note that all of these issues are really common; I do most of them on a daily basis!</p>
+<div id="good-practice-to-prevent-errors" class="section level2 hasAnchor" number="13.1">
+<h2><span class="header-section-number">13.1</span> Good practice to prevent errors<a href="common-mistakes-using-pcms-in-r.html#good-practice-to-prevent-errors" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There are a couple of ways you can help yourself avoid errors.</p>
+<ol style="list-style-type: decimal">
+<li>Look at your data (and tree) before beginning any analysis to check it read in correctly.</li>
+<li>Check the exact spelling (and capitalisation) of your variable names. For example, in the datasets we have used the tip names have been called <code>tiplabel</code>, <code>Species</code> and <code>Binomial</code>. It’s important to check what things are called in your data before you start the analyses. 3. Check (using <code>glimpse</code> or <code>str</code> or <code>class</code>) what <em>kind of data</em> R thinks each of your variables is. If a function expects a factor, it will not work if R thinks your variable is a character.</li>
+<li>Finally, make sure to run through your code slowly and carefully, making copious notes and comments to yourself (preceded by <code>#</code> so R ignores them) to remind yourself what you are doing and why. <strong>Always</strong> check the output at every stage of the analysis. Every time you modify the data or tree, check that this happened as you expected. This can save you from lots of downstream issues.</li>
+</ol>
+</div>
+<div id="common-errors" class="section level2 hasAnchor" number="13.2">
+<h2><span class="header-section-number">13.2</span> Common errors<a href="common-mistakes-using-pcms-in-r.html#common-errors" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="standard-r-issues" class="section level3 hasAnchor" number="13.2.1">
+<h3><span class="header-section-number">13.2.1</span> Standard R issues<a href="common-mistakes-using-pcms-in-r.html#standard-r-issues" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>Typos.</p></li>
+<li><p>Incorrectly spelled variable names.</p></li>
+<li><p>Missing brackets, parentheses, commas, or quotation marks.</p></li>
+<li><p>The dreaded <code>+</code></p></li>
+</ol>
+<ul>
+<li>If you see the <code>+</code> rather than the prompt <code>&gt;</code> at the start of the line of code you’re trying to run, it suggests something didn’t get completed in the code above. Maybe a missing parenthesis or comma or quotation mark? You should fix this before moving forwards.</li>
+<li>To quickly get rid of the <code>+</code> just put your cursor into the Console tab and then press Esc (escape).</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li>R cannot find <code>name of function</code>.</li>
+</ol>
+<ul>
+<li>Could this be a typo? Check the exact spelling of the function.</li>
+<li>Have you loaded the package that contains the function? Remember you need to tell R to load the packages <strong>every time</strong> you start a new R session and want to use functions from these packages using the function <code>library</code>.</li>
+<li>Did you install the package that contains the function? Install the package using <code>install.packages("package name")</code>. See <em>Chapter 1</em> for more details of common problems installing packages.</li>
+</ul>
+<ol start="6" style="list-style-type: decimal">
+<li>R cannot find your data.</li>
+</ol>
+<ul>
+<li>Is there a typo in the name?</li>
+<li>Did you unzip the data? R cannot work with stuff in zipped files.</li>
+<li>Is the data in the place R is looking for it? Check the Files tab in the bottom right hand panel in a standard R Studio set up. Can you see your data there? Is it in the correct folder?</li>
+</ul>
+<ol start="7" style="list-style-type: decimal">
+<li>Using the wrong data</li>
+</ol>
+<ul>
+<li>Are you working with the correct data? If you use generic names like <code>mydata</code> and <code>mytree</code> (like I’ve done throughout this book) it’s easy to accidentally use the wrong <code>mydata</code>. You can avoid this by giving your variables more descriptive names.</li>
+</ul>
+</div>
+<div id="issues-with-the-tree-or-data" class="section level3 hasAnchor" number="13.2.2">
+<h3><span class="header-section-number">13.2.2</span> Issues with the tree or data<a href="common-mistakes-using-pcms-in-r.html#issues-with-the-tree-or-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Tree is not ultrametric.</li>
+</ol>
+<ul>
+<li>Use <code>is.ultrametric</code> to check.</li>
+<li>Fix using <code>force.ultrametric</code> in the <code>phytools</code> package.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Tree is not rooted.</li>
+</ol>
+<ul>
+<li>Use <code>is.rooted</code> to check.</li>
+<li>Fix using <code>root</code>.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>Tree is not fully bifurcating, i.e. it has polytomies.</li>
+</ol>
+<ul>
+<li>Use <code>is.binary</code> to check.</li>
+<li>Fix using <code>multi2di</code>.</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Species names in the tree and the data do not match.</li>
+</ol>
+<ul>
+<li>Use <code>name.check</code> in the <code>geiger</code> package to check.</li>
+<li>If they do not match, but they should do, check for spaces rather than underscores in species names, differences in capitalisation, or any words (like family names or numbers) added to tip label names. Also ensure you use the variable name from the data set that contains the species names.</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li>Species names have not been added to the data.</li>
+</ol>
+<ul>
+<li>Check you have the species names attached to any dataset/variable you are working with.</li>
+<li>Some functions require that the species names are rownames. Others require a vector for the variable with names added using the <code>names</code> function.</li>
+</ul>
+<ol start="6" style="list-style-type: decimal">
+<li>Species in the tree and the data are not in the same order.</li>
+</ol>
+<ul>
+<li>Some functions require the data and the tree to be ordered so that species are in the same order in both.</li>
+<li>Fix using ``</li>
+</ul>
+<ol start="7" style="list-style-type: decimal">
+<li>Data is a tibble not a data frame.</li>
+</ol>
+<ul>
+<li>Most functions for pcms require a data frame as input.</li>
+<li>Check using <code>class</code> or <code>str</code>.</li>
+<li>Convert to a data fram using <code>as.data.frame</code></li>
+</ul>
+<ol start="8" style="list-style-type: decimal">
+<li>Variable is character not a factor.</li>
+</ol>
+<ul>
+<li>Check using <code>glimpse</code> or <code>str</code>.</li>
+<li>Fix using <code>as.factor</code>.</li>
+<li>If you need to convert something to numeric use <code>as.numeric</code>, or if you need to convert something to character use <code>as.character</code> and so on.</li>
+</ul>
+<ol start="9" style="list-style-type: decimal">
+<li>Optimisation errors.</li>
+</ol>
+<ul>
+<li>This generally happens when the likelihood profile for one of your parameters is really flat, and the model is getting stuck near one of the bounds (i.e. limits) of the parameter.</li>
+<li>To fix this error you need to <em>change the bounds</em> (i.e. upper and lower values) on the parameter being optimized. First establish which bound is the proble, then change it to something a little bigger/smaller than the default upper/lower bound until it works. See the appropriate chapters for more details on specific function.</li>
+</ul>
+<ol start="10" style="list-style-type: decimal">
+<li>Unrealistic parameter estimates.</li>
+</ol>
+<ul>
+<li>As mentioned in the relevant chapters, you must check your parameter estimates make sense.</li>
+<li>If these are wildly unrealistic it suggests you don’t have enough data to fit a model of the complexity you’re trying to fit.</li>
+<li>There’s no solution to this, aside from gathering more data.</li>
+</ul>
+</div>
+</div>
+<div id="what-to-do-if-you-get-an-error-message" class="section level2 hasAnchor" number="13.3">
+<h2><span class="header-section-number">13.3</span> What to do if you get an Error message<a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li>Don’t panic! Error messages are common and there might be an easy fix. Read the message carefully s some will indicate the problem and you’ll be able to fix it quickly.</li>
+<li>If you don’t know what issue the message is referring to, first make sure the basics are correct. Check your code carefully for typos, missing parentheses etc. Ensure that you are using the right data and tree, and that you have used the correct variable names and function names etc.</li>
+<li>Run through all your code again slowly to check you didn’t miss an important step. Look at the data (and the tree) at every stage to make sure they are changing as you expect them to.</li>
+<li>Restart R Studio, and clear the Global Environment by clicking the little broom button on the top right hand panel in a standard R Studio set up. Then try to run the code again.</li>
+<li>If none of these basic fixes work move onto the Error message itself. Read the message again and see if you can work out what the issue is.</li>
+<li>If you can’t work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is and help you find solutions on websites like Stack Overflow.</li>
+<li>Finally if none of this helps, ask for help. I would first advise asking local colleagues/supervisors etc. Then expanding to either emailing the package maintainer or raising an issue on GitHub. To get help you will need to provide a <em>reproducible example</em> so the person helping you can run the code on their computer. So you need to provide the code, the data (and the tree) <em>and</em> the error message you are getting.</li>
+</ol>
+</div>
+<div id="what-to-do-if-you-get-a-warning-message" class="section level2 hasAnchor" number="13.4">
+<h2><span class="header-section-number">13.4</span> What to do if you get a Warning message<a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li>Don’t panic! Warning messages are common and there might be an easy fix.</li>
+<li>Read the warning carefully. Try to understand what it means. You may need to Google it. In many cases it is nothing to worry about, but it may be alerting you to a serious issue with your analysis.</li>
+<li><strong>Always</strong> check warning messages, do not ignore them.</li>
+</ol>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="answers-to-practical-exercises.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/13-CommonErrors.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pcm-primer.pdf", "pcm-primer.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
