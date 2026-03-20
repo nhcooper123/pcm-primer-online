@@ -21,9 +21,9 @@ I highly recommend using RStudio and I will assume you are using it throughout. 
 * If using a Mac, you should also install XQuartz: https://www.xquartz.org/
 
 ## Downloading the data
-This is zipped and the data/trees for each exercise are in the appropriate folder for each practical exercise. To work through the exercises you need to download all the files into a folder somewhere on your computer. Don't forget to **unzip** this before starting. Note that there is a folder for each of the practical exercises in the book.
+This is zipped and can be accessed [here](download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/master/data).
 
-[WHEN FINISHED CLARIFY THE LOCATION OF THE DATA]
+To work through the exercises you need to download all the files into a folder somewhere on your computer. Don't forget to **unzip** this before starting.
 
 Some datasets are built into R and/or various R packages (see below), so you may see me access these just using code like this (`cars` is a dataset built into R):
 ```{r}
@@ -31,7 +31,6 @@ data(cars)
 ```
 
 Note that this won't produce any output unless we then ask it to do something with the data, for example print the first six rows...
-
 ```{r}
 head(cars)
 ```
@@ -41,13 +40,9 @@ One feature of R that tends to trip up beginners is that to read data into R you
 
 What's a Project? A "Project" is just a folder that contains a sensible unit of work, for example your undergraduate or Masters thesis, a chapter of your PhD thesis, a paper, or a coursework project. Projects will likely contain several files, including data and R scripts. You may also want to store information related to the report/thesis chapter/coursework that you're writing. 
 
-To make an R Project for practical exercises in `05-PGLSinR`, for example, go to the menu in RStudio and click **File > New Project**. You should now see a dialogue box with three options: *New Directory*, *Existing Directory*, or *Version Control* (*Directory* just means a folder on your computer). Because we already have a folder choose the option *Existing Directory*. The dialogue box moves on so we can use the *Browse* button to locate the folder `05-PGLSinR`. Finally, click the *Create Project* button.
+Let's store our data and trees in a folder called `PCM-exercises`. To make an R Project at this folder, go to the menu in RStudio and click **File > New Project**. You should now see a dialogue box with three options: *New Directory*, *Existing Directory*, or *Version Control* (*Directory* just means a folder on your computer). Because we already have a folder choose the option *Existing Directory*. The dialogue box moves on so we can use the *Browse* button to locate the folder `PCM-exercises`. Finally, click the *Create Project* button.
 
-This will cause a few things to happen. First, RStudio may ask if you want to save any unsaved files if you were already doing something in RStudio. Save them if they are important! Second, RStudio will look like it restarted. And third, a new file will appear in the folder: the `.Rproj` file, with the same file name as your R Project. When you want to use that R Project in future just double click the `.Rproj` icon in the folder and it will open the R Project in RStudio for you.
-
-```{block, type = "info"}
-To save you some time we have made an `.Rproj` file for each chapter of this book. They should have been downloaded with the data. To use these just navigate to the appropriate chapter folder and double click the `.Rproj` icon to start.
-```
+This will cause a few things to happen. First, RStudio may ask if you want to save any unsaved files if you were already doing something in RStudio. Save them if they are important! Second, RStudio will look like it restarted. And third, a new file will appear in the folder: the `.Rproj` file, with the same file name as your R Project (in our example it will be called `PCM-exercises.Rproj`). When you want to use that R Project in future just double click the `.Rproj` icon in the folder and it will open the R Project in RStudio for you.
 
 ## Using a script
 We can use R straight from the Console (the bottom left hand window in a standard RStudio set up), but this is not ideal for various reasons. Firstly, if we want to run a series of separate commands, and perhaps run them again in the future, or alter one of the commands thus needing to re-run all the subsequent ones, then typing commands into the Console is a pain. Equally we might want to save our commands for future use. To do this we use a script.

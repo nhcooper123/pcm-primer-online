@@ -1,6 +1,6 @@
 # Data wrangling comparative data in R
 
-In the *Primer*, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the [tidyverse](https://www.tidyverse.org/) - these are amazing for data manipulation etc. It's beyond the scope of this *Primer* to cover these in detail, but we will show you what we did to get the tidied dataset in the book.
+In the [Introduction to Comparative Data](https://nhcooper123.github.io/pcm-primer/foundations.html) section of pur book, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the [tidyverse](https://www.tidyverse.org/) - these are amazing for data manipulation etc. It's beyond our scope to cover these in detail, but we will show you what we did to get the tidied dataset in the book.
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
@@ -10,7 +10,7 @@ library(knitr)
 
 ## Before you start {-}
 
-- Open the `02-DataWrangling.RProj` file in the `02-DataWrangling` folder to open your R Project for this exercise.
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data). Data are available [here](download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/master/data).
 
 You will also need to install the following packages: 
 
