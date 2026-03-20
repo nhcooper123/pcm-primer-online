@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Data wrangling comparative data in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences</title>
+  <meta name="description" content="Chapter 2 Data wrangling comparative data in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Data wrangling comparative data in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Data wrangling comparative data in R | Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences" />
+  
+  
+  
+
+<meta name="author" content="Natalie Cooper" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="what-you-need-to-be-able-to-do-in-r-before-you-start.html"/>
+<link rel="next" href="understanding-plotting-and-manipulating-phylogenies-in-r.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">PCM Primer</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#datasets-and-scripts"><i class="fa fa-check"></i>Datasets and scripts</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-use-these-materials"><i class="fa fa-check"></i>How to use these materials</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#boxes"><i class="fa fa-check"></i>Boxes</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#example-datasets"><i class="fa fa-check"></i>Example datasets</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#frog-eye-size-evolution"><i class="fa fa-check"></i>Frog eye size evolution</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#natricine-snake-head-shape-evolution"><i class="fa fa-check"></i>Natricine snake head shape evolution</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#diversification-in-dragonflies"><i class="fa fa-check"></i>Diversification in dragonflies</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#citing-r-and-r-packages"><i class="fa fa-check"></i>Citing R and R packages</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><i class="fa fa-check"></i><b>1</b> What you need to be able to do in R before you start</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#installing-r-and-rstudio"><i class="fa fa-check"></i><b>1.1</b> Installing R (and RStudio)</a></li>
+<li class="chapter" data-level="1.2" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#downloading-the-data"><i class="fa fa-check"></i><b>1.2</b> Downloading the data</a></li>
+<li class="chapter" data-level="1.3" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#r-projects"><i class="fa fa-check"></i><b>1.3</b> R Projects</a></li>
+<li class="chapter" data-level="1.4" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#using-a-script"><i class="fa fa-check"></i><b>1.4</b> Using a script</a></li>
+<li class="chapter" data-level="1.5" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#installing-and-loading-extra-packages-in-r"><i class="fa fa-check"></i><b>1.5</b> Installing and loading extra packages in R</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#loading-packages-into-r"><i class="fa fa-check"></i><b>1.5.1</b> Loading packages into R</a></li>
+<li class="chapter" data-level="1.5.2" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#ggtree-a-special-case-for-package-installation"><i class="fa fa-check"></i><b>1.5.2</b> <code>ggtree</code>, a special case for package installation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#loading-and-viewing-your-data-in-r"><i class="fa fa-check"></i><b>1.6</b> Loading and viewing your data in R</a></li>
+<li class="chapter" data-level="1.7" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#errors-and-warnings"><i class="fa fa-check"></i><b>1.7</b> Errors and warnings</a>
+<ul>
+<li class="chapter" data-level="1.7.1" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#removing-the"><i class="fa fa-check"></i><b>1.7.1</b> Removing the <code>+</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="what-you-need-to-be-able-to-do-in-r-before-you-start.html"><a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html#summary"><i class="fa fa-check"></i><b>1.8</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html"><i class="fa fa-check"></i><b>2</b> Data wrangling comparative data in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#before-you-start"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="2.1" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#chameleon-data"><i class="fa fa-check"></i><b>2.1</b> Chameleon data</a></li>
+<li class="chapter" data-level="2.2" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#summary-1"><i class="fa fa-check"></i><b>2.2</b> Summary</a></li>
+<li class="chapter" data-level="2.3" data-path="data-wrangling-comparative-data-in-r.html"><a href="data-wrangling-comparative-data-in-r.html#practical-exercise"><i class="fa fa-check"></i><b>2.3</b> Practical exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html"><i class="fa fa-check"></i><b>3</b> Understanding, plotting and manipulating phylogenies in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#before-you-start-1"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="3.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#what-do-phylogeny-files-look-like"><i class="fa fa-check"></i><b>3.1</b> What do phylogeny files look like?</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#newick-trees"><i class="fa fa-check"></i><b>3.1.1</b> Newick trees</a></li>
+<li class="chapter" data-level="3.1.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#nexus-trees"><i class="fa fa-check"></i><b>3.1.2</b> NEXUS trees</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#how-are-phylogenies-formatted-in-r"><i class="fa fa-check"></i><b>3.2</b> How are phylogenies formatted in R?</a></li>
+<li class="chapter" data-level="3.3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#plotting-phylogenies"><i class="fa fa-check"></i><b>3.3</b> Plotting phylogenies</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#basic-phylogeny-plotting-with-ape"><i class="fa fa-check"></i><b>3.3.1</b> Basic phylogeny plotting with APE</a></li>
+<li class="chapter" data-level="3.3.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#basic-phylogeny-plotting-with-ggtree"><i class="fa fa-check"></i><b>3.3.2</b> Basic phylogeny plotting with <code>ggtree</code></a></li>
+<li class="chapter" data-level="3.3.3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#back-to-ggtree"><i class="fa fa-check"></i><b>3.3.3</b> Back to <code>ggtree</code></a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#phylogeny-manipulation"><i class="fa fa-check"></i><b>3.4</b> Phylogeny manipulation</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#removing-polytomies"><i class="fa fa-check"></i><b>3.4.1</b> Removing polytomies</a></li>
+<li class="chapter" data-level="3.4.2" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#rooting-your-phylogeny"><i class="fa fa-check"></i><b>3.4.2</b> Rooting your phylogeny</a></li>
+<li class="chapter" data-level="3.4.3" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#manipulating-the-species-in-your-phlyogeny"><i class="fa fa-check"></i><b>3.4.3</b> Manipulating the species in your phlyogeny</a></li>
+<li class="chapter" data-level="3.4.4" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#writing-phylogenies-to-file"><i class="fa fa-check"></i><b>3.4.4</b> Writing phylogenies to file</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#summary-2"><i class="fa fa-check"></i><b>3.5</b> Summary</a></li>
+<li class="chapter" data-level="3.6" data-path="understanding-plotting-and-manipulating-phylogenies-in-r.html"><a href="understanding-plotting-and-manipulating-phylogenies-in-r.html#practical-exercise-1"><i class="fa fa-check"></i><b>3.6</b> Practical exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html"><i class="fa fa-check"></i><b>4</b> Preparing your tree and data for PCMs in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#before-you-start-2"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="4.1" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#preparation"><i class="fa fa-check"></i><b>4.1</b> Preparation</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#load-the-required-packages"><i class="fa fa-check"></i><b>4.1.1</b> Load the required packages</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#reading-and-checking-your-phylogeny-in-r"><i class="fa fa-check"></i><b>4.2</b> Reading and checking your phylogeny in R</a></li>
+<li class="chapter" data-level="4.3" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#reading-the-data-into-r"><i class="fa fa-check"></i><b>4.3</b> Reading the data into R</a></li>
+<li class="chapter" data-level="4.4" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#matching-your-data-to-your-phylogeny"><i class="fa fa-check"></i><b>4.4</b> Matching your data to your phylogeny</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#species-names-with-spaces"><i class="fa fa-check"></i><b>4.4.1</b> Species names with spaces</a></li>
+<li class="chapter" data-level="4.4.2" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#mismatches-between-species-in-your-data-and-phylogeny"><i class="fa fa-check"></i><b>4.4.2</b> Mismatches between species in your data and phylogeny</a></li>
+<li class="chapter" data-level="4.4.3" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#matching-the-tree-and-the-data"><i class="fa fa-check"></i><b>4.4.3</b> Matching the tree and the data</a></li>
+<li class="chapter" data-level="4.4.4" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#nas-in-your-data"><i class="fa fa-check"></i><b>4.4.4</b> NAs in your data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#quick-template-code"><i class="fa fa-check"></i><b>4.5</b> Quick template code</a></li>
+<li class="chapter" data-level="4.6" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#summary-3"><i class="fa fa-check"></i><b>4.6</b> Summary</a></li>
+<li class="chapter" data-level="4.7" data-path="preparing-your-tree-and-data-for-pcms-in-r.html"><a href="preparing-your-tree-and-data-for-pcms-in-r.html#practical-exercise-2"><i class="fa fa-check"></i><b>4.7</b> Practical exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html"><i class="fa fa-check"></i><b>5</b> Phylogenetic Signal in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#before-you-start-3"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="5.1" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#preparation-1"><i class="fa fa-check"></i><b>5.1</b> Preparation</a></li>
+<li class="chapter" data-level="5.2" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#estimating-phylogenetic-signal-for-continuous-variables"><i class="fa fa-check"></i><b>5.2</b> Estimating phylogenetic signal for continuous variables</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#pagels-lambda"><i class="fa fa-check"></i><b>5.2.1</b> Pagel’s <span class="math inline">\(\lambda\)</span></a></li>
+<li class="chapter" data-level="5.2.2" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#blombergs-k-blomberg-et-al-2003"><i class="fa fa-check"></i><b>5.2.2</b> Blomberg’s <em>K</em> (Blomberg et al 2003)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#estimating-phylogenetic-signal-for-non-continuous-variables"><i class="fa fa-check"></i><b>5.3</b> Estimating phylogenetic signal for non-continuous variables</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#d"><i class="fa fa-check"></i><b>5.3.1</b> <em>D</em></a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#summary-4"><i class="fa fa-check"></i><b>5.4</b> Summary</a></li>
+<li class="chapter" data-level="5.5" data-path="phylogenetic-signal-in-r.html"><a href="phylogenetic-signal-in-r.html#practical-exercises"><i class="fa fa-check"></i><b>5.5</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html"><i class="fa fa-check"></i><b>6</b> Phylogenetic Generalised Least Squares (PGLS) in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#before-you-start-4"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="6.1" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#preparation-2"><i class="fa fa-check"></i><b>6.1</b> Preparation</a></li>
+<li class="chapter" data-level="6.2" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#phylogenetic-generalized-least-squares-models-pgls"><i class="fa fa-check"></i><b>6.2</b> Phylogenetic generalized least squares models (PGLS)</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#fitting-pgls-models-in-r"><i class="fa fa-check"></i><b>6.2.1</b> Fitting PGLS models in R</a></li>
+<li class="chapter" data-level="6.2.2" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#model-diagnostics-for-pgls-models"><i class="fa fa-check"></i><b>6.2.2</b> Model diagnostics for PGLS models</a></li>
+<li class="chapter" data-level="6.2.3" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#likelihood-profiles-for-lambda-in-pgls-models"><i class="fa fa-check"></i><b>6.2.3</b> Likelihood profiles for <span class="math inline">\(\lambda\)</span> in PGLS models</a></li>
+<li class="chapter" data-level="6.2.4" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#a-pgls-example-with-more-than-one-predictor-variable"><i class="fa fa-check"></i><b>6.2.4</b> A PGLS example with more than one predictor variable</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#common-issues-when-running-pgls-models-in-r"><i class="fa fa-check"></i><b>6.3</b> Common issues when running PGLS models in R</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#optim-errors"><i class="fa fa-check"></i><b>6.3.1</b> Optim errors</a></li>
+<li class="chapter" data-level="6.3.2" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#big-problems-with-small-datasets"><i class="fa fa-check"></i><b>6.3.2</b> Big problems with small datasets</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#summary-5"><i class="fa fa-check"></i><b>6.4</b> Summary</a></li>
+<li class="chapter" data-level="6.5" data-path="phylogenetic-generalised-least-squares-pgls-in-r.html"><a href="phylogenetic-generalised-least-squares-pgls-in-r.html#practical-exercises-1"><i class="fa fa-check"></i><b>6.5</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html"><i class="fa fa-check"></i><b>7</b> Phylogenetic generalised linear mixed models in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#before-you-start-5"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="7.1" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#why-fit-phylogenetic-generalised-linear-mixed-models"><i class="fa fa-check"></i><b>7.1</b> Why fit phylogenetic generalised linear mixed models?</a></li>
+<li class="chapter" data-level="7.2" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#a-really-quick-reminder-of-how-bayesian-analyses-work-with-apologies-to-bayesian-scholars-for-the-simplification"><i class="fa fa-check"></i><b>7.2</b> A really quick reminder of how Bayesian analyses work, with apologies to Bayesian scholars for the simplification!</a></li>
+<li class="chapter" data-level="7.3" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#preparation-3"><i class="fa fa-check"></i><b>7.3</b> Preparation</a></li>
+<li class="chapter" data-level="7.4" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#mcmcglmm-specific-preparation"><i class="fa fa-check"></i><b>7.4</b> MCMCglmm specific preparation</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#inverse-phylogenetic-variance-covariance-matrix"><i class="fa fa-check"></i><b>7.4.1</b> Inverse phylogenetic variance-covariance matrix</a></li>
+<li class="chapter" data-level="7.4.2" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#priors"><i class="fa fa-check"></i><b>7.4.2</b> Priors</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#other-arguments-in-mcmcglmm"><i class="fa fa-check"></i><b>7.5</b> Other arguments in <code>MCMCglmm</code></a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#nitt"><i class="fa fa-check"></i><b>7.5.1</b> nitt</a></li>
+<li class="chapter" data-level="7.5.2" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#burnin"><i class="fa fa-check"></i><b>7.5.2</b> burnin</a></li>
+<li class="chapter" data-level="7.5.3" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#thin"><i class="fa fa-check"></i><b>7.5.3</b> thin</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#fitting-the-mcmcglmm-model"><i class="fa fa-check"></i><b>7.6</b> Fitting the MCMCglmm model</a></li>
+<li class="chapter" data-level="7.7" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#did-the-model-converge"><i class="fa fa-check"></i><b>7.7</b> Did the model converge?</a></li>
+<li class="chapter" data-level="7.8" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#mcmc-outputs"><i class="fa fa-check"></i><b>7.8</b> MCMC outputs</a></li>
+<li class="chapter" data-level="7.9" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#extracting-lambda-for-mcmcglmm-models"><i class="fa fa-check"></i><b>7.9</b> Extracting lambda for MCMCglmm models</a></li>
+<li class="chapter" data-level="7.10" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#checking-the-effects-of-priors"><i class="fa fa-check"></i><b>7.10</b> Checking the effects of priors</a></li>
+<li class="chapter" data-level="7.11" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#an-example-using-a-pglmm"><i class="fa fa-check"></i><b>7.11</b> An example using a PGLMM</a></li>
+<li class="chapter" data-level="7.12" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#adding-extra-fixed-and-random-effects"><i class="fa fa-check"></i><b>7.12</b> Adding extra fixed and random effects</a></li>
+<li class="chapter" data-level="7.13" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#summary-6"><i class="fa fa-check"></i><b>7.13</b> Summary</a></li>
+<li class="chapter" data-level="7.14" data-path="phylogenetic-generalised-linear-mixed-models-in-r.html"><a href="phylogenetic-generalised-linear-mixed-models-in-r.html#practical-exercises-2"><i class="fa fa-check"></i><b>7.14</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html"><i class="fa fa-check"></i><b>8</b> Macroevolutionary models for continuous traits</a>
+<ul>
+<li class="chapter" data-level="" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#before-you-start-6"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="8.1" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#preparation-4"><i class="fa fa-check"></i><b>8.1</b> Preparation</a></li>
+<li class="chapter" data-level="8.2" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#models-of-evolution-for-continuous-traits"><i class="fa fa-check"></i><b>8.2</b> Models of evolution for continuous traits</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#look-at-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Look at the data</a></li>
+<li class="chapter" data-level="8.2.2" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#fitting-the-brownian-motion-and-ou-models-of-evolution-using-fitcontinuous"><i class="fa fa-check"></i><b>8.2.2</b> Fitting the Brownian motion and OU models of evolution using <code>fitContinuous</code></a></li>
+<li class="chapter" data-level="8.2.3" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#comparing-models-of-evolution-using-aic"><i class="fa fa-check"></i><b>8.2.3</b> Comparing models of evolution using AIC</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#summary-7"><i class="fa fa-check"></i><b>8.3</b> Summary</a></li>
+<li class="chapter" data-level="8.4" data-path="macroevolutionary-models-for-continuous-traits.html"><a href="macroevolutionary-models-for-continuous-traits.html#practical-exercises-3"><i class="fa fa-check"></i><b>8.4</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html"><i class="fa fa-check"></i><b>9</b> Macroevolutionary models for discrete traits</a>
+<ul>
+<li class="chapter" data-level="" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#before-you-start-7"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="9.1" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#preparation-5"><i class="fa fa-check"></i><b>9.1</b> Preparation</a></li>
+<li class="chapter" data-level="9.2" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#models-of-evolution-for-discrete-traits"><i class="fa fa-check"></i><b>9.2</b> Models of evolution for discrete traits</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#fitting-the-er-sym-and-ard-models-of-evolution-using-fitdiscrete"><i class="fa fa-check"></i><b>9.2.1</b> Fitting the ER, SYM and ARD models of evolution using <code>fitDiscrete</code></a></li>
+<li class="chapter" data-level="9.2.2" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#comparing-models-of-evolution-using-aic-1"><i class="fa fa-check"></i><b>9.2.2</b> Comparing models of evolution using AIC</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#ancestral-state-estimations"><i class="fa fa-check"></i><b>9.3</b> Ancestral state estimations</a></li>
+<li class="chapter" data-level="9.4" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#summary-8"><i class="fa fa-check"></i><b>9.4</b> Summary</a></li>
+<li class="chapter" data-level="9.5" data-path="macroevolutionary-models-for-discrete-traits.html"><a href="macroevolutionary-models-for-discrete-traits.html#practical-exercises-4"><i class="fa fa-check"></i><b>9.5</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html"><i class="fa fa-check"></i><b>10</b> Beyond simple macroevolutionary models</a>
+<ul>
+<li class="chapter" data-level="" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#before-you-start-8"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="10.1" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#preparation-6"><i class="fa fa-check"></i><b>10.1</b> Preparation</a></li>
+<li class="chapter" data-level="10.2" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#more-complex-models-of-trait-evolution"><i class="fa fa-check"></i><b>10.2</b> More complex models of trait evolution</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#preparing-the-tree-and-data-for-ouwie"><i class="fa fa-check"></i><b>10.2.1</b> Preparing the tree and data for OUwie</a></li>
+<li class="chapter" data-level="10.2.2" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#running-models-using-ouwie"><i class="fa fa-check"></i><b>10.2.2</b> Running models using OUwie</a></li>
+<li class="chapter" data-level="10.2.3" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#single-rate-bm-models"><i class="fa fa-check"></i><b>10.2.3</b> Single rate BM models</a></li>
+<li class="chapter" data-level="10.2.4" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#single-optimum-ou-models"><i class="fa fa-check"></i><b>10.2.4</b> Single optimum OU models</a></li>
+<li class="chapter" data-level="10.2.5" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-rate-bm-bms-models"><i class="fa fa-check"></i><b>10.2.5</b> Multi-rate BM (BMS) models</a></li>
+<li class="chapter" data-level="10.2.6" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-optima-ou-oum-models"><i class="fa fa-check"></i><b>10.2.6</b> Multi-optima OU (OUM) models</a></li>
+<li class="chapter" data-level="10.2.7" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-rate-multi-optima-ou-motion-models-oumv"><i class="fa fa-check"></i><b>10.2.7</b> Multi-rate multi-optima OU motion models (OUMV)</a></li>
+<li class="chapter" data-level="10.2.8" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-alpha-multi-optima-ou-motion-models-ouma"><i class="fa fa-check"></i><b>10.2.8</b> Multi-alpha multi-optima OU motion models (OUMA)</a></li>
+<li class="chapter" data-level="10.2.9" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#multi-rate-multi-optima-ou-motion-models-oumva"><i class="fa fa-check"></i><b>10.2.9</b> Multi-rate multi-optima OU motion models (OUMVA)</a></li>
+<li class="chapter" data-level="10.2.10" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#comparing-models-of-evolution-using-aic-2"><i class="fa fa-check"></i><b>10.2.10</b> Comparing models of evolution using AIC</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#summary-9"><i class="fa fa-check"></i><b>10.3</b> Summary</a></li>
+<li class="chapter" data-level="10.4" data-path="beyond-simple-macroevolutionary-models.html"><a href="beyond-simple-macroevolutionary-models.html#practical-exercises-5"><i class="fa fa-check"></i><b>10.4</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html"><i class="fa fa-check"></i><b>11</b> Diversification rate analyses</a>
+<ul>
+<li class="chapter" data-level="" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#before-you-start-9"><i class="fa fa-check"></i>Before you start</a></li>
+<li class="chapter" data-level="11.1" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#preparation-7"><i class="fa fa-check"></i><b>11.1</b> Preparation</a></li>
+<li class="chapter" data-level="11.2" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#lineage-through-time-plots-and-the-gamma-statistic"><i class="fa fa-check"></i><b>11.2</b> Lineage through time plots and the <span class="math inline">\(\gamma\)</span> statistic</a></li>
+<li class="chapter" data-level="11.3" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#bamm-bayesian-analysis-of-macroevolutionary-mixtures"><i class="fa fa-check"></i><b>11.3</b> BAMM: Bayesian Analysis of Macroevolutionary Mixtures</a></li>
+<li class="chapter" data-level="11.4" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#running-bamm"><i class="fa fa-check"></i><b>11.4</b> Running BAMM</a></li>
+<li class="chapter" data-level="11.5" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#looking-at-the-output-of-bamm-using-bammtools-in-r"><i class="fa fa-check"></i><b>11.5</b> Looking at the output of BAMM using BAMMtools in R</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#assessing-mcmc-convergence"><i class="fa fa-check"></i><b>11.5.1</b> Assessing MCMC convergence</a></li>
+<li class="chapter" data-level="11.5.2" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#analysis-of-rate-shifts-in-the-dragonfly-phylogeny"><i class="fa fa-check"></i><b>11.5.2</b> Analysis of rate shifts in the dragonfly phylogeny</a></li>
+<li class="chapter" data-level="11.5.3" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#mean-phylorate-plot"><i class="fa fa-check"></i><b>11.5.3</b> Mean phylorate plot</a></li>
+<li class="chapter" data-level="11.5.4" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#best-single-distinct-shift-configuration"><i class="fa fa-check"></i><b>11.5.4</b> Best single distinct shift configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#credible-sets-of-shifts"><i class="fa fa-check"></i><b>11.6</b> Credible sets of shifts</a></li>
+<li class="chapter" data-level="11.7" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#clade-specific-evolutionary-rates"><i class="fa fa-check"></i><b>11.7</b> Clade specific evolutionary rates</a></li>
+<li class="chapter" data-level="11.8" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#rate-through-time-analysis"><i class="fa fa-check"></i><b>11.8</b> Rate-through-time analysis</a></li>
+<li class="chapter" data-level="11.9" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#macroevolutionary-cohort-analysis"><i class="fa fa-check"></i><b>11.9</b> Macroevolutionary cohort analysis</a></li>
+<li class="chapter" data-level="11.10" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#assumptions-and-issues-with-bamm"><i class="fa fa-check"></i><b>11.10</b> Assumptions and issues with BAMM</a></li>
+<li class="chapter" data-level="11.11" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#summary-10"><i class="fa fa-check"></i><b>11.11</b> Summary</a></li>
+<li class="chapter" data-level="11.12" data-path="diversification-rate-analyses.html"><a href="diversification-rate-analyses.html#practical-exercises-6"><i class="fa fa-check"></i><b>11.12</b> Practical exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html"><i class="fa fa-check"></i><b>12</b> Answers to practical exercises</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#need-to-know-r"><i class="fa fa-check"></i><b>12.1</b> Need to know R</a></li>
+<li class="chapter" data-level="12.2" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#data-wrangling"><i class="fa fa-check"></i><b>12.2</b> Data wrangling</a></li>
+<li class="chapter" data-level="12.3" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#phylogenies"><i class="fa fa-check"></i><b>12.3</b> Phylogenies</a></li>
+<li class="chapter" data-level="12.4" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#preparation-8"><i class="fa fa-check"></i><b>12.4</b> Preparation</a></li>
+<li class="chapter" data-level="12.5" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#phylogenetic-signal"><i class="fa fa-check"></i><b>12.5</b> Phylogenetic signal</a></li>
+<li class="chapter" data-level="12.6" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#pgls"><i class="fa fa-check"></i><b>12.6</b> PGLS</a></li>
+<li class="chapter" data-level="12.7" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#mcmcglmm"><i class="fa fa-check"></i><b>12.7</b> MCMCglmm</a></li>
+<li class="chapter" data-level="12.8" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#models-of-evolution-with-continuous-traits"><i class="fa fa-check"></i><b>12.8</b> Models of evolution with continuous traits</a></li>
+<li class="chapter" data-level="12.9" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#models-of-evolution-with-discrete-traits"><i class="fa fa-check"></i><b>12.9</b> Models of evolution with discrete traits</a></li>
+<li class="chapter" data-level="12.10" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#beyond-simple-macroevolutionary-models-of-trait-evolution"><i class="fa fa-check"></i><b>12.10</b> Beyond simple macroevolutionary models of trait evolution</a></li>
+<li class="chapter" data-level="12.11" data-path="answers-to-practical-exercises.html"><a href="answers-to-practical-exercises.html#diversification"><i class="fa fa-check"></i><b>12.11</b> Diversification</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html"><i class="fa fa-check"></i><b>13</b> Common mistakes using PCMs in R</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#good-practice-to-prevent-errors"><i class="fa fa-check"></i><b>13.1</b> Good practice to prevent errors</a></li>
+<li class="chapter" data-level="13.2" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#common-errors"><i class="fa fa-check"></i><b>13.2</b> Common errors</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#standard-r-issues"><i class="fa fa-check"></i><b>13.2.1</b> Standard R issues</a></li>
+<li class="chapter" data-level="13.2.2" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#issues-with-the-tree-or-data"><i class="fa fa-check"></i><b>13.2.2</b> Issues with the tree or data</a></li>
+</ul></li>
+<li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
+<li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Online materials for Primer on Phylogenetic Comparative Methods for the Biological Sciences</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-wrangling-comparative-data-in-r" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Data wrangling comparative data in R<a href="data-wrangling-comparative-data-in-r.html#data-wrangling-comparative-data-in-r" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In the <em>Primer</em>, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the <a href="https://www.tidyverse.org/">tidyverse</a> - these are amazing for data manipulation etc. It’s beyond the scope of this <em>Primer</em> to cover these in detail, but we will show you what we did to get the tidied dataset in the book.</p>
+<div id="before-you-start" class="section level2 unnumbered hasAnchor">
+<h2>Before you start<a href="data-wrangling-comparative-data-in-r.html#before-you-start" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Open the <code>02-DataWrangling.RProj</code> file in the <code>02-DataWrangling</code> folder to open your R Project for this exercise.</li>
+</ul>
+<p>You will also need to install the following packages:</p>
+<ul>
+<li><code>tidyverse</code> - for reading, manipulating and plotting data</li>
+<li><code>measurements</code> - to convert inches to cm</li>
+</ul>
+</div>
+<div id="chameleon-data" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Chameleon data<a href="data-wrangling-comparative-data-in-r.html#chameleon-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Let’s imagine we have the following three sources of chameleon body length and life history data.</p>
+<p><strong>SOURCE 1: Picard et al. 2020.</strong></p>
+<ul>
+<li><em>Chamaeleo chamaeleon</em>. 245 mm, 80 eggs, sexually dimorphic.</li>
+<li><em>Brookesia minima</em>. 33 mm, 2 eggs, sexually dimorphic.</li>
+<li><em>Calumma parsonii</em>. 650 mm, 50 eggs, sexually dimorphic.</li>
+</ul>
+<p><strong>SOURCE 2: Janeway et al. 1995.</strong></p>
+<ul>
+<li><em>Chamaeleo chamaeleon</em>. Up to 250 cm, Up to 100 eggs.</li>
+<li><em>Brookesia minima</em>. Up to 34 mm, 2 eggs.</li>
+<li><em>Calumma parsonii</em>. Up to 695 mm, Up to 50 eggs.</li>
+</ul>
+<p><strong>SOURCE 3: Kirk et al. 1966.</strong></p>
+<ul>
+<li><em>Chamaeleo chamaeleon</em>. Approximately 10 inches.</li>
+<li><em>Brookesia minima</em>. Approximately 1 inch.</li>
+<li><em>Calumma parsonii</em>. Approximately 24 inches.</li>
+</ul>
+<p>We would tend to record these data in a table (probably in Excel or another spreadsheet program). Here we have saved this file as <code>chameleon-data-raw.csv</code></p>
+<p>We would also record the full reference for each source in a separate table. Recording the data like this makes it easy to enter in Excel, and also makes it easy for us to exclude certain types of data or sources should we decide we don’t trust them enough to include in our analyses.</p>
+<p>Note that this will not be the ideal format for using the data in R, so you will need to manipulate or <em>wrangle</em> the data first to make it <strong>tidy</strong>. In R, the <code>tidyr</code> and <code>dplyr</code> packages are useful for doing this. Or you could use something like Excel if you are less confident with R. Make sure to keep the raw data too in case you accidentally introduce any errors, and so that you can repeat the data collection and analyses if needed.</p>
+<p>Both <code>dplyr</code> and <code>tidyr</code> packages are part of the <code>tidyverse</code> so we can save some time by loading them both at the same time via <code>library(tidyverse)</code></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="data-wrangling-comparative-data-in-r.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb23-2"><a href="data-wrangling-comparative-data-in-r.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<p>Next we need to read in the chameleon data from our folder. This is saved in the file <code>chameleon-data-raw.csv</code> so we can read it in using <code>read_csv</code> as usual.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="data-wrangling-comparative-data-in-r.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the data</span></span>
+<span id="cb24-2"><a href="data-wrangling-comparative-data-in-r.html#cb24-2" aria-hidden="true" tabindex="-1"></a>chameleon <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/chameleon-data-raw.csv&quot;</span>)</span></code></pre></div>
+<pre><code>## Rows: 18 Columns: 8
+## ── Column specification ──────────────────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (6): Species, Measurement, Type, Units, Quality, Source
+## dbl (1): Value
+## lgl (1): Approx
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>When we read in data we get output that tells us how R has interpreted each column. Here it thinks <code>Species</code> is a character (i.e. words), whereas <code>Value</code> is <code>col_double</code> which means it’s a number with decimal places. These all look right to me, but if something looks off here (i.e. characters where you were expecting numbers) it’s worth checking your data to make sure you haven’t made any errors. To save having lots of non-needed output I often suppress these messages in this book, though they’ll pop up if you run the code yourself.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="data-wrangling-comparative-data-in-r.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Take a look at it</span></span>
+<span id="cb26-2"><a href="data-wrangling-comparative-data-in-r.html#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(chameleon)</span></code></pre></div>
+<pre><code>## Rows: 18
+## Columns: 8
+## $ Species     &lt;chr&gt; &quot;Chamaeleo chamaeleon&quot;, &quot;Chamaeleo chamaeleon&quot;, &quot;Chamaeleo chamaeleon&quot;, …
+## $ Measurement &lt;chr&gt; &quot;length&quot;, &quot;clutch size&quot;, &quot;dimorphic&quot;, &quot;length&quot;, &quot;clutch size&quot;, &quot;dimorphi…
+## $ Value       &lt;dbl&gt; 245, 80, 1, 33, 2, 1, 650, 50, 1, 250, 100, 34, 2, 695, 50, 10, 1, 24
+## $ Type        &lt;chr&gt; &quot;mean&quot;, &quot;mean&quot;, &quot;truefalse&quot;, &quot;mean&quot;, &quot;mean&quot;, &quot;truefalse&quot;, &quot;mean&quot;, &quot;mean&quot;…
+## $ Units       &lt;chr&gt; &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, &quot;mm&quot;…
+## $ Quality     &lt;chr&gt; &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, …
+## $ Approx      &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+## $ Source      &lt;chr&gt; &quot;Picard et al 2020&quot;, &quot;Picard et al 2021&quot;, &quot;Picard et al 2022&quot;, &quot;Picard e…</code></pre>
+<p>To wrangle this data, we would first convert the units to a standard unit for each measurement. Here we have length in mm and inches, so we would convert the inches into mm. The three altered rows are shown below. Note that converting from inches to mm gives us the false impression of precision, i.e. two values are now 25.4 and 609.6, rather than whole numbers making it look like these were measured accurately rather than approximated. It’s worth looking out for this in other data, especially curated databases where this kind of conversion is typical.</p>
+<p>We can do this easily using the function <code>conv_unit</code> in the package <code>measurements</code>. Let’s load the library here so we can do this.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="data-wrangling-comparative-data-in-r.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb28-2"><a href="data-wrangling-comparative-data-in-r.html#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(measurements)</span></code></pre></div>
+<p>Now let’s use <code>conv_unit</code> and some <code>dplyr</code> functions to convert all inches to mm.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="data-wrangling-comparative-data-in-r.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataset called chameleon2</span></span>
+<span id="cb29-2"><a href="data-wrangling-comparative-data-in-r.html#cb29-2" aria-hidden="true" tabindex="-1"></a>chameleon2 <span class="ot">&lt;-</span></span>
+<span id="cb29-3"><a href="data-wrangling-comparative-data-in-r.html#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Start with the chameleon data</span></span>
+<span id="cb29-4"><a href="data-wrangling-comparative-data-in-r.html#cb29-4" aria-hidden="true" tabindex="-1"></a>  chameleon <span class="sc">%&gt;%</span> </span>
+<span id="cb29-5"><a href="data-wrangling-comparative-data-in-r.html#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert inches into mm within the Value column</span></span>
+<span id="cb29-6"><a href="data-wrangling-comparative-data-in-r.html#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value =</span> <span class="fu">ifelse</span>(Units <span class="sc">==</span> <span class="st">&quot;inches&quot;</span>, <span class="fu">conv_unit</span>(Value, <span class="st">&quot;inch&quot;</span>, <span class="st">&quot;mm&quot;</span>), Value)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-7"><a href="data-wrangling-comparative-data-in-r.html#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove Units and Source columns</span></span>
+<span id="cb29-8"><a href="data-wrangling-comparative-data-in-r.html#cb29-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Units, <span class="sc">-</span>Source)</span></code></pre></div>
+<p>Here <code>mutate</code> modifies the variable <em>Value</em>. The <code>ifelse</code> statement tells R that if <em>Units</em> is in inches, we should use <code>conv_unit</code> to convert from inch to mm, and place this value in the <em>Value</em> column. If <em>Units</em> is <em>not</em> in inches it just records the original value in <em>Value</em>.</p>
+<p>Finally, <code>select</code> is used to remove the <em>Units</em> and <em>Source</em> columns. These are important to keep in our raw data, but we don’t need them for our analyses, so it’s neater to remove them.</p>
+<div class="detail">
+<p>
+The observant among you may have noticed I used
+<code>dplyr::select</code> not just <code>select</code> in the code
+above. This tells R to look in the package <code>dplyr</code> and use
+the <code>select</code> function from that package. There are several
+different packages with <code>select</code> functions, and I use another
+one later in this book. To ensure that R knows to use the
+<code>dplyr</code> version here I have used the <code>::</code>.
+</p>
+</div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="data-wrangling-comparative-data-in-r.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Just show the last three entries to check what we have done looks correct</span></span>
+<span id="cb30-2"><a href="data-wrangling-comparative-data-in-r.html#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(chameleon2, <span class="at">n =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 6
+##   Species              Measurement Value Type  Quality Approx
+##   &lt;chr&gt;                &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;lgl&gt; 
+## 1 Chamaeleo chamaeleon length      254   mean  medium  TRUE  
+## 2 Brookesia minima     length       25.4 mean  medium  TRUE  
+## 3 Calumma parsonii     length      610.  mean  medium  TRUE</code></pre>
+<p>Next we might decide to exclude low quality records, and remove any approximations. We might need to do something more complicated if we only have one record for a species and it is an approximation. In this case we are going to keep the approximations, and use all the data. But you should choose what is sensible for your dataset.</p>
+<p>To make our data tidier and remove unnecessary columns we will use <code>select</code> again to remove the <em>Data_Quality</em> and <em>Approximation</em> columns.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="data-wrangling-comparative-data-in-r.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataset called chameleon3</span></span>
+<span id="cb32-2"><a href="data-wrangling-comparative-data-in-r.html#cb32-2" aria-hidden="true" tabindex="-1"></a>chameleon3 <span class="ot">&lt;-</span></span>
+<span id="cb32-3"><a href="data-wrangling-comparative-data-in-r.html#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Start with chameleon2</span></span>
+<span id="cb32-4"><a href="data-wrangling-comparative-data-in-r.html#cb32-4" aria-hidden="true" tabindex="-1"></a>  chameleon2 <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="data-wrangling-comparative-data-in-r.html#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove the Data Quality and Approximation columns</span></span>
+<span id="cb32-6"><a href="data-wrangling-comparative-data-in-r.html#cb32-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Quality, <span class="sc">-</span>Approx)</span>
+<span id="cb32-7"><a href="data-wrangling-comparative-data-in-r.html#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="data-wrangling-comparative-data-in-r.html#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the data</span></span>
+<span id="cb32-9"><a href="data-wrangling-comparative-data-in-r.html#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(chameleon3)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 4
+##   Species              Measurement Value Type     
+##   &lt;chr&gt;                &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;    
+## 1 Chamaeleo chamaeleon length        245 mean     
+## 2 Chamaeleo chamaeleon clutch size    80 mean     
+## 3 Chamaeleo chamaeleon dimorphic      NA truefalse
+## 4 Brookesia minima     length         33 mean     
+## 5 Brookesia minima     clutch size     2 mean     
+## 6 Brookesia minima     dimorphic      NA truefalse</code></pre>
+<p>Finally, we want to summarise the data for each species, to get means/medians and possibly also minima and maxima. To summarise we use the function <code>summarise</code> (or <code>summarize</code> if you prefer the US spelling). But first we need to group the data into the groupings we want the summary data for. In this case we want to know the median values for each species, for each different measurement, and for each different type of measurement, i.e. averages, maximums, minimums etc. We can tell R to group data using <code>group_by</code>. To do all of this we use the following code:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="data-wrangling-comparative-data-in-r.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataset called chameleon4</span></span>
+<span id="cb34-2"><a href="data-wrangling-comparative-data-in-r.html#cb34-2" aria-hidden="true" tabindex="-1"></a>chameleon4 <span class="ot">&lt;-</span></span>
+<span id="cb34-3"><a href="data-wrangling-comparative-data-in-r.html#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Start with chameleon3</span></span>
+<span id="cb34-4"><a href="data-wrangling-comparative-data-in-r.html#cb34-4" aria-hidden="true" tabindex="-1"></a>  chameleon3 <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="data-wrangling-comparative-data-in-r.html#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group the records together by Species, Measurement, and Data_Type</span></span>
+<span id="cb34-6"><a href="data-wrangling-comparative-data-in-r.html#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Species, Measurement, Type) <span class="sc">%&gt;%</span></span>
+<span id="cb34-7"><a href="data-wrangling-comparative-data-in-r.html#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the median and max for Value in each group constructed by Species, Measurement, and Data_Type.</span></span>
+<span id="cb34-8"><a href="data-wrangling-comparative-data-in-r.html#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>(Value),</span>
+<span id="cb34-9"><a href="data-wrangling-comparative-data-in-r.html#cb34-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">max =</span> <span class="fu">max</span>(Value))</span>
+<span id="cb34-10"><a href="data-wrangling-comparative-data-in-r.html#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="data-wrangling-comparative-data-in-r.html#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the output</span></span>
+<span id="cb34-12"><a href="data-wrangling-comparative-data-in-r.html#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(chameleon4)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 5
+## # Groups:   Species, Measurement [4]
+##   Species          Measurement Type      median   max
+##   &lt;chr&gt;            &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 Brookesia minima clutch size max          2       2
+## 2 Brookesia minima clutch size mean         2       2
+## 3 Brookesia minima dimorphic   truefalse   NA      NA
+## 4 Brookesia minima length      max         34      34
+## 5 Brookesia minima length      mean        29.2    33
+## 6 Calumma parsonii clutch size max         50      50</code></pre>
+<p>Note that we now have a median and maximum value, for each measurement and data type for each species.</p>
+<p>This is fine, but to run analyses in R we are going to want a different column for each of the measurement x data type combinations. To do this we can use the function <code>pivot_wider</code>, because the change will make the table wider…</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="data-wrangling-comparative-data-in-r.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataset called chameleon5</span></span>
+<span id="cb36-2"><a href="data-wrangling-comparative-data-in-r.html#cb36-2" aria-hidden="true" tabindex="-1"></a>chameleon5 <span class="ot">&lt;-</span></span>
+<span id="cb36-3"><a href="data-wrangling-comparative-data-in-r.html#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Start with chameleon4</span></span>
+<span id="cb36-4"><a href="data-wrangling-comparative-data-in-r.html#cb36-4" aria-hidden="true" tabindex="-1"></a>  chameleon4 <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="data-wrangling-comparative-data-in-r.html#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Reshape the data so measurement X data types combinations are their own columns</span></span>
+<span id="cb36-6"><a href="data-wrangling-comparative-data-in-r.html#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="fu">c</span>(Measurement, Type), <span class="at">values_from =</span> <span class="fu">c</span>(median, max)) </span>
+<span id="cb36-7"><a href="data-wrangling-comparative-data-in-r.html#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="data-wrangling-comparative-data-in-r.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the output</span></span>
+<span id="cb36-9"><a href="data-wrangling-comparative-data-in-r.html#cb36-9" aria-hidden="true" tabindex="-1"></a>chameleon5</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 11
+## # Groups:   Species [3]
+##   Species      media…¹ media…² media…³ media…⁴ media…⁵ max_c…⁶ max_c…⁷ max_d…⁸ max_l…⁹ max_l…˟
+##   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Brookesia m…       2       2      NA      34    29.2       2       2      NA      34      33
+## 2 Calumma par…      50      50      NA     695   630.       50      50      NA     695     650
+## 3 Chamaeleo c…     100      80      NA     250   250.      100      80      NA     250     254
+## # … with abbreviated variable names ¹​`median_clutch size_max`, ²​`median_clutch size_mean`,
+## #   ³​median_dimorphic_truefalse, ⁴​median_length_max, ⁵​median_length_mean,
+## #   ⁶​`max_clutch size_max`, ⁷​`max_clutch size_mean`, ⁸​max_dimorphic_truefalse,
+## #   ⁹​max_length_max, ˟​max_length_mean</code></pre>
+<p>Finally, we probably don’t need all of these columns. The summary data you use and how you calculate it will vary depending on your inputs for example here we might want to extract:</p>
+<ul>
+<li><em>Median of mean length values</em>. This will tell us about the overall <strong>mean</strong> value for length across all sources.</li>
+<li><em>Maximum of maximum length values</em>. This will tell us about the overall <strong>maximum</strong> value for length across all sources.</li>
+<li><em>Median of mean clutch size values</em>. This will tell us about the overall <strong>mean</strong> value for clutch size across all sources.</li>
+<li><em>Maximum of maximum clutch size values</em>. This will tell us about the overall <strong>maximum</strong> value for clutch size across all sources.</li>
+<li><em>Median dimorphism score</em>. This will tell use whether the species is predominantly considered to be dimorphic or not.</li>
+</ul>
+<p>We can select these columns only using <code>select</code>:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="data-wrangling-comparative-data-in-r.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataset called chameleon6</span></span>
+<span id="cb38-2"><a href="data-wrangling-comparative-data-in-r.html#cb38-2" aria-hidden="true" tabindex="-1"></a>chameleon6 <span class="ot">&lt;-</span></span>
+<span id="cb38-3"><a href="data-wrangling-comparative-data-in-r.html#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Start with chameleon5</span></span>
+<span id="cb38-4"><a href="data-wrangling-comparative-data-in-r.html#cb38-4" aria-hidden="true" tabindex="-1"></a>  chameleon5 <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href="data-wrangling-comparative-data-in-r.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select only the required columns</span></span>
+<span id="cb38-6"><a href="data-wrangling-comparative-data-in-r.html#cb38-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Species, <span class="at">median_length =</span> median_length_mean, <span class="at">max_length =</span> max_length_max,</span>
+<span id="cb38-7"><a href="data-wrangling-comparative-data-in-r.html#cb38-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">median_clutchsize =</span> <span class="st">`</span><span class="at">median_clutch size_mean</span><span class="st">`</span>, <span class="at">max_clutchsize =</span> <span class="st">`</span><span class="at">max_clutch size_max</span><span class="st">`</span>,</span>
+<span id="cb38-8"><a href="data-wrangling-comparative-data-in-r.html#cb38-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">dimorphic =</span> median_dimorphic_truefalse)</span>
+<span id="cb38-9"><a href="data-wrangling-comparative-data-in-r.html#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="data-wrangling-comparative-data-in-r.html#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the output</span></span>
+<span id="cb38-11"><a href="data-wrangling-comparative-data-in-r.html#cb38-11" aria-hidden="true" tabindex="-1"></a>chameleon6</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 6
+## # Groups:   Species [3]
+##   Species              median_length max_length median_clutchsize max_clutchsize dimorphic
+##   &lt;chr&gt;                        &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Brookesia minima              29.2         34                 2              2        NA
+## 2 Calumma parsonii             630.         695                50             50        NA
+## 3 Chamaeleo chamaeleon         250.         250                80            100        NA</code></pre>
+<p>Finally if this were a real dataset, we might want to save this clean and tidy version so that we don’t have to run all of this code again every time we want to use it. We can do this using the function <code>write_csv</code>:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="data-wrangling-comparative-data-in-r.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(<span class="at">x =</span> chameleon6, <span class="at">file =</span> <span class="st">&quot;data/chameleon-data-for-analyses.csv&quot;</span>)</span></code></pre></div>
+<p>Note that, to demonstrate how the code works we’ve separated it into chunks above, but you could use <code>%&gt;%</code> to do all of these in one go if you wanted to:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="data-wrangling-comparative-data-in-r.html#cb41-1" aria-hidden="true" tabindex="-1"></a>chameleon_final <span class="ot">&lt;-</span></span>
+<span id="cb41-2"><a href="data-wrangling-comparative-data-in-r.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Start with chameleon</span></span>
+<span id="cb41-3"><a href="data-wrangling-comparative-data-in-r.html#cb41-3" aria-hidden="true" tabindex="-1"></a>  chameleon <span class="sc">%&gt;%</span></span>
+<span id="cb41-4"><a href="data-wrangling-comparative-data-in-r.html#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert inches into mm within the Value column</span></span>
+<span id="cb41-5"><a href="data-wrangling-comparative-data-in-r.html#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value =</span> <span class="fu">ifelse</span>(Units <span class="sc">==</span> <span class="st">&quot;inches&quot;</span>, <span class="fu">conv_unit</span>(Value, <span class="st">&quot;inch&quot;</span>, <span class="st">&quot;mm&quot;</span>), Value)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-6"><a href="data-wrangling-comparative-data-in-r.html#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove the Units, Source, Data Quality and Approximation columns</span></span>
+<span id="cb41-7"><a href="data-wrangling-comparative-data-in-r.html#cb41-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Units, <span class="sc">-</span>Source, <span class="sc">-</span>Quality, <span class="sc">-</span>Approx) <span class="sc">%&gt;%</span></span>
+<span id="cb41-8"><a href="data-wrangling-comparative-data-in-r.html#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group the records together by Species, Measurement, and Data_Type</span></span>
+<span id="cb41-9"><a href="data-wrangling-comparative-data-in-r.html#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Species, Measurement, Type) <span class="sc">%&gt;%</span></span>
+<span id="cb41-10"><a href="data-wrangling-comparative-data-in-r.html#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the median and max for Value in each group constructed by Species, Measurement, and Data_Type.</span></span>
+<span id="cb41-11"><a href="data-wrangling-comparative-data-in-r.html#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>(Value),</span>
+<span id="cb41-12"><a href="data-wrangling-comparative-data-in-r.html#cb41-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">max =</span> <span class="fu">max</span>(Value)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-13"><a href="data-wrangling-comparative-data-in-r.html#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Reshape the data so measurement X data types combinations are their own columns</span></span>
+<span id="cb41-14"><a href="data-wrangling-comparative-data-in-r.html#cb41-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="fu">c</span>(Measurement, Type), <span class="at">values_from =</span> <span class="fu">c</span>(median, max)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-15"><a href="data-wrangling-comparative-data-in-r.html#cb41-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select only the required columns</span></span>
+<span id="cb41-16"><a href="data-wrangling-comparative-data-in-r.html#cb41-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Species, <span class="at">median_length =</span> median_length_mean, <span class="at">max_length =</span> max_length_max,</span>
+<span id="cb41-17"><a href="data-wrangling-comparative-data-in-r.html#cb41-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">median_clutchsize =</span> <span class="st">`</span><span class="at">median_clutch size_mean</span><span class="st">`</span>, <span class="at">max_clutchsize =</span> <span class="st">`</span><span class="at">max_clutch size_max</span><span class="st">`</span>,</span>
+<span id="cb41-18"><a href="data-wrangling-comparative-data-in-r.html#cb41-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">dimorphic =</span> median_dimorphic_truefalse)</span>
+<span id="cb41-19"><a href="data-wrangling-comparative-data-in-r.html#cb41-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-20"><a href="data-wrangling-comparative-data-in-r.html#cb41-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the output</span></span>
+<span id="cb41-21"><a href="data-wrangling-comparative-data-in-r.html#cb41-21" aria-hidden="true" tabindex="-1"></a>chameleon_final</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 6
+## # Groups:   Species [3]
+##   Species              median_length max_length median_clutchsize max_clutchsize dimorphic
+##   &lt;chr&gt;                        &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Brookesia minima              29.2         34                 2              2        NA
+## 2 Calumma parsonii             630.         695                50             50        NA
+## 3 Chamaeleo chamaeleon         250.         250                80            100        NA</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="data-wrangling-comparative-data-in-r.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write to file</span></span>
+<span id="cb43-2"><a href="data-wrangling-comparative-data-in-r.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># I&#39;ve commented this out as we already made this above</span></span>
+<span id="cb43-3"><a href="data-wrangling-comparative-data-in-r.html#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co"># write_csv(x = chameleon_final, file = &quot;data/chameleon-data-for-analyses.csv&quot;)</span></span></code></pre></div>
+</div>
+<div id="summary-1" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Summary<a href="data-wrangling-comparative-data-in-r.html#summary-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This exercise should have introduced you to some basic skills for wrangling comparative data in R.</p>
+</div>
+<div id="practical-exercise" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Practical exercise<a href="data-wrangling-comparative-data-in-r.html#practical-exercise" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Using the <code>frog-eyes-raw-data.csv</code> dataset and R, create a new dataset that contains only the columns <code>genus_species</code>, <code>Family</code>, and two new columns containing the <em>species mean values</em> for <code>rootmass</code> and <code>eyemean</code>. We will talk more about this dataset in later exercises, but it comes from <span class="citation">K. N. Thomas et al. (<a href="#ref-thomas2020eye" role="doc-biblioref">2020</a>)</span>.</p>
+
+</div>
+</div>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-thomas2020eye" class="csl-entry">
+Thomas, Kate N, David J Gower, Rayna C Bell, Matthew K Fujita, Ryan K Schott, and Jeffrey W Streicher. 2020. <span>“Eye Size and Investment in Frogs and Toads Correlate with Adult Habitat, Activity Pattern and Breeding Ecology.”</span> <em>Proceedings of the Royal Society B</em> 287 (1935): 20201393.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="what-you-need-to-be-able-to-do-in-r-before-you-start.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="understanding-plotting-and-manipulating-phylogenies-in-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/02-DataWrangling.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pcm-primer.pdf", "pcm-primer.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
