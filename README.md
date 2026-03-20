@@ -7,7 +7,7 @@ To cite this guide:
 
 [![DOI](https://zenodo.org/badge/19134985.svg)](https://zenodo.org/doi/10.5281/zenodo.19134985)
 
-# Welcome to PCMs in R! {-}
+# Welcome to PCMs in R!
 
 <p align="center">
   <img src="https://github.com/nhcooper123/pcm-primer-online/raw/master/images/frogs_keyboard.JPG" />
@@ -17,7 +17,7 @@ In the magical pre-COVID days I was contributing to a short book that would form
 
 All practical exercises use R, so some knowledge of R is required. I have provided the basics in the first chapter. The online book focuses on practical implementations of methods for the most part. Some theoretical underpinnings can be found in the half completed book here: https://nhcooper123.github.io/pcm-primer/.
 
-## Acknowledgements {-}
+## Acknowledgements
 I would like to thank the many generations of postdocs and students who have taken courses with me and helped me to hone these materials. And to the many others out there teaching PCMs and writing tutorials that helped me learn these methods in the first place, especially Andy Purvis, Luke Harmon, Brian O'Meara, David Orme, Sam Price, Dan Rabosky, Liam Revell and Graham Slater.
 
 Particular thanks to the authors of the R packages used and cited in this book. None of this would be possible without them. __Do not forget to cite the packages you use in your own work__. And if you meet one of them in person, buy them a beer/cake/coffee to say thank you!
