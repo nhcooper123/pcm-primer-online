@@ -3,7 +3,7 @@
 Using phylogenies in R can feel daunting at first, even if you're already familiar with R. Luckily, lots of nice R packages exist to help us work with them, and fairly new packages like `ggtree` mean we can now make beautiful phylogeny plots without needing to resort to other software. In this chapter I'll introduce you to how R stores phylogenies, and then show you how to plot them and manipulate them before using them in your PCMs. Most of the examples come from the *Primer*.
 
 ## Before you start {-}
-- Open the `03-Phylogenies.RProj` file in the `03-Phylogenies` folder to open your R Project for this exercise.
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
 
 You will also need to install the following packages: 
 

@@ -2,7 +2,7 @@
 
 Below are all the questions and answers to the practical exercises at the end of each chapter. 
 
-Note that you will need to make sure R knows where to find your data. My data are all in a `data` folder within the R Project I'm working with. Assuming you have not moved the data from where you downloaded everything, you will have a separate R Project and data folder for each of the chapters of this online book. 
+Note that you will need to make sure R knows where to find your data. To do this, open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
 
 ## Need to know R
 
@@ -281,7 +281,7 @@ primate$dropped$unmatched.rows
 
 # Fit a PGLS model
 model.pgls <- pgls(log(GestationLen_d) ~ log(AdultBodyMass_g), 
-                   data = primate, lambda = "ML", bounds = list(lambda = c(0.01, 1)))
+                   data = primate, lambda = "ML", bounds = list(lambda = c(0.1, 1)))
 
 ### Model diagnostics
 # Make a plotting window with 4 panes as there are four plots
@@ -345,7 +345,7 @@ Let's repeat the analyses we did in the PGLS chapter but using `MCMCglmm`. We wi
 
 Read in the tree and data, then prepare them for a PCM analysis (you may have already done this in a previous exercise which should save you some time). Fit a MCMCglmm model to investigate the relationship between log gestation length (`y = log(GestationLen_d)`) and log body size (`x = log(AdultBodyMass_g)`) in Primates. Don't forget to check that the model has converged, and to look at the model diagnostics and for autocorrelation.
 
-```{r}
+```{r, eval = FALSE}
 # Load the packages
 library(tidyverse)
 library(ape)
@@ -392,7 +392,7 @@ model_mcmcglmm <- MCMCglmm(log(GestationLen_d) ~ log(AdultBodyMass_g),
                            verbose = TRUE)
 
 # Save the model
-# saveRDS(model_mcmcglmm, file = "data/model_mcmcglmm_primate.rda")
+saveRDS(model_mcmcglmm, file = "data/model_mcmcglmm_primate.rda")
 ```
 
 ```{r}

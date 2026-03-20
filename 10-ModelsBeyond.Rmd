@@ -11,7 +11,7 @@ We will be using the evolution of head shape in natricine snakes as an example. 
 ```
 
 ## Before you start {-}
-- Open the `10-ModelsBeyond.RProj` file in the `10-ModelsBeyond` folder to open your R Project for this exercise.
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
 
 You will also need to install the following packages: 
 

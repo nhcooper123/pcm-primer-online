@@ -6,7 +6,7 @@ We will be using the evolution of eye size in frogs as an example. The data and 
 ```
 
 ## Before you start {-}
-- Open the `07-MCMCglmm.RProj` file in the `07-MCMCglmm` folder to open your R Project for this exercise.
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
 
 You will also need to install the following packages: 
 
