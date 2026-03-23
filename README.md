@@ -10,7 +10,7 @@ To cite this guide:
 # Welcome to PCMs in R!
 
 <p align="center">
-  <img src="https://github.com/nhcooper123/pcm-primer-online/raw/master/images/frogs_keyboard.JPG" />
+  <img src="https://github.com/nhcooper123/pcm-primer-online/raw/main/images/frogs_keyboard.JPG" />
 </p>
 
 In the magical pre-COVID days I was contributing to a short book that would form an introduction to phylogenetic comparative methods (PCMs). These are the online practical exercises that would have accompanied that book. This project was abandoned. These materials also form the bulk of a course I used to run for MSc students here at the Natural History Museum London. Many people have found these materials useful over the years, so it seemed like a good time to finally get them online with a DOI so people can use and cite them.
