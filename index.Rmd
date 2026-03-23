@@ -132,7 +132,7 @@ packageVersion("caper")
 An additional benefit to citing R packages is that it helps people understand exactly what you did. It's possible there are multiple ways to run a PGLS model, but if your report says you used `caper`, it's easy for a reader to check how `caper` does it and to know exactly what you did. This helps people reproduce your analysis, and can also help you prove to anyone assessing your work that you know what you are doing!
 
 If you aren't sure what packages you need to cite, there is a wonderful package called `grateful` which you can install and use to export an HTML file showing all the packages you currently have loaded and their citations.
-```{r}
+```{r, eval = FALSE}
 grateful::cite_packages(out.dir = ".")
 ```
 
