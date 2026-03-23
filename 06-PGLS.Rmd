@@ -1,19 +1,19 @@
-# Phylogenetic Generalised Least Squares (PGLS) in R
+# Phylogenetic Generalised Least Squares (PGLS) in R {#pgls}
 The aims of this exercise are to learn how to use R to perform Phylogenetic Generalised Least Squares (PGLS) analyses.
 
 ```{block, type = "info"}
-We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
+We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Thomas et al. 2020 @thomas2020eye!
 ```
 
 ## Before you start {-}
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 You will also need to install the following packages: 
 
-* `tidyverse` - for reading, manipulating and plotting data
-* `ape` - functions for reading, plotting and manipulating phylogenies
-* `geiger` - to check species in the tree and data match
-* `caper` - to fit PGLS models
+1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
+2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
+3. `geiger` - to check species in the tree and data match [@geiger2014]
+4. `caper` - to fit PGLS models [@caper]
 
 ## Preparation
 
@@ -27,7 +27,7 @@ library(caper)
 library(tidyverse)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+Next we need to prepare the tree and data for the analyses. In the Preparation exercise (see \@ref(prep)) we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
 
 It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
@@ -126,7 +126,7 @@ This is a bit messy because there are a lot of families, but note how certain fa
  
 There are several ways of accounting for phylogenetic non-independence in your analyses. Here we will use phylogenetic generalized least squares (PGLS). Another popular earlier method is independent contrasts (PIC). This method is really similar to PGLS, in fact it is just a special kind of PGLS where $\lambda$ is equal to 1. 
 
-PGLS offers some important advantages over independent contrasts. The model of trait evolution can be more flexible i.e., it can depart from a strict Brownian motion process ($\lambda$ or *K* = 1). Different scaling parameters ($\lambda$, $\kappa$, and $\delta$) can be incorporated in the analysis, which can significantly improve the fit of the data to the model and thus also improve the estimation of the trait correlation. Another advantage of PGLS is that the intercept of the regression is not forced to be zero. See the *Primer* for more details on the theory underlying PICs and PGLS.
+PGLS offers some important advantages over independent contrasts. The model of trait evolution can be more flexible i.e., it can depart from a strict Brownian motion process ($\lambda$ or *K* = 1). Different scaling parameters ($\lambda$, $\kappa$, and $\delta$) can be incorporated in the analysis, which can significantly improve the fit of the data to the model and thus also improve the estimation of the trait correlation. Another advantage of PGLS is that the intercept of the regression is not forced to be zero.
 
 ### Fitting PGLS models in R
 

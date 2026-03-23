@@ -10,12 +10,12 @@ library(knitr)
 
 ## Before you start {-}
 
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data). Data are available [here](download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/master/data).
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded. Data are available [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 You will also need to install the following packages: 
 
-* `tidyverse` - for reading, manipulating and plotting data
-* `measurements` - to convert inches to cm
+1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
+2. `measurements` - to convert inches to cm [@measurements]
 
 ## Chameleon data 
 
@@ -210,4 +210,4 @@ chameleon_final
 This exercise should have introduced you to some basic skills for wrangling comparative data in R.
 
 ## Practical exercise
-Using the `frog-eyes-raw-data.csv` dataset and R, create a new dataset that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. We will talk more about this dataset in later exercises, but it comes from @thomas2020eye.
+Using the `frog-eyes-raw-data.csv` dataset and R, create a new dataset that contains only the columns `genus_species`, `Family`, and two new columns containing the *species mean values* for `rootmass` and `eyemean`. We will talk more about this dataset in later exercises, but it comes from Thomas et al. 2020 @thomas2020eye.

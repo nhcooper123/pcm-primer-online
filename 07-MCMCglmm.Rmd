@@ -2,19 +2,19 @@
 The aims of this exercise are to learn how to use R to perform Phylogenetic Generalised Linear Mixed models (PGLMM)in R using `MCMCglmm`.
 
 ```{block, type = "info"}
-We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
+We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Thomas et al 2020 @thomas2020eye!
 ```
 
 ## Before you start {-}
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 You will also need to install the following packages: 
 
-* `tidyverse` - for reading, manipulating and plotting data
-* `ape` - functions for reading, plotting and manipulating phylogenies
-* `geiger` - to fit models of evolution
-* `MCMCglmm` - to fit GLMMs
-* `coda` - to assess convergence of MCMC runs
+1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
+2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
+3. `geiger` - to fit models of evolution [@geiger2014]
+4. `MCMCglmm` - to fit GLMMs [@MCMCglmm]
+5. `coda` - to assess convergence of MCMC runs [@coda]
 
 ## Why fit phylogenetic generalised linear mixed models?
 
@@ -22,13 +22,13 @@ Up this point we have been working with models where our diagnostic plots look p
 
 Where response variables are counts (e.g. number of individuals) we don't expect normally distributed residuals because counts can only be whole numbers, and cannot go below zero. Instead count data are usually pretty well described by a Poisson distribution instead. Where response variables are binary (e.g. 0 or 1) or proportion data, we also don't expect to see normally distributed residuals because again these variables cannot be negative, and in the case of binary data cannot be anything other than 0 or 1, and in the case of proportion data can only be between 0 and 1. Binary/proportion data are usually pretty well described by a binomial distribution instead. In your statistics classes you may have heard that the solution in these cases is to fit a *generalised* linear model, `glm` in R (rather than just a linear model; `lm` in R). We need to add this generalised linear modelling framework if we want to use count, or proportion, or binary response variables in our models.
 
-Unfortunately, there is not an easy way to extend PGLS to do this, so we need another kind of model. As described in the *Primer*, there are a number of ways to incorporate phylogenetic information into statistical methods based on a variety of statistical models. We focus on the PGLS model because it's quite easy to understand how it works, and uses standard models that we (should be) are already familiar with from basic statistics.
+Unfortunately, there is not an easy way to extend PGLS to do this, so we need another kind of model. There are a number of ways to incorporate phylogenetic information into statistical methods based on a variety of statistical models. We focus on the PGLS model because it's quite easy to understand how it works, and uses standard models that we (should be) are already familiar with from basic statistics.
 
-Another way we can incorporate phylogenetic information into a model is by using a mixed effects model. Mixed effects models have fixed effects, usually the variables we are interested in investigating, and random effects, often "nuisance" variables that we might need to control for in our analysis, or information about the hierarchical nature of the model set up. We can add information about the phlyogeny into the random effects componenet of a mixed effects model. Mixed effects models are very useful, but very hard to fully understand. See the *Primer* for more details.
+Another way we can incorporate phylogenetic information into a model is by using a mixed effects model. Mixed effects models have fixed effects, usually the variables we are interested in investigating, and random effects, often "nuisance" variables that we might need to control for in our analysis, or information about the hierarchical nature of the model set up. We can add information about the phlyogeny into the random effects componenet of a mixed effects model. Mixed effects models are very useful, but very hard to fully understand.
 
 Luckily, there is a package in R called `MCMCglmm` that performs *generalised linear mixed models* (GLMM), i.e. mixed effects models that are generalised to deal with response variables that result in non-normally distributed residuals. This package also allows us to add our phylogenetic information as a random effect in the model. Great!
 
-Unfortunately, fitting these models is quite tricky, in part because of the *MCMC* part of the `MCMCglmm` package name. MCMC stands for Markov Chain Monte Carlo, and this is a Bayesian method which means it works somewhat differently to the models we've met before. I'll try to explain as we go along, and see the *Primer* for more details.
+Unfortunately, fitting these models is quite tricky, in part because of the *MCMC* part of the `MCMCglmm` package name. MCMC stands for Markov Chain Monte Carlo, and this is a Bayesian method which means it works somewhat differently to the models we've met before. I'll try to explain as we go along.
 
 ```{block, type = "warning"}
 Bayesian phylogenetic generalised mixed models are very powerful tools, but can be complicated to understand and difficult to use properly. Before jumping in to these it is vital that you have a good understanding of **generalised linear models (GLMs)**, and **generalised linear mixed models (GLMMs)** including **how to fit and interpret the outputs of these models in R**. This is beyond the scope of this book. If you feel uncomfortable with these we suggest you go back and learn these methods first. You also need a basic understanding of **Bayesian statistics**.
@@ -67,7 +67,7 @@ library(MCMCglmm)
 library(coda)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. Hopefully you're pretty comfortable with this by now.
+Next we need to prepare the tree and data for the analyses. In the Preparation exercise (see \@ref(prep)) we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. Hopefully you're pretty comfortable with this by now.
 
 ```{r, message = FALSE}
 # Read in the data
@@ -145,7 +145,7 @@ However, `nodes = "ALL"` can result in higher auto-correlation (see below).
 
 ### Priors
 
-`MCMCglmm` requires us to set prior distributions for the fixed and random effects. For the random effects this is actually a bit trickier than many help tutorials might suggest. If you're fitting any model with any degree of complexity you'll need to read up on this to get the most appropriate priors (e.g. see http://www.wildanimalmodels.org/tiki-download_wiki_attachment.php?attId=24 for some examples using non-phylogenetic models).
+`MCMCglmm` requires us to set prior distributions for the fixed and random effects. For the random effects this is actually a bit trickier than many help tutorials might suggest. If you're fitting any model with any degree of complexity you'll need to read up on this to get the most appropriate priors.
 
 The default prior for the fixed effects is a Normal distribution with a mean (`mu`) of 0 and variance (`V`) of 1^10. This is known as a diffuse prior, as the variance is so large the prior is basically saying that the fixed effects can be pretty much any number, positive or negative. Generally this is fine so we don't tend to change this from the default.  
 
@@ -485,8 +485,8 @@ Note that this gets more complex if you want to fit hierarchical or repeated mea
 ## Summary
 You should now know how to perform a GLMM analysis in R using the package `MCMCglmm`.
 
-I also recommend reading the following if you want to know more: http://www.wildanimalmodels.org/tiki-download_wiki_attachment.php?attId=24
-https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf
+I also recommend reading the following if you want to know more: 
+https://math.umd.edu/~slud/s770/LecSlides/Lecs19to26/CourseNotesMCMCglmm.pdf
 
 ## Practical exercises
 In the data folder there is another tree (`primate-tree.nex`) and dataset (`primate-data.csv`) for investigating the evolution of primate life-history variables. These data come from the PanTHERIA database [@jones2009pantheria] and 10kTrees [@arnold201010ktrees]. 

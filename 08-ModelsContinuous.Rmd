@@ -1,20 +1,20 @@
-# Macroevolutionary models for continuous traits
+# Macroevolutionary models for continuous traits {#cont}
 
 The aims of this exercise are to learn how to use R to fit macroevolutionary models in R to continuous traits.
 
 ```{block, type = "info"}
-We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from @deepak2023, and the tree comes from @deepak2021. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @deepak2023!
+We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from @deepak2023, and the tree comes from @deepak2021. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Deepak et al. 2023 @deepak2023!
 ```
 
 ## Before you start {-}
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 You will also need to install the following packages: 
 
-* `tidyverse` - for reading, manipulating and plotting data
-* `ape` - functions for reading, plotting and manipulating phylogenies
-* `geiger` - to fit models of evolution
-* `patchwork` - to plot multi-panel plots
+1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
+2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
+3. `geiger` - to fit models of evolution [@geiger2014]
+4. `patchwork` - to plot multi-panel plots [@patchwork]
 
 ## Preparation
 
@@ -28,7 +28,7 @@ library(geiger)
 library(patchwork)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+Next we need to prepare the tree and data for the analyses. In the Preparation exercise (see \@ref(prep)) we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
 
 It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
@@ -130,13 +130,13 @@ As a quick reminder, the BM model is a so called “random walk” model where t
 
 The OU model is a random walk where trait values are pulled back towards some “optimal” value with an attraction strength proportional to the "rubber-band" parameter $\alpha$. The OU model has four parameters the Brownian rate parameter, $\sigma^2$, the state of the root at time zero, $z(0)$, the long-term mean, $\mu$, and the strength of evolutionary force that returns traits back towards the long-term mean if they evolve away from it, $\alpha$. If $\alpha$ is close to zero then evolution is approximately Brownian.
 
-For more details on these models please see the *Primer*.
+For more details on these models please see [here](https://nhcooper123.github.io/pcm-primer/tempo-mode.html).
 
 ```{block, type = "detail"}
 `fitContinuous` can also fit several other models. For more details look at the help file by typing: `?fitContinuous`
 ```
 
-We are going to use the package `geiger` to fit models in this exercise, which means there is an important additional preparation step that you may remember from when we used the package `phytools` and the function `phylosig` when were looking at phylogenetic signal in `05-PhyloSignal`.
+We are going to use the package `geiger` to fit models in this exercise, which means there is an important additional preparation step that you may remember from when we used the package `phytools` and the function `phylosig` when were looking at phylogenetic signal (see \@ref(signal)).
 
 ```{block, type = "info"}
 At this point you may be thinking, argh why can't all R packages work in the same way? This is because different packages were written by different people. We all have different programming styles, preferences and biases (some people *really* hate the `tidyverse` and `ggplot2` for example!) and these feed into the code we write. My advice is to follow these tutorials (and others) carefully, and don't worry about the differences too much. To put a positive spin on this, yes there may be lots of different ways to do things in R but at least they exist! In the recent past people published methods without the accompanying R packages. If you were lucky you might get some FORTRAN or C++ or C code, but generally you'd be expected to program the new methods yourself if you wanted to use them. Dealing with the idiosyncrasies of different people's R packages is a breeze compared to that! 
@@ -196,7 +196,7 @@ OU <- fitContinuous(mytree, logHL, model = c("OU"))
 This gives us a warning message (it doesn't say `Error` so it's not an error message). This means the analysis has run, but there's something we should be aware of. This warning is telling us something about the bounds of the parameter estimates, specifically the alpha or "rubber-band" parameter.
 
 ```{block, type = "detail"}
-**What's the deal with bounds?** These BM and OU models are fitted using Maximum Likelihood. We talk more about this in the *Primer*. But as a quick reminder, to get the Maximum Likelihood for a model, we need to find the values of the parameters that maximise the likelihood function. Rather than trying every possible combination of parameter values we instead use some kind of *optimisation* procedure. Optimisations are often described in terms of hills and valleys. If you're in the mountains looking for the highest peak, you could wander around the whole area, recording the height at each point, or we can make the process faster by always walking towards higher ground. If we did this we'd spend less time in the valleys and more time climbing towards the highest peaks. This is optimisation. To prevent us from spending lots of time looking in the wrong place, we could also define the boundaries of our search area, so we only look within a certain region. Our models do this by having *bounds* on the parameter values. So, for example, instead of looking at models with all possible values of $\alpha$ in an OU model, `fitContinuous` constrains the values of $\alpha$ to be between exp(-500) and exp(1). 
+**What's the deal with bounds?** These BM and OU models are fitted using Maximum Likelihood. We talk more about this in [here](https://nhcooper123.github.io/pcm-primer/tempo-mode.html). But as a quick reminder, to get the Maximum Likelihood for a model, we need to find the values of the parameters that maximise the likelihood function. Rather than trying every possible combination of parameter values we instead use some kind of *optimisation* procedure. Optimisations are often described in terms of hills and valleys. If you're in the mountains looking for the highest peak, you could wander around the whole area, recording the height at each point, or we can make the process faster by always walking towards higher ground. If we did this we'd spend less time in the valleys and more time climbing towards the highest peaks. This is optimisation. To prevent us from spending lots of time looking in the wrong place, we could also define the boundaries of our search area, so we only look within a certain region. Our models do this by having *bounds* on the parameter values. So, for example, instead of looking at models with all possible values of $\alpha$ in an OU model, `fitContinuous` constrains the values of $\alpha$ to be between exp(-500) and exp(1). 
 ```
 
 To fix this issue we just change the bounds and refit the model. If you check out the help file for `fitContinuous` it tells us:

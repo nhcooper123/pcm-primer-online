@@ -2,7 +2,7 @@
 
 Below are all the questions and answers to the practical exercises at the end of each chapter. 
 
-Note that you will need to make sure R knows where to find your data. To do this, open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
+Note that you will need to make sure R knows where to find your data. To do this, open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 ## Need to know R
 

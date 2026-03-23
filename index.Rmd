@@ -5,27 +5,21 @@ site: bookdown::bookdown_site
 output:
   pdf_document:
     citation_package: natbib
+    pandoc_args: [ "--csl", "ieee.csl" ]
   bookdown::pdf_book:
     citation_package: biblatex
+    pandoc_args: [ "--csl", "ieee.csl" ]
 documentclass: book
-bibliography: [book.bib, packages.bib]
-biblio-style: apalike
+bibliography: [book.bib, grateful-refs.bib]
+csl: ieee.csl
 link-citations: yes
 colorlinks: yes
 ---
 
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 
-  'bookdown', 'knitr', 'rmarkdown', 'phytools', 'tidyverse', 'caper', 'ape', 'measurements',
-  'patchwork', 'ggtree', 'geiger', 'treeplyr', 'MCMCglmm', 'coda'), 'packages.bib')
-```
-
 # Welcome to PCMs in R! {-}
 
 <p align="center">
-  <img src="https://github.com/nhcooper123/pcm-primer-online/raw/master/images/frogs_keyboard.JPG" />
+  <img src="https://github.com/nhcooper123/pcm-primer-online/raw/main/images/frogs_keyboard.JPG" />
 </p>
 
 In the magical pre-COVID days I was contributing to a short book that would form an introduction to phylogenetic comparative methods (PCMs). These are the online practical exercises that would have accompanied that book. This project was abandoned. These materials also form the bulk of a course I used to run for MSc students here at the Natural History Museum London. Many people have found these materials useful over the years, so it seemed like a good time to finally get them online with a DOI so people can use and cite them.
@@ -39,7 +33,7 @@ Particular thanks to the authors of the R packages used and cited in this book. 
 Best of luck to you all, and happy PCM-ing!
 
 ## Datasets and trees {-}
-All datasets and trees for each exercise are available for download as a ZIP from [here](download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/master/data). When you click this link it will take you to a website and the download should start automatically. 
+All datasets and trees for each exercise are available for download as a ZIP from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data). When you click this link it will take you to a website and the download should start automatically. 
 
 **Don't forget to unzip this folder before starting.**
 
@@ -67,17 +61,17 @@ Apologies in advance to the non-vertebrate, non-animal fans out there. To make u
 
 ![Frog eyes are really variable. Two tree frogs with large eyes and a burrowing frog and an aquatic frog with tiny eyes. Image credits: hehaden/Flickr CC BY-NC 2.0; Brian Gratwicke/Flickr CC BY 2.0, Rushen/Flickr CC BY-SA 2.0, Sue Cro/Flickr CC BY-NC 2.0](images/frogs.jpg)
 
-Who doesn't love frogs? Frogs are cool. One of the coolest things about them is that they have weird bulgy eyes...or do they? Some species have teeny tiny eyes, while others have massive eyes. In fact frogs have some of the biggest eyes relative to their body size across all vertebrates. @thomas2020eye predicted that this variation might be due to where they live, their mating habits, the time of day they are active, and their body size. In our examples we'll test some of these hypotheses using phylogenetic comparative methods.
+Who doesn't love frogs? Frogs are cool. One of the coolest things about them is that they have weird bulgy eyes...or do they? Some species have teeny tiny eyes, while others have massive eyes. In fact frogs have some of the biggest eyes relative to their body size across all vertebrates. Thomas et al. 2020 @thomas2020eye predicted that this variation might be due to where they live, their mating habits, the time of day they are active, and their body size. In our examples we'll test some of these hypotheses using phylogenetic comparative methods.
 
-The data and modified tree for this example come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. If you want to see the full results check out @thomas2020eye! And there's a nice summary of the paper [here](https://www.nhm.ac.uk/discover/news/2020/september/frogs-have-some-of-the-biggest-eyes-amongst-vertebrates.html).
+The data and modified tree for this example come from Thomas et al. 2020 @thomas2020eye, and the original tree comes from Feng et al. 2017 @feng2017phylogenomics. If you want to see the full results check out Thomas et al. 2020 @thomas2020eye! And there's a nice summary of the paper [here](https://www.nhm.ac.uk/discover/news/2020/september/frogs-have-some-of-the-biggest-eyes-amongst-vertebrates.html).
 
 ### Natricine snake head shape evolution {-}
 
 ![Snakes have different head shapes in different habitats. These are (clockwise starting in the top left) terrestrial/semiaquatic, aquatic, aquatic burrowing, and burrowing natricines. Image credits: see @deepak2023](images/snakes.jpg)
 
-Snakes are also cool, especially natricines which are the group that contains both the delightful European grass snake (*Natrix natrix*) and the ubiquitous garter snakes (genus *Thamnophis*) of North America. Natricine snakes are found across the globe, and have a range of interesting ecologies and more morphological variation than you might expect, especially in their head shape. @deepak2023 predicted that these variations in head shape would be more closely related to the ecomorph they belonged to (i.e. whether the snake was terrestrial, aquatic, burrowing or aquatic burrowing) than their evolutionary history. They expected that head shape might be an example of convergent evolution. In our examples we'll test some of these hypotheses using phylogenetic comparative methods.
+Snakes are also cool, especially natricines which are the group that contains both the delightful European grass snake (*Natrix natrix*) and the ubiquitous garter snakes (genus *Thamnophis*) of North America. Natricine snakes are found across the globe, and have a range of interesting ecologies and more morphological variation than you might expect, especially in their head shape. Deepak et al. 2023 @deepak2023 predicted that these variations in head shape would be more closely related to the ecomorph they belonged to (i.e. whether the snake was terrestrial, aquatic, burrowing or aquatic burrowing) than their evolutionary history. They expected that head shape might be an example of convergent evolution. In our examples we'll test some of these hypotheses using phylogenetic comparative methods.
 
-The data for this example comes from @deepak2023, and the tree comes from @deepak2021. If you want to see the full results check out @deepak2023!
+The data for this example comes from Deepak et al. 2023 @deepak2023, and the tree comes from Deepak et al. 2021 @deepak2021. If you want to see the full results check out Deepak et al. 2023 @deepak2023!
 
 ### Diversification in dragonflies {-}
 
@@ -85,7 +79,7 @@ The data for this example comes from @deepak2023, and the tree comes from @deepa
 
 You've probably guessed that yes, dragonflies are also cool. They're incredible predators and extremely agile fliers. My favourite fact about dragonflies is that one species, the globe skimmer (*Pantala flavescens*) make an annual multi-generational migration of around 18,000km (!) with individual insects flying more than 6,000km (thanks to Dr Jessica Ware for that fact and this dataset!). Dragonflies today are generally found near water, with some preferring lotic habitats with fast flowing waters and others lentic habitats with slow moving waters. The clade has been around for over 300 million years, and currently has over 3000 species. But how quickly did they diversify? Do different clades have different rates of evolution? Do their habitat preferences influence their diversification rates? In our examples we'll test some of these questions using phylogenetic comparative methods.
 
-The 522 species tree for this example comes from @letsch2016not and is available to download from @letsch2016data. This paper looked across dragonflies to investigate whether species from lotic habitats with fast flowing waters diversify more rapidly than species from lentic habitats with slow moving waters. If you want to see the full results check out @letsch2016not! 
+The 522 species tree for this example comes from Letsch et al. 2016a @letsch2016not and is available to download from Letsch et al. 2016b @letsch2016data. This paper looked across dragonflies to investigate whether species from lotic habitats with fast flowing waters diversify more rapidly than species from lentic habitats with slow moving waters. If you want to see the full results check out Letsch et al. 2016a @letsch2016not! 
 
 ## Citing R and R packages {-}
 Lots of people work on R and R packages for free. They're the reason that R is so great! The best way to thank them for this selfless work is to **cite R, and any R packages that you use**, whenever you write a report, article, thesis chapter or paper. This means that R developers can show their funders, bosses, supervisors and potential employers that people are using their work. 
@@ -135,6 +129,8 @@ If you aren't sure what packages you need to cite, there is a wonderful package 
 ```{r, eval = FALSE}
 grateful::cite_packages(out.dir = ".")
 ```
+
+This document was created using the packages `bookdown` [@bookdown2025], [@bookdown2016], `knitr` [@knitr2014], [@knitr2015], [@knitr2025] and `rmarkdown` [@rmarkdown2018], [@rmarkdown2020], [@rmarkdown2025].
 
 ## Citing this guide {-}
 

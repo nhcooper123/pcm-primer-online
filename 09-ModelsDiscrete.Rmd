@@ -1,20 +1,20 @@
-# Macroevolutionary models for discrete traits
+# Macroevolutionary models for discrete traits {#discrete}
 
 The aims of this exercise are to learn how to use R to fit macroevolutionary models in R to discrete traits.
 
 ```{block, type = "info"}
-We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from @deepak2023, and the tree comes from @deepak2021. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @deepak2023!
+We will be using the evolution of head shape in natricine snakes as an example. The data and modified tree come from @deepak2023, and the tree comes from @deepak2021. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Deepak et al. 2023 @deepak2023!
 ```
 
 ## Before you start {-}
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 You will also need to install the following packages: 
 
-* `tidyverse` - for reading, manipulating and plotting data
-* `ape` - functions for reading, plotting and manipulating phylogenies
-* `geiger` - to fit models of evolution
-* `phytools` - for plots of transition rates
+1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
+2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
+3. `geiger` - to fit models of evolution [@geiger2014]
+4. `phytools` - for plots of transition rates [@phytools]
 
 ## Preparation
 
@@ -28,7 +28,7 @@ library(geiger)
 library(phytools)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+Next we need to prepare the tree and data for the analyses. In the Preparation exercise (see \@ref(prep)) we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
 
 It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
@@ -151,9 +151,9 @@ In the SYM model transitions between any pair of states occurs at the same rate 
 
 Finally, in the ARD model all transitions between pairs of states occurs at different rates. It's important to be wary of over-fitting with this model as it can result in a lot of rates when you have more than a few states.
 
-For more details on these models please see the *Primer*.
+For more details on these models please see [here](https://nhcooper123.github.io/pcm-primer/foundations2.html#modelling-discrete-traits---simple-models)
 
-We are going to use the package `geiger` to fit models in this exercise, so we need the additional preparation step we first met in chapter `05-PhyloSignal`. We need to create an object in R that only contains the variable required, and the species names (so we can match it up to the tree). 
+We are going to use the package `geiger` to fit models in this exercise, so we need the additional preparation step we first met in the chapter on Phylogenetic Signal (see \@ref(signal)). We need to create an object in R that only contains the variable required, and the species names (so we can match it up to the tree). 
 
 We use the function `pull` to extract just the ecomorph values. We then name these values with the species names from `mydata` using the function `names`. Note that this requires the trait data is in the _same order_ as the tree tip labels so we need to reorder the data first...
 
@@ -194,7 +194,7 @@ Let's look at the output for the equal rates model:
 equal
 ```
 
-This looks very similar to the output from `fitContinuous` in the `08-ModelsContinuous` exercise. We've got a model summary, with log likelihoods and AIC scores, convergence diagnostics and an object summary. The only major difference is the first part, which gives us a fitted transition matrix or $Q$ matrix, rather than a summary of model parameters. In fact the $Q$ matrix **is** the model parameters for these models as it contains all the rates of change between different states. This is an equal rates model, so the off-diagonal elements are all same and show that the rate of change from one state to any other state is 0.00874. 
+This looks very similar to the output from `fitContinuous` in the previous exercise (see \@ref(cont)). We've got a model summary, with log likelihoods and AIC scores, convergence diagnostics and an object summary. The only major difference is the first part, which gives us a fitted transition matrix or $Q$ matrix, rather than a summary of model parameters. In fact the $Q$ matrix **is** the model parameters for these models as it contains all the rates of change between different states. This is an equal rates model, so the off-diagonal elements are all same and show that the rate of change from one state to any other state is 0.00874. 
 
 ```{block, type = "detail"}
 Why are the diagonal elements of the $Q$ matrix -0.034973712? The rows of the $Q$ matrix must sum to zero: -0.034973712 + (4 * 0.008743428) = 0. 
@@ -239,7 +239,7 @@ plot.gfit(ard, show.zeros = FALSE)
 ```
 
 ```{block, type = "detail"}
-For now these plots are pretty simple, but you can add some code to make the arrows different sizes etc. if you need to using the code here http://blog.phytools.org/2020/09/graphing-fitted-m-k-model-with.html. Also check out future versions of `phytools` which should have these functions added.
+For now these plots are pretty simple, but you can add some code to make the arrows different sizes etc. if you need to using the code [here](http://blog.phytools.org/2020/09/graphing-fitted-m-k-model-with.html). Also check out future versions of `phytools` which should have these functions added.
 ```
 
 ### Comparing models of evolution using AIC
@@ -263,7 +263,7 @@ aicw(aic.scores)
 `aicw` outputs the AIC (`fit`), $\Delta$AIC (`delta`) and AIC weights (`w`) for each of the models we fitted. The best model is the model with $\Delta$AIC = 0 or with AICw closest to 1. Using $\Delta$AIC we can conclude that the SYM model is the best fit to the data.
 
 ## Ancestral state estimations
-I'm not a big fan of ancestral state estimation as you probably realised from the *Primer*! There are many reasons to be highly sceptical of ancestral state estimates and interpretations of macroevolutionary patterns and process that are based on them. However, if you want to know if evolutionary tempo or mode have varied over clade history based on the state of a discrete trait as we intend to do in the next chapter, you'll need to do it so you can assign each node to a particular state.
+I'm not a big fan of ancestral state estimation. There are many reasons to be highly sceptical of ancestral state estimates and interpretations of macroevolutionary patterns and process that are based on them. However, if you want to know if evolutionary tempo or mode have varied over clade history based on the state of a discrete trait as we intend to do in the next chapter, you'll need to do it so you can assign each node to a particular state.
 
 We'll use `ape`'s `ace` function here. There are other options out there, for example in the `phytools` package, but `ace` will work for our purposes. 
 

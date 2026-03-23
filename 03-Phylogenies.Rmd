@@ -1,18 +1,17 @@
-# Understanding, plotting and manipulating phylogenies in R
+# Understanding, plotting and manipulating phylogenies in R {#phylogenies}
 
-Using phylogenies in R can feel daunting at first, even if you're already familiar with R. Luckily, lots of nice R packages exist to help us work with them, and fairly new packages like `ggtree` mean we can now make beautiful phylogeny plots without needing to resort to other software. In this chapter I'll introduce you to how R stores phylogenies, and then show you how to plot them and manipulate them before using them in your PCMs. Most of the examples come from the *Primer*.
+Using phylogenies in R can feel daunting at first, even if you're already familiar with R. Luckily, lots of nice R packages exist to help us work with them, and fairly new packages like `ggtree` mean we can now make beautiful phylogeny plots without needing to resort to other software. In this chapter I'll introduce you to how R stores phylogenies, and then show you how to plot them and manipulate them before using them in your PCMs.
 
 ## Before you start {-}
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
-
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data)
 You will also need to install the following packages: 
 
-* `tidyverse` - for reading, manipulating and plotting data
-* `ape` - functions for reading, plotting and manipulating phylogenies
-* `ggtree` - for plotting trees
-* `patchwork` - to plot multi-panel plots
-* `ggimage` - to add images to plots
-* `phytools` - to add species to phylogenies 
+1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
+2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
+3. `ggtree` - for plotting trees [@ggtree2017e], [@ggtree2018d], [@ggtree2020a], [@ggtree2022a], [@ggtree2022b]
+4. `patchwork` - to plot multi-panel plots [@patchwork]
+5. `ggimage` - to add images to plots 
+6. `phytools` - to add species to phylogenies [@phytools]
 
 ## What do phylogeny files look like?
 
@@ -22,7 +21,7 @@ There are many different formats that you might get a phylogeny in, but the most
 
 Newick (or New Hampshire) format uses brackets/parentheses to group taxa together with their closest relatives. Tips are represented by their names, and these names can include any characters *except* blanks, colons, semicolons, parentheses, and square brackets. Because blanks are not allowed, we use underscores to replace them, meaning that in many phylogenies the tip names are formatted as Genus_species.
 
-Our basic tree from the *Primer* is shown below.
+A basic tree is shown below.
 
 ```{r, echo = FALSE}
 library(ape)
@@ -81,7 +80,7 @@ Sometimes someone will email you a `.tre` or `.nex` file, or you'll download one
 
 You don't need to know how phylogenies are represented in R to use them, but it helps to have a bit of an idea what is going on.
 
-To load a tree into R you need either the function `read.tree` or `read.nexus` from the package APE. `read.tree` can deal with a number of different types of data (including DNA) whereas `read.nexus` reads NEXUS files. Let's practice with our basic tree from the *Primer*. We can read it in using `read.tree`. Remember to load the APE library first or this won't work.
+To load a tree into R you need either the function `read.tree` or `read.nexus` from the package APE. `read.tree` can deal with a number of different types of data (including DNA) whereas `read.nexus` reads NEXUS files. Let's practice with our basic tree. We can read it in using `read.tree`. Remember to load the APE library first or this won't work.
 
 ```{r}
 # Load ape
@@ -227,7 +226,7 @@ legend("topleft", fill = mycolours,
 `cex = 1.2` increases the point size, and `adj = 1` moves the tip labels sideways a bit so they don't obscure the ends of the branches.
 
 ### Basic phylogeny plotting with `ggtree`
-I won't go into a huge amount of detail about `ggtree` because the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) is really comprehensive, and for the most part you won't need to know how to do most of the things it can do. Instead I'll give a basic introduction, and then show you how to make some of the plots used in Chapter 2 of the *Primer*. I will also provide the code used to build figures in the *Primer* where appropriate in later exercises. 
+I won't go into a huge amount of detail about `ggtree` because the [manual for `ggtree`](https://yulab-smu.github.io/treedata-book/index.html) is really comprehensive, and for the most part you won't need to know how to do most of the things it can do. Instead I'll give a basic introduction, and then show you how to make some more complex plots.
 
 #### A quick intro to `ggplot2`
 
@@ -577,7 +576,7 @@ write.nexus(bird.orders_plusbigbird, file = "bigbirdtree.nex")
 This exercise should have given you the skills to understand, plot and manipulate phylogenies in R.
 
 ## Practical exercise
-Read in the `frog-tree.nex` phylogeny from the folder. This comes from @feng2017phylogenomics. Then do the following.
+Read in the `frog-tree.nex` phylogeny from the folder. This comes from Feng et al. 2017 @feng2017phylogenomics. Then do the following.
 
 1. Use R functions to determine: 
     a) how many species are in the tree?
@@ -591,4 +590,4 @@ Read in the `frog-tree.nex` phylogeny from the folder. This comes from @feng2017
 
 3. Save the tree to file as "mysuperdoopertree.nex"  
     
-EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn. If you make a particularly amazing or horrific tree, send me a screenshot on Twitter at nhcooper123!
+EXTRA. Use ggtree and the ggtree manual to produce a phylogeny plot of this tree that you could use in a publication OR make the most exotic looking tree you possibly can. Playing around with these packages is the best way to learn.

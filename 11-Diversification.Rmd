@@ -3,19 +3,19 @@
 The aims of this exercise are to learn how to use R to perform some simple diversification rate analyses, and to analyse the output from a BAMM analysis. 
 
 ```{block = "info"}
-We will be using the diversification rates of dragonflies (Anisoptera) as an example. The tree comes from @letsch2016not and is available to download from @letsch2016data. I'm only using one of their trees. If you want to see the full results check out @letsch2016not!
+We will be using the diversification rates of dragonflies (Anisoptera) as an example. The tree comes from @letsch2016not and is available to download from @letsch2016data. I'm only using one of their trees. If you want to see the full results check out Letsch et al. 2016 @letsch2016not!
 ```
 
 ## Before you start {-}
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 You will also need to install the following packages: 
 
-* `ape` - functions for reading, plotting and manipulating phylogenies
-* `BAMMtools` - functions to work with outputs from BAMM
-* `coda` - to assess convergence of MCMC runs
-* `phytools` - for lineage through time plots and force.ultrametric
-* `viridis` - colour palettes
+1. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
+2. `BAMMtools` - functions to work with outputs from BAMM [@BAMMtools]
+3. `coda` - to assess convergence of MCMC runs [@coda]
+4. `phytools` - for lineage through time plots and force.ultrametric [@phytools]
+5. `viridis` - colour palettes [@viridis]
 
 ## Preparation
 
@@ -102,7 +102,7 @@ sim_trees <- pbtree(b = lambda_dragonflies,
                     t = age_dragonflies, nsim = 10, quiet = TRUE, method = "direct")
 ```
 
-We then use the `ltt95` function to plot the 95% confidence intervals for the LTT based on the simulated set of pure-birth trees. This shows how much our observed LTT differs from the pure-birth null model (see *Primer* for more details). Note that if working with Bayesian posterior distributions of trees you can also use `ltt95` to plot these.
+We then use the `ltt95` function to plot the 95% confidence intervals for the LTT based on the simulated set of pure-birth trees. This shows how much our observed LTT differs from the pure-birth null model (see [here](https://nhcooper123.github.io/pcm-primer/diversification.html) for more details). Note that if working with Bayesian posterior distributions of trees you can also use `ltt95` to plot these.
 ```{r}
 # Extract LTT plots for all simulations and plot the 95% confidence intervals
 ltt95(sim_trees, log = TRUE)
@@ -194,7 +194,7 @@ mcmc <- read.csv("data/dragonflies_mcmc_out.txt")
 # Take a look at the plot
 plot(mcmc$logLik ~ mcmc$generation)
 ```
-This gives us a vague idea of whether your run has converged. SPOILER alert, it has because I played around with the parameters in BAMM until it did, and used the same priors as @letsch2016not. 
+This gives us a vague idea of whether your run has converged. SPOILER alert, it has because I played around with the parameters in BAMM until it did, and used the same priors as Letsch et al. 2016 @letsch2016not. 
 
 Again, as with Bayesian phylogenies, we next want to discard some runs as burnin. Let's discard the first 10% of samples.
 
@@ -263,10 +263,10 @@ plot.bammdata(edata, legend = TRUE, lwd = 2)
 
 High rates are in red or yellow, and the low rates in blue. You can add the option `labels = TRUE` to get tip labels, but they're really hard to read so you might need to look at a normal tree plot `plot(tree, cex = 0.5)` to see which species are involved here. I've provided a large PDF version of the tree in the folder where you can zoom in to see the details.
 
-In our dragonflies we see low rates (dark blues and blues) in most groups, but with higher rates near the base of the Libellulidae (the family that contains skimmers or perchers and their relatives, including my favourite the globe skimmer *Pantala flavescens*), and in one clade within the Libellulidae. It seems like there was a burst of diversification in the history of the clade, but rates have mostly slowed towards the present. See @letsch2016not for a much more thorough interpretation of these results.
+In our dragonflies we see low rates (dark blues and blues) in most groups, but with higher rates near the base of the Libellulidae (the family that contains skimmers or perchers and their relatives, including my favourite the globe skimmer *Pantala flavescens*), and in one clade within the Libellulidae. It seems like there was a burst of diversification in the history of the clade, but rates have mostly slowed towards the present. See Letsch et al. 2016 @letsch2016not for a much more thorough interpretation of these results.
 
 ```{block, type = "info"}
-**Help I get errors and no plots!** Sometimes when working with these `BAMMtools` plots I've been getting an error `Warning in gzfile(file, "wb") : cannot open compressed file` followed by a lot more red text. This appears to be a memory issue, as it happens when I'm making my laptop do something complex. It might only be on Mac, and/or only in RMarkdown, but if it happens when you try to plot things just try again. That works for me!
+**Help I get errors and no plots!** Sometimes when working with these `BAMMtools` plots I've been getting an error `Warning in gzfile(file, "wb") : cannot open compressed file` followed by a lot more red text. This appears to be a memory issue, as it happens when I'm making my laptop do something complex. It might only be on Mac, and/or only in RMarkdown/Quarto, but if it happens when you try to plot things just try again. That works for me!
 ```
 
 We can also plot with slightly nicer colour-blind friendly colours from the package `viridis` (have a look at the options and choose your favourite). 

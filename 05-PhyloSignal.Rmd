@@ -1,21 +1,21 @@
-# Phylogenetic Signal in R
+# Phylogenetic Signal in R {#signal}
 
 Phylogenetic signal is the pattern where close relatives have more similar trait values than more distant relatives. The aims of this exercise are to learn how to use R to estimate phylogenetic signal using Pagel's $\lambda$ [@pagel1997inferring, @pagel1999inferring] and Blomberg's *K* [@blomberg2003testing]. 
 
 ```{block, type = "info"}
-We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out @thomas2020eye!
+We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Thomas et al. 2020 @thomas2020eye!
 ```
 
 ## Before you start {-}
-Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from Section \@ref(#section:data).
+Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
 You will also need to install the following packages: 
 
-* `tidyverse` - for reading, manipulating and plotting data
-* `ape` - functions for reading, plotting and manipulating phylogenies
-* `geiger` - to check species in the tree and data match
-* `phytools` - to estimate $lambda$ and K
-* `caper` - to estimate D
+1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
+2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
+3. `geiger` - to check species in the tree and data match [@geiger2013]
+4. `phytools` - to estimate $\lambda$ and K [@phytools]
+5. `caper` - to estimate D [@caper]
 
 
 ## Preparation
@@ -30,7 +30,7 @@ library(phytools)
 library(caper)
 ```
 
-Next we need to prepare the tree and data for the analyses. In the `04-Preparation` exercise we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
+Next we need to prepare the tree and data for the analyses. In the Preparation exercise (see \@ref(prep)) we read in our tree and data, checked them, and matched them so only species in both were retained. Please refer to that exercise for more details on how and why we do these things, or run through it now if you haven't previously. 
 
 It is important to do these things before beginning a phylogenetic comparative analysis, so let's run through that code again here.
 
@@ -285,7 +285,7 @@ Dsexdi <- phylo.d(data = frog, names.col = tiplabel, binvar = sex_di_binary,
 Dsexdi
 ```
 
-`phylo.d` estimates the D value, then tests the estimated D value for significant departure from random association and a Brownian evolution threshold model (see *Primer* and @fritz2010selectivity for more details).
+`phylo.d` estimates the D value, then tests the estimated D value for significant departure from random association and a Brownian evolution threshold model (see [here](https://nhcooper123.github.io/pcm-primer/signal.html#calculating-d-for-binary-traits) and @fritz2010selectivity for more details).
 
 Here *D* for `Sex_dichromatism` is `r round(Dsexdi$DEstimate[[1]], digits = 3)`. This is significantly different from the expectation under a Brownian threshold model (p = `r round(Dsexdi$Pval0[[1]], digits = 3)`) but not significantly different from the trait being randomly assorted on the phylogeny (p = `r round(Dsexdi$Pval1[[1]], digits = 3)`). So here we can say there is no significant phylogenetic signal in the trait.
 
