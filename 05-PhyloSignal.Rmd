@@ -13,7 +13,7 @@ You will also need to install the following packages:
 
 1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
 2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
-3. `geiger` - to check species in the tree and data match [@geiger2013]
+3. `geiger` - to check species in the tree and data match [@geiger2014]
 4. `phytools` - to estimate $\lambda$ and K [@phytools]
 5. `caper` - to estimate D [@caper]
 

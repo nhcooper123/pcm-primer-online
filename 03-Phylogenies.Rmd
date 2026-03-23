@@ -8,7 +8,7 @@ You will also need to install the following packages:
 
 1. `tidyverse` - for reading, manipulating and plotting data [@tidyverse]
 2. `ape` - functions for reading, plotting and manipulating phylogenies [@ape]
-3. `ggtree` - for plotting trees [@ggtree2017e], [@ggtree2018d], [@ggtree2020a], [@ggtree2022a], [@ggtree2022b]
+3. `ggtree` - for plotting trees [@ggtree2017e], [@ggtree2018d], [@ggtree2022a], [@ggtree2022b]
 4. `patchwork` - to plot multi-panel plots [@patchwork]
 5. `ggimage` - to add images to plots 
 6. `phytools` - to add species to phylogenies [@phytools]
