@@ -109,7 +109,7 @@ ltt95(sim_trees, log = TRUE)
 # Add the original tree's LTT plot to the simulated data in red
 ltt(dragonflytree, add = TRUE, col = "red", lwd = 2, gamma = FALSE, log = FALSE)
 ```
-It's clear from this plot that the diversification of dragonflies is pretty close to the expectation under a pure-birth model.
+It's clear from this plot that the diversification of dragonflies is close to the expectation under a pure-birth model, but doesn't totally match it.
 
 ```{block, type = "detail"}
 **Fun with log transforms**. The function `ltt95` plots log number of lineages on the y-axis, but shows the real numbers of lineages on the y axis tick labels and spreads them out, rather than the actual logged values. This is fine until we try to add our original LTT plot from `ltt` back onto the graph! If we do that with `log = TRUE` in the `ltt` function, the line plots in completely the wrong place! A counter-intuitive solution to this, as shown in the code above, is to use `log = FALSE` instead which gives the correct plot!
@@ -192,7 +192,7 @@ Before we look at any of the exciting results, we need to check if our MCMC run 
 # Read in the file
 mcmc <- read.csv("data/dragonflies_mcmc_out.txt")
 # Take a look at the plot
-plot(mcmc$logLik ~ mcmc$generation)
+plot(mcmc$logLik ~ mcmc$generation, type = "l")
 ```
 This gives us a vague idea of whether your run has converged. SPOILER alert, it has because I played around with the parameters in BAMM until it did, and used the same priors as Letsch et al. 2016 @letsch2016not. 
 
