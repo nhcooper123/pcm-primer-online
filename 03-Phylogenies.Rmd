@@ -130,7 +130,7 @@ If we only wanted to see the full `edge` component we can use the `$` to extract
 tree$edge
 ```
 
-What is going on here? The easiest way to understand is to look at the `edge` matrix and the tree with node numbers added to it (see below). For all trees, 1 is the number of the first tip taxon at the base of the phylogeny, 2 is the number of the second taxon and so on until you have each taxon numbered. The numbers then refer to *nodes*, working through the tree from the root forwards.
+What is going on here? The easiest way to understand is to look at the `edge` matrix and the tree with node numbers added to it (see below). For all trees, 1 is the number of the first tip taxon of the phylogeny, 2 is the number of the second taxon and so on until you have each taxon numbered. The numbers then refer to *nodes*, working through the tree from the root forwards.
 
 So in the `edge` matrix above, 1, 2, 3 and 4 are the tips. Node 7 leads to tips 1 and 2. Node 6 leads to node 7, and tip 3. Node 5 leads to node 6 and tip 4. Node 5 is the root node.
 
@@ -354,6 +354,26 @@ ggtree(tree) +
 Note that to add either text or images to the tips we use the same layer function, `geom_tiplab`. If doing this with your own data you'll likely need to fiddle with the sizes of the images to get them looking right. 
 
 Some of you may be wondering what the `rep(NA, 3)` bit of the code above does. When we try to add images to the tips, the function also tries to add images to the internal nodes. We don't want these to have images so we just ask `ggtree` to use `NA`, i.e. don't add an image. `rep(NA, 3)` means replicate `NA` three times (for the three internal nodes). Again you'll probably need to modify this number when you do this for your own data.
+
+```{block, type = "detail"}
+You will often see phylogenies with these little silhouette images on the tips, but where do they come from? Generally people get them from [PhyloPic](https://www.phylopic.org/). You can search on this website for the taxa you need, then pick your favourites and save them in an `images/` folder in your project. It's sensible to make sure all animals are facing in the same direction, so you might need to flip some of them first.  
+
+There is also an R package `rphylopic` which can help with adding silhouettes from PhyloPic automatically.
+
+What if PhyloPic doesn't have the taxon you need? My solution is usually to take an image and then cut it out in [Inkscape](https://en.wikipedia.org/wiki/Inkscape), a free tool for editing vector graphics. If you own a license for PhotoShop or similar you could also use this. Help the community by adding any silhouettes you produce to PhyloPic!
+```
+
+```{block, type = "warning"}
+If you use images from PhyloPic remember to check the license and credit info, and add this to your manuscript - either in the Acknowledgements or in the figure caption. Before getting too excited about your tree make sure that the images are licensed correctly for your intended output, some for example, cannot be used for commercial purposes.
+```
+
+```{block, type = "info"}
+Credits for the PhyloPics used in these examples
+- Deer: Oscar Sanisidro, CC0 1.0.
+- Robin: Anthony Caravaggi, CC0 1.0.
+- Spider: Melissa Broussard, Attribution 3.0 Unported
+- Jellyfish: Michelle Site, Attribution-NonCommercial 3.0 Unported
+```
 
 As with `plot.phylo` we can plot phylogenies in different ways, see code below. Fan trees are called circular trees. Note the different values for `offset` and `hjust` (horizontal justification) I've used here to make the labels fit. Again you will need to fiddle with these numbers to get this to work for your data.
 
