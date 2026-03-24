@@ -364,7 +364,7 @@ What if PhyloPic doesn't have the taxon you need? My solution is usually to take
 ```
 
 ```{block, type = "warning"}
-If you use images from PhyloPic remember to check the license and credit info, and add this to your manuscript - either in the Acknowledgements or in the figure caption. Before getting too excited about your tree make sure that the images are licensed correctly for your intended output, some for example, cannot be used for commercial purposes.
+If you use images from PhyloPic remember to check the license and credit info, and add this to your manuscript - either in the Acknowledgements or in the figure caption. Before getting too excited about your tree make sure that the images are licensed correctly for your intended output, for example, some cannot be used for commercial purposes.
 ```
 
 ```{block, type = "info"}
