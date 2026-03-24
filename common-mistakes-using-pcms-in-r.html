@@ -400,6 +400,7 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
 <li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+<li class="chapter" data-level="13.5" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#memory-issues"><i class="fa fa-check"></i><b>13.5</b> Memory issues</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -432,6 +433,7 @@ div.csl-indent {
 <li>Look at your data (and tree) before beginning any analysis to check it read in correctly.</li>
 <li>Check the exact spelling (and capitalisation) of your variable names. For example, in the datasets we have used the tip names have been called <code>tiplabel</code>, <code>Species</code> and <code>Binomial</code>. It’s important to check what things are called in your data before you start the analyses.</li>
 <li>Check (using <code>glimpse</code> or <code>str</code> or <code>class</code>) what <em>kind of data</em> R thinks each of your variables is. If a function expects a factor, it will not work if R thinks your variable is a character.</li>
+<li>Sometimes species names (and variable names) are separated by spaces, sometimes by <code>.</code>, and other times by <code>_</code>. Check this in your data and use something consistent. You can use <a href="https://stringr.tidyverse.org/"><code>stringr</code> functions</a> to easily change capitalisation or replace ” ” for “_” or vice versa.</li>
 <li>Finally, make sure to run through your code slowly and carefully, making copious notes and comments to yourself (preceded by <code>#</code> so R ignores them) to remind yourself what you are doing and why. <strong>Always</strong> check the output at every stage of the analysis. Every time you modify the data or tree, check that this happened as you expected. This can save you from lots of downstream issues.</li>
 </ol>
 </div>
@@ -471,6 +473,26 @@ div.csl-indent {
 <ul>
 <li>Are you working with the correct data? If you use generic names like <code>mydata</code> and <code>mytree</code> (like I’ve done throughout this book) it’s easy to accidentally use the wrong <code>mydata</code>. You can avoid this by giving your objects more descriptive names.</li>
 </ul>
+<ol start="8" style="list-style-type: decimal">
+<li>Data uses <code>,</code> rather than <code>.</code> for decimals.</li>
+</ol>
+<ul>
+<li>This is common in mainland Europe. Luckily there’s an easy fix. When you read in your data use <code>read_csv2</code> or <code>read.csv2</code> or similar, and R will read it in with this information in mind.</li>
+</ul>
+<ol start="9" style="list-style-type: decimal">
+<li>Functions with the same names from different packages act differently.</li>
+</ol>
+<ul>
+<li>Some functions, especially those with useful names like <code>select</code>, appear in multiple packages and work differently in each. To solve this problem you can declare which package you would like the function to come from, for example to ask R to use the version of the function <code>select</code> from the package <code>dplyr</code>, use <code>dplyr::select</code>.</li>
+</ul>
+<ol start="10" style="list-style-type: decimal">
+<li>Arguments are in the wrong order.</li>
+</ol>
+<ul>
+<li>R functions expect arguments to be entered into them in a specific order. This is known as “syntax” and you can see the correct syntax in the help files for a function.</li>
+<li>For example, if the syntax of a function is <code>myfunction(phy, node)</code> then it expects the <code>phy</code> to be entered first and the <code>node</code> second. So if we have a phylogeny called <code>mytree</code> and we want to investigate node 10, we could type <code>myfunction(mytree, 10)</code> and the function will do what we expect. However, if we forget what the syntax of the function is and try <code>myfunction(mytree, 10)</code> the function will <strong>not</strong> work.</li>
+<li>A simple (and highly recommended) solution to this is to <strong>always specify the arguments</strong> of the function, then you can’t go wrong! <code>myfunction(phy = mytree, node = 10)</code> will work, and so will <code>myfunction(node = 10, phy = mytree)</code> because we have specified the argument names so the order is no longer important.</li>
+</ul>
 </div>
 <div id="issues-with-the-tree-or-data" class="section level3 hasAnchor" number="13.2.2">
 <h3><span class="header-section-number">13.2.2</span> Issues with the tree or data<a href="common-mistakes-using-pcms-in-r.html#issues-with-the-tree-or-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -480,6 +502,7 @@ div.csl-indent {
 <ul>
 <li>Use <code>is.ultrametric</code> to check.</li>
 <li>Fix using <code>force.ultrametric</code> in the <code>phytools</code> package.</li>
+<li>Remember that <code>force.ultrametric</code> should only be used to correct rounding errors, it is not a substitute for time calibrating the tree.</li>
 </ul>
 <ol start="2" style="list-style-type: decimal">
 <li>Tree is not rooted. See <a href="phylogenies.html#phylogenies">3</a> and <a href="prep.html#prep">4</a>.</li>
@@ -499,15 +522,17 @@ div.csl-indent {
 <li>Species names in the tree and the data do not match. See <a href="prep.html#prep">4</a>.</li>
 </ol>
 <ul>
-<li>Use <code>name.check</code> in the <code>geiger</code> package to check.</li>
+<li>Use <code>name.check</code> in the <code>geiger</code> package to check, or use <code>setdiff(phy$tip.label, data$species)</code>.</li>
 <li>If they do not match, but they should do, check for spaces rather than underscores in species names, differences in capitalisation, or any words (like family names or numbers) added to tip label names. Also ensure you use the variable name from the data set that contains the species names.</li>
+<li>Note that when you plot the tree the <code>_</code> will be omitted from tip labels so you will need to check these within the actual tree file or using <code>phy$tip.label</code>.</li>
+<li>Fix using code in <a href="prep.html#prep">4</a>.</li>
 </ul>
 <ol start="5" style="list-style-type: decimal">
 <li>Species names have not been added to the data. See <a href="signal.html#signal">5</a> and <a href="discrete.html#discrete">9</a>.</li>
 </ol>
 <ul>
 <li>Check you have the species names attached to any dataset/variable you are working with.</li>
-<li>Some functions require that the species names are rownames. Others require a vector for the variable with names added using the <code>names</code> function.</li>
+<li>Some functions require that the species names are rownames. Some functions require named vectors (e.g. <code>fitContinuous</code> in <a href="cont.html#cont">8</a>). Use <code>setNames</code> to generate names for these.</li>
 </ul>
 <ol start="6" style="list-style-type: decimal">
 <li>Species in the tree and the data are not in the same order. See <a href="signal.html#signal">5</a> and <a href="discrete.html#discrete">9</a>.</li>
@@ -517,10 +542,10 @@ div.csl-indent {
 <li>Fix using <code>mydata &lt;- mydata[match(mytree$tip.label, mydata$Species), ]</code></li>
 </ul>
 <ol start="7" style="list-style-type: decimal">
-<li>Data is a tibble not a data frame. See <a href="prep.html#prep">4</a>.</li>
+<li>Data is a tibble not a dataframe. See <a href="prep.html#prep">4</a>.</li>
 </ol>
 <ul>
-<li>Most functions for PCMs require a data frame as input.</li>
+<li>Most functions for PCMs require a dataframe as input.</li>
 <li>Check using <code>class</code> or <code>str</code>.</li>
 <li>Convert to a data frame using <code>as.data.frame</code></li>
 </ul>
@@ -536,38 +561,77 @@ div.csl-indent {
 <li>Optimisation errors. See <a href="pgls.html#pgls">6</a> and <a href="cont.html#cont">8</a>.</li>
 </ol>
 <ul>
-<li>This generally happens when the likelihood profile for one of your parameters is really flat, and the model is getting stuck near one of the bounds (i.e. limits) of the parameter.</li>
-<li>To fix this error you need to <em>change the bounds</em> (i.e. upper and lower values) on the parameter being optimized. First establish which bound is the problem, then change it to something a little bigger/smaller than the default upper/lower bound until it works. See the appropriate chapters for more details on specific function.</li>
+<li>This generally happens when the likelihood profile for one of your parameters is really flat (i.e. it could be one of many different values all of which are equally likely), and the model is getting stuck near one of the bounds (i.e. limits) of the parameter.</li>
+<li>To fix this error you need to <em>change the bounds</em> (i.e. upper and lower values) on the parameter being optimized to restrict where the function is looking. First establish which bound is the problem, then change it to something a little bigger/smaller than the default upper/lower bound until it works. See the appropriate chapters for more details on specific function.</li>
 </ul>
 <ol start="10" style="list-style-type: decimal">
 <li>Unrealistic parameter estimates. See <a href="cont.html#cont">8</a> and <a href="beyond.html#beyond">10</a>.</li>
 </ol>
 <ul>
-<li>As mentioned in the relevant chapters, you must check your parameter estimates make sense.</li>
+<li>As mentioned in the relevant chapters, you must check your parameter estimates make sense. This can take time to work out, so discuss with your supervisor/colleagues and think carefully about what the numbers mean.</li>
 <li>If these are wildly unrealistic it suggests you don’t have enough data to fit a model of the complexity you’re trying to fit.</li>
 <li>There’s no solution to this, aside from gathering more data.</li>
+</ul>
+<ol start="11" style="list-style-type: decimal">
+<li>Tree formats</li>
+</ol>
+<ul>
+<li>Check the format of your tree, if it is a NEXUS file then use <code>read.nexus</code>, if it is any other kind of tree use <code>read.tree</code>. Note that some NEXUS files contain only the data (morphological matrices or molecular data). If there is no tree bit in there these cannot be used as a phylogeny.</li>
 </ul>
 </div>
 </div>
 <div id="what-to-do-if-you-get-an-error-message" class="section level2 hasAnchor" number="13.3">
 <h2><span class="header-section-number">13.3</span> What to do if you get an Error message<a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="warning">
+<p>
+Error messages will have the word “Error” in the message after you
+try to run the code. This means R did not run the code. You will need to
+fix this before you can move on.
+</p>
+</div>
 <ol style="list-style-type: decimal">
-<li>Don’t panic! Error messages are common and there might be an easy fix. Read the message carefully s some will indicate the problem and you’ll be able to fix it quickly.</li>
+<li>Don’t panic! Error messages are common and there might be an easy fix. Read the message carefully as some will indicate the problem and you’ll be able to fix it quickly.</li>
 <li>If you don’t know what issue the message is referring to, first make sure the basics are correct. Check your code carefully for typos, missing parentheses etc. Ensure that you are using the right data and tree, and that you have used the correct variable names and function names etc.</li>
-<li>Run through all your code again slowly to check you didn’t miss an important step. Look at the data (and the tree) at every stage to make sure they are changing as you expect them to.</li>
+<li>Run through all your code again slowly to check you didn’t miss an important step. Look at the data (and the tree) at every stage to make sure they are changing as you expect them to. Make sure you didn’t accidentally overwrite an object with something that has the same name.</li>
 <li>Restart R Studio, and clear the Global Environment by clicking the little broom button on the top right hand panel in a standard R Studio set up. Then try to run the code again.</li>
 <li>If none of these basic fixes work move onto the Error message itself. Read the message again and see if you can work out what the issue is.</li>
 <li>If you can’t work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is and help you find solutions on websites like <a href="https://stackoverflow.com/">Stack Overflow</a>.</li>
-<li>Finally if none of this helps, ask for help. I would first advise asking local colleagues/supervisors etc. Then expanding to either emailing the package maintainer or raising an issue on GitHub or posting a question on an online forum like <a href="https://stackoverflow.com/">Stack Overflow</a>. To get help you will need to provide a <em>reproducible example</em> so the person helping you can run the code on their computer. So you need to provide the code, the data (and the tree) <em>and</em> the error message you are getting. Or a subsample of the data if they are very large.</li>
+<li>Finally if none of this helps, ask for help. I would first advise asking local colleagues/supervisors etc. Then expanding to either emailing the package maintainer or raising an issue on GitHub or posting a question on an online forum like <a href="https://stackoverflow.com/">Stack Overflow</a>. To get help you will need to provide a <em>reproducible example</em> so the person helping you can run the code on their computer. This means you need to provide the code, the data (and the tree) <em>and</em> the error message you are getting. Or a subsample of the data if they are very large.</li>
 </ol>
 </div>
 <div id="what-to-do-if-you-get-a-warning-message" class="section level2 hasAnchor" number="13.4">
 <h2><span class="header-section-number">13.4</span> What to do if you get a Warning message<a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="info">
+<p>
+Warning messages will have <strong>not</strong> have the word “Error”
+in the message after you try to run the code. Many will have the word
+“Warning”. Some will just print a message without the word “Warning”. A
+warning message means that R has run the code as you asked BUT it thinks
+there is some information you need to consider. Maybe you did something
+silly? Or maybe it just wants to clarify to you exactly what it did.
+</p>
+<p>
+In PCMs the warnings may indicate unrealistic parameters or poor
+convergence.
+</p>
+</div>
 <ol style="list-style-type: decimal">
 <li>Don’t panic! Warning messages are common and there’s probably an easy fix.</li>
 <li>Read the warning carefully. Try to understand what it means. You may need to Google it. In many cases it is nothing to worry about, but it may be alerting you to a serious issue with your analysis.</li>
 <li><strong>Always</strong> check warning messages, do not ignore them.</li>
 </ol>
+</div>
+<div id="memory-issues" class="section level2 hasAnchor" number="13.5">
+<h2><span class="header-section-number">13.5</span> Memory issues<a href="common-mistakes-using-pcms-in-r.html#memory-issues" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>If your tree/dataset is too large, R may crash, especially for more computationally demanding analyses. In this situation, first check your code works by running it on a smaller subset of the tree/dataset. This will also give you an idea of how long the analysis might take on the whole dataset. You then will need to think about either:</p>
+<ol style="list-style-type: decimal">
+<li>Finding a better computer with more memory</li>
+<li><a href="https://nceas.github.io/oss-lessons/parallel-computing-in-r/parallel-computing-in-r.html">Parallelisation</a>, i.e. running small analyses that can then be stuck back together again. This is often not very useful in PCMs but worth considering.</li>
+<li>Using High Performance Computing facilities to run the code remotely.</li>
+</ol>
+<p>
+Sometimes analyses just aren’t feasible on certain datasets.
+</p>
 
 </div>
 </div>

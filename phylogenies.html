@@ -400,6 +400,7 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
 <li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+<li class="chapter" data-level="13.5" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#memory-issues"><i class="fa fa-check"></i><b>13.5</b> Memory issues</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -569,7 +570,7 @@ shouldn’t alter the file.
 ## [4,]    7    2
 ## [5,]    6    3
 ## [6,]    5    4</code></pre>
-<p>What is going on here? The easiest way to understand is to look at the <code>edge</code> matrix and the tree with node numbers added to it (see below). For all trees, 1 is the number of the first tip taxon at the base of the phylogeny, 2 is the number of the second taxon and so on until you have each taxon numbered. The numbers then refer to <em>nodes</em>, working through the tree from the root forwards.</p>
+<p>What is going on here? The easiest way to understand is to look at the <code>edge</code> matrix and the tree with node numbers added to it (see below). For all trees, 1 is the number of the first tip taxon of the phylogeny, 2 is the number of the second taxon and so on until you have each taxon numbered. The numbers then refer to <em>nodes</em>, working through the tree from the root forwards.</p>
 <p>So in the <code>edge</code> matrix above, 1, 2, 3 and 4 are the tips. Node 7 leads to tips 1 and 2. Node 6 leads to node 7, and tip 3. Node 5 leads to node 6 and tip 4. Node 5 is the root node.</p>
 <p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
 <p>Notice that the <code>edge.length</code> variable is in the same order as <code>edge</code>. So the first row of <code>edge</code> shows a branch joining node 5 to node 6, and this has a branch length of 6.3 (the first entry in <code>edge.length</code>). And so on…</p>
@@ -699,31 +700,18 @@ shouldn’t alter the file.
 <span id="cb72-8"><a href="phylogenies.html#cb72-8" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
 <span id="cb72-9"><a href="phylogenies.html#cb72-9" tabindex="-1"></a>  <span class="co"># Add tip labels as text, slightly offset from the tips and aligned</span></span>
 <span id="cb72-10"><a href="phylogenies.html#cb72-10" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>)</span></code></pre></div>
-<pre><code>## Warning: `aes_()` was deprecated in ggplot2 3.0.0.
-## ℹ Please use tidy evaluation idioms with `aes()`
-## ℹ The deprecated feature was likely used in the ggtree package.
-##   Please report the issue at &lt;https://github.com/YuLab-SMU/ggtree/issues&gt;.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
 ## ✖ Problematic arguments:
 ## • as.Date = as.Date
 ## • yscale_mapping = yscale_mapping
 ## • hang = hang
 ## ℹ Did you misspell an argument name?</code></pre>
-<pre><code>## Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-## ℹ Please use tidy evaluation idioms with `aes()`.
-## ℹ See also `vignette(&quot;ggplot2-in-packages&quot;)` for more information.
-## ℹ The deprecated feature was likely used in the ggtree package.
-##   Please report the issue at &lt;https://github.com/YuLab-SMU/ggtree/issues&gt;.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
 <p>Note that you might need to fiddle around with the <code>xlim</code> and <code>ylim</code> a bit to make sure your phylogeny and the tip labels fit. If we don’t specify the limits, the tip labels often fall off the plotting window (see below), and the tree will push right up against the top and bottom of the page making it hard to add things like images to the tips.</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="phylogenies.html#cb76-1" tabindex="-1"></a><span class="co"># Demonstration of what happens if you don&#39;t define the x and y limits</span></span>
-<span id="cb76-2"><a href="phylogenies.html#cb76-2" tabindex="-1"></a><span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
-<span id="cb76-3"><a href="phylogenies.html#cb76-3" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb76-4"><a href="phylogenies.html#cb76-4" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="phylogenies.html#cb74-1" tabindex="-1"></a><span class="co"># Demonstration of what happens if you don&#39;t define the x and y limits</span></span>
+<span id="cb74-2"><a href="phylogenies.html#cb74-2" tabindex="-1"></a><span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
+<span id="cb74-3"><a href="phylogenies.html#cb74-3" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
+<span id="cb74-4"><a href="phylogenies.html#cb74-4" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>)</span></code></pre></div>
 <pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
 ## ✖ Problematic arguments:
 ## • as.Date = as.Date
@@ -734,20 +722,20 @@ shouldn’t alter the file.
 <p><code>ggtree</code> is clearly a bit more involved than just using <code>plot.phylo</code> with <code>ape</code>. If you’re happy with plotting in <code>ape</code> you don’t need to use <code>ggtree</code>. As I mentioned above, for day-to-day tree viewing and checking I just tend to use <code>ape</code>, so don’t worry if this is all incomprehensible.</p>
 <p>One thing, among many, that <code>ggtree</code> is great for is adding images to the tips rather than species names. To do this you need to collate the images you want to use first. You may want to draw your own, or I often download them from the excellent <a href="http://phylopic.org/">PhyloPic</a> website (these are free to use but don’t forget to record who made the image so you can credit them in your papers/talks). To keep my folder tidy I keep images in a separate subfolder called, predictably, <code>images</code>.</p>
 <p>You need the package <code>ggimage</code> installed for this to work, which for me took some time and also required that I install <code>ggplotify</code>, <code>magick</code>, and <code>gridGraphics</code>. If this is a struggle, then just skip this example.</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="phylogenies.html#cb78-1" tabindex="-1"></a><span class="co"># Plot with images at tips</span></span>
-<span id="cb78-2"><a href="phylogenies.html#cb78-2" tabindex="-1"></a><span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
-<span id="cb78-3"><a href="phylogenies.html#cb78-3" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb78-4"><a href="phylogenies.html#cb78-4" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
-<span id="cb78-5"><a href="phylogenies.html#cb78-5" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
-<span id="cb78-6"><a href="phylogenies.html#cb78-6" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb78-7"><a href="phylogenies.html#cb78-7" tabindex="-1"></a>  <span class="co"># Add tip label pictures</span></span>
-<span id="cb78-8"><a href="phylogenies.html#cb78-8" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="fu">aes</span>(<span class="at">image =</span> <span class="fu">c</span>(<span class="st">&quot;images/deer.png&quot;</span>,</span>
-<span id="cb78-9"><a href="phylogenies.html#cb78-9" tabindex="-1"></a>                            <span class="st">&quot;images/robin.png&quot;</span>,</span>
-<span id="cb78-10"><a href="phylogenies.html#cb78-10" tabindex="-1"></a>                            <span class="st">&quot;images/spider.png&quot;</span>,</span>
-<span id="cb78-11"><a href="phylogenies.html#cb78-11" tabindex="-1"></a>                            <span class="st">&quot;images/jellyfish.png&quot;</span>,</span>
-<span id="cb78-12"><a href="phylogenies.html#cb78-12" tabindex="-1"></a>                            <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">3</span>))), </span>
-<span id="cb78-13"><a href="phylogenies.html#cb78-13" tabindex="-1"></a>              <span class="at">geom =</span> <span class="st">&quot;image&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, </span>
-<span id="cb78-14"><a href="phylogenies.html#cb78-14" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="cn">NA</span>, <span class="at">size =</span> <span class="fu">c</span>(<span class="fl">0.12</span>, <span class="fl">0.15</span>, <span class="fl">0.09</span>, <span class="fl">0.15</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="phylogenies.html#cb76-1" tabindex="-1"></a><span class="co"># Plot with images at tips</span></span>
+<span id="cb76-2"><a href="phylogenies.html#cb76-2" tabindex="-1"></a><span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
+<span id="cb76-3"><a href="phylogenies.html#cb76-3" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
+<span id="cb76-4"><a href="phylogenies.html#cb76-4" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
+<span id="cb76-5"><a href="phylogenies.html#cb76-5" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
+<span id="cb76-6"><a href="phylogenies.html#cb76-6" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb76-7"><a href="phylogenies.html#cb76-7" tabindex="-1"></a>  <span class="co"># Add tip label pictures</span></span>
+<span id="cb76-8"><a href="phylogenies.html#cb76-8" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="fu">aes</span>(<span class="at">image =</span> <span class="fu">c</span>(<span class="st">&quot;images/deer.png&quot;</span>,</span>
+<span id="cb76-9"><a href="phylogenies.html#cb76-9" tabindex="-1"></a>                            <span class="st">&quot;images/robin.png&quot;</span>,</span>
+<span id="cb76-10"><a href="phylogenies.html#cb76-10" tabindex="-1"></a>                            <span class="st">&quot;images/spider.png&quot;</span>,</span>
+<span id="cb76-11"><a href="phylogenies.html#cb76-11" tabindex="-1"></a>                            <span class="st">&quot;images/jellyfish.png&quot;</span>,</span>
+<span id="cb76-12"><a href="phylogenies.html#cb76-12" tabindex="-1"></a>                            <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">3</span>))), </span>
+<span id="cb76-13"><a href="phylogenies.html#cb76-13" tabindex="-1"></a>              <span class="at">geom =</span> <span class="st">&quot;image&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, </span>
+<span id="cb76-14"><a href="phylogenies.html#cb76-14" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="cn">NA</span>, <span class="at">size =</span> <span class="fu">c</span>(<span class="fl">0.12</span>, <span class="fl">0.15</span>, <span class="fl">0.09</span>, <span class="fl">0.15</span>))</span></code></pre></div>
 <pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
 ## ✖ Problematic arguments:
 ## • as.Date = as.Date
@@ -757,121 +745,162 @@ shouldn’t alter the file.
 <p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-64-1.png" width="672" /></p>
 <p>Note that to add either text or images to the tips we use the same layer function, <code>geom_tiplab</code>. If doing this with your own data you’ll likely need to fiddle with the sizes of the images to get them looking right.</p>
 <p>Some of you may be wondering what the <code>rep(NA, 3)</code> bit of the code above does. When we try to add images to the tips, the function also tries to add images to the internal nodes. We don’t want these to have images so we just ask <code>ggtree</code> to use <code>NA</code>, i.e. don’t add an image. <code>rep(NA, 3)</code> means replicate <code>NA</code> three times (for the three internal nodes). Again you’ll probably need to modify this number when you do this for your own data.</p>
+<div class="detail">
+<p>
+You will often see phylogenies with these little silhouette images on
+the tips, but where do they come from? Generally people get them from <a
+href="https://www.phylopic.org/">PhyloPic</a>. You can search on this
+website for the taxa you need, then pick your favourites and save them
+in an <code>images/</code> folder in your project. It’s sensible to make
+sure all animals are facing in the same direction, so you might need to
+flip some of them first.
+</p>
+<p>
+There is also an R package <code>rphylopic</code> which can help with
+adding silhouettes from PhyloPic automatically.
+</p>
+<p>
+What if PhyloPic doesn’t have the taxon you need? My solution is
+usually to take an image and then cut it out in <a
+href="https://en.wikipedia.org/wiki/Inkscape">Inkscape</a>, a free tool
+for editing vector graphics. If you own a license for PhotoShop or
+similar you could also use this. Help the community by adding any
+silhouettes you produce to PhyloPic!
+</p>
+</div>
+<div class="warning">
+<p>
+If you use images from PhyloPic remember to check the license and
+credit info, and add this to your manuscript - either in the
+Acknowledgements or in the figure caption. Before getting too excited
+about your tree make sure that the images are licensed correctly for
+your intended output, for example, some cannot be used for commercial
+purposes.
+</p>
+</div>
+<div class="info">
+<p>
+Credits for the PhyloPics used in these examples - Deer: Oscar
+Sanisidro, CC0 1.0. - Robin: Anthony Caravaggi, CC0 1.0. - Spider:
+Melissa Broussard, Attribution 3.0 Unported - Jellyfish: Michelle Site,
+Attribution-NonCommercial 3.0 Unported
+</p>
+</div>
 <p>As with <code>plot.phylo</code> we can plot phylogenies in different ways, see code below. Fan trees are called circular trees. Note the different values for <code>offset</code> and <code>hjust</code> (horizontal justification) I’ve used here to make the labels fit. Again you will need to fiddle with these numbers to get this to work for your data.</p>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="phylogenies.html#cb80-1" tabindex="-1"></a><span class="co"># Standard tree</span></span>
-<span id="cb80-2"><a href="phylogenies.html#cb80-2" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> </span>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="phylogenies.html#cb78-1" tabindex="-1"></a><span class="co"># Standard tree</span></span>
+<span id="cb78-2"><a href="phylogenies.html#cb78-2" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> </span>
+<span id="cb78-3"><a href="phylogenies.html#cb78-3" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
+<span id="cb78-4"><a href="phylogenies.html#cb78-4" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
+<span id="cb78-5"><a href="phylogenies.html#cb78-5" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
+<span id="cb78-6"><a href="phylogenies.html#cb78-6" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
+<span id="cb78-7"><a href="phylogenies.html#cb78-7" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb78-8"><a href="phylogenies.html#cb78-8" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
+<span id="cb78-9"><a href="phylogenies.html#cb78-9" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb78-10"><a href="phylogenies.html#cb78-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;A&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
+## ✖ Problematic arguments:
+## • as.Date = as.Date
+## • yscale_mapping = yscale_mapping
+## • hang = hang
+## ℹ Did you misspell an argument name?</code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="phylogenies.html#cb80-1" tabindex="-1"></a><span class="co"># Standard tree facing up</span></span>
+<span id="cb80-2"><a href="phylogenies.html#cb80-2" tabindex="-1"></a>p2 <span class="ot">&lt;-</span></span>
 <span id="cb80-3"><a href="phylogenies.html#cb80-3" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
 <span id="cb80-4"><a href="phylogenies.html#cb80-4" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb80-5"><a href="phylogenies.html#cb80-5" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
-<span id="cb80-6"><a href="phylogenies.html#cb80-6" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
-<span id="cb80-7"><a href="phylogenies.html#cb80-7" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb80-8"><a href="phylogenies.html#cb80-8" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
-<span id="cb80-9"><a href="phylogenies.html#cb80-9" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb80-10"><a href="phylogenies.html#cb80-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;A&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<span id="cb80-5"><a href="phylogenies.html#cb80-5" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb80-6"><a href="phylogenies.html#cb80-6" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
+<span id="cb80-7"><a href="phylogenies.html#cb80-7" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
+<span id="cb80-8"><a href="phylogenies.html#cb80-8" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb80-9"><a href="phylogenies.html#cb80-9" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
+<span id="cb80-10"><a href="phylogenies.html#cb80-10" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="dv">2</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb80-11"><a href="phylogenies.html#cb80-11" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;B&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
 ## ✖ Problematic arguments:
 ## • as.Date = as.Date
 ## • yscale_mapping = yscale_mapping
 ## • hang = hang
 ## ℹ Did you misspell an argument name?</code></pre>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="phylogenies.html#cb82-1" tabindex="-1"></a><span class="co"># Standard tree facing up</span></span>
-<span id="cb82-2"><a href="phylogenies.html#cb82-2" tabindex="-1"></a>p2 <span class="ot">&lt;-</span></span>
-<span id="cb82-3"><a href="phylogenies.html#cb82-3" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="phylogenies.html#cb82-1" tabindex="-1"></a><span class="co"># Slanted tree</span></span>
+<span id="cb82-2"><a href="phylogenies.html#cb82-2" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> </span>
+<span id="cb82-3"><a href="phylogenies.html#cb82-3" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree, <span class="at">layout =</span> <span class="st">&quot;slanted&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb82-4"><a href="phylogenies.html#cb82-4" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb82-5"><a href="phylogenies.html#cb82-5" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb82-6"><a href="phylogenies.html#cb82-6" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
-<span id="cb82-7"><a href="phylogenies.html#cb82-7" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
-<span id="cb82-8"><a href="phylogenies.html#cb82-8" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb82-9"><a href="phylogenies.html#cb82-9" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
-<span id="cb82-10"><a href="phylogenies.html#cb82-10" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="dv">2</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb82-11"><a href="phylogenies.html#cb82-11" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;B&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<span id="cb82-5"><a href="phylogenies.html#cb82-5" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
+<span id="cb82-6"><a href="phylogenies.html#cb82-6" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
+<span id="cb82-7"><a href="phylogenies.html#cb82-7" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb82-8"><a href="phylogenies.html#cb82-8" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
+<span id="cb82-9"><a href="phylogenies.html#cb82-9" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb82-10"><a href="phylogenies.html#cb82-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;C&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
 ## ✖ Problematic arguments:
 ## • as.Date = as.Date
 ## • yscale_mapping = yscale_mapping
 ## • hang = hang
 ## ℹ Did you misspell an argument name?</code></pre>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="phylogenies.html#cb84-1" tabindex="-1"></a><span class="co"># Slanted tree</span></span>
-<span id="cb84-2"><a href="phylogenies.html#cb84-2" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> </span>
-<span id="cb84-3"><a href="phylogenies.html#cb84-3" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree, <span class="at">layout =</span> <span class="st">&quot;slanted&quot;</span>) <span class="sc">+</span> </span>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="phylogenies.html#cb84-1" tabindex="-1"></a><span class="co"># Fan/circular tree</span></span>
+<span id="cb84-2"><a href="phylogenies.html#cb84-2" tabindex="-1"></a>p4 <span class="ot">&lt;-</span></span>
+<span id="cb84-3"><a href="phylogenies.html#cb84-3" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree, <span class="at">layout =</span> <span class="st">&quot;circular&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb84-4"><a href="phylogenies.html#cb84-4" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb84-5"><a href="phylogenies.html#cb84-5" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
-<span id="cb84-6"><a href="phylogenies.html#cb84-6" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
-<span id="cb84-7"><a href="phylogenies.html#cb84-7" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb84-8"><a href="phylogenies.html#cb84-8" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
-<span id="cb84-9"><a href="phylogenies.html#cb84-9" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb84-10"><a href="phylogenies.html#cb84-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;C&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<span id="cb84-5"><a href="phylogenies.html#cb84-5" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
+<span id="cb84-6"><a href="phylogenies.html#cb84-6" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="dv">5</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>,  <span class="at">linetype =</span> <span class="cn">NA</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb84-7"><a href="phylogenies.html#cb84-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;D&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
 ## ✖ Problematic arguments:
 ## • as.Date = as.Date
 ## • yscale_mapping = yscale_mapping
 ## • hang = hang
 ## ℹ Did you misspell an argument name?</code></pre>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="phylogenies.html#cb86-1" tabindex="-1"></a><span class="co"># Fan/circular tree</span></span>
-<span id="cb86-2"><a href="phylogenies.html#cb86-2" tabindex="-1"></a>p4 <span class="ot">&lt;-</span></span>
-<span id="cb86-3"><a href="phylogenies.html#cb86-3" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree, <span class="at">layout =</span> <span class="st">&quot;circular&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb86-4"><a href="phylogenies.html#cb86-4" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb86-5"><a href="phylogenies.html#cb86-5" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
-<span id="cb86-6"><a href="phylogenies.html#cb86-6" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="dv">5</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>,  <span class="at">linetype =</span> <span class="cn">NA</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb86-7"><a href="phylogenies.html#cb86-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">tag =</span> <span class="st">&quot;D&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
-<pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
-## ✖ Problematic arguments:
-## • as.Date = as.Date
-## • yscale_mapping = yscale_mapping
-## • hang = hang
-## ℹ Did you misspell an argument name?</code></pre>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="phylogenies.html#cb88-1" tabindex="-1"></a><span class="co"># Plot</span></span>
-<span id="cb88-2"><a href="phylogenies.html#cb88-2" tabindex="-1"></a>(p1 <span class="sc">+</span> p2) <span class="sc">/</span> (p3 <span class="sc">+</span> p4)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-65-1.png" width="672" /></p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="phylogenies.html#cb86-1" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb86-2"><a href="phylogenies.html#cb86-2" tabindex="-1"></a>(p1 <span class="sc">+</span> p2) <span class="sc">/</span> (p3 <span class="sc">+</span> p4)</span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-68-1.png" width="672" /></p>
 <p>What about highlighting clades? We can use <code>geom_hilight</code> to add coloured shading to all species from a defined node, and/or <code>geom_cladelabel</code> to label clades (A and B below) from a defined node. The offset in <code>geom_cladelabel</code> defines how far from the phylogeny tips the lines should be drawn. Again, you’ll need to play with this to get the best figure possible.</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="phylogenies.html#cb89-1" tabindex="-1"></a><span class="co"># Plot with images at tips</span></span>
-<span id="cb89-2"><a href="phylogenies.html#cb89-2" tabindex="-1"></a><span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
-<span id="cb89-3"><a href="phylogenies.html#cb89-3" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb89-4"><a href="phylogenies.html#cb89-4" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
-<span id="cb89-5"><a href="phylogenies.html#cb89-5" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
-<span id="cb89-6"><a href="phylogenies.html#cb89-6" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb89-7"><a href="phylogenies.html#cb89-7" tabindex="-1"></a>  <span class="co"># Add tip label pictures</span></span>
-<span id="cb89-8"><a href="phylogenies.html#cb89-8" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="fu">aes</span>(<span class="at">image =</span> <span class="fu">c</span>(<span class="st">&quot;images/deer.png&quot;</span>,</span>
-<span id="cb89-9"><a href="phylogenies.html#cb89-9" tabindex="-1"></a>                            <span class="st">&quot;images/robin.png&quot;</span>,</span>
-<span id="cb89-10"><a href="phylogenies.html#cb89-10" tabindex="-1"></a>                            <span class="st">&quot;images/spider.png&quot;</span>,</span>
-<span id="cb89-11"><a href="phylogenies.html#cb89-11" tabindex="-1"></a>                            <span class="st">&quot;images/jellyfish.png&quot;</span>,</span>
-<span id="cb89-12"><a href="phylogenies.html#cb89-12" tabindex="-1"></a>                            <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">3</span>))), </span>
-<span id="cb89-13"><a href="phylogenies.html#cb89-13" tabindex="-1"></a>              <span class="at">geom =</span> <span class="st">&quot;image&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, </span>
-<span id="cb89-14"><a href="phylogenies.html#cb89-14" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="cn">NA</span>, <span class="at">size =</span> <span class="fu">c</span>(.<span class="dv">12</span>, .<span class="dv">15</span>, .<span class="dv">09</span>, .<span class="dv">15</span>)) <span class="sc">+</span></span>
-<span id="cb89-15"><a href="phylogenies.html#cb89-15" tabindex="-1"></a>  <span class="co"># Highlight clades</span></span>
-<span id="cb89-16"><a href="phylogenies.html#cb89-16" tabindex="-1"></a>  <span class="fu">geom_hilight</span>(<span class="at">node =</span> <span class="dv">6</span>, <span class="at">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb89-17"><a href="phylogenies.html#cb89-17" tabindex="-1"></a>  <span class="fu">geom_hilight</span>(<span class="at">node =</span> <span class="dv">7</span>, <span class="at">fill =</span> <span class="st">&quot;springgreen&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb89-18"><a href="phylogenies.html#cb89-18" tabindex="-1"></a>  <span class="fu">geom_cladelabel</span>(<span class="at">node =</span> <span class="dv">7</span> , <span class="at">label =</span> <span class="st">&quot;A&quot;</span>, <span class="at">offset =</span> <span class="dv">4</span>,</span>
-<span id="cb89-19"><a href="phylogenies.html#cb89-19" tabindex="-1"></a>                  <span class="at">fontsize =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb89-20"><a href="phylogenies.html#cb89-20" tabindex="-1"></a>  <span class="fu">geom_cladelabel</span>(<span class="at">node =</span> <span class="dv">6</span> , <span class="at">label =</span> <span class="st">&quot;B&quot;</span>, <span class="at">offset =</span> <span class="dv">6</span>,</span>
-<span id="cb89-21"><a href="phylogenies.html#cb89-21" tabindex="-1"></a>                  <span class="at">fontsize =</span> <span class="dv">5</span>) </span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-66-1.png" width="672" /></p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="phylogenies.html#cb87-1" tabindex="-1"></a><span class="co"># Plot with images at tips</span></span>
+<span id="cb87-2"><a href="phylogenies.html#cb87-2" tabindex="-1"></a><span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
+<span id="cb87-3"><a href="phylogenies.html#cb87-3" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
+<span id="cb87-4"><a href="phylogenies.html#cb87-4" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
+<span id="cb87-5"><a href="phylogenies.html#cb87-5" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">22</span>) <span class="sc">+</span></span>
+<span id="cb87-6"><a href="phylogenies.html#cb87-6" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb87-7"><a href="phylogenies.html#cb87-7" tabindex="-1"></a>  <span class="co"># Add tip label pictures</span></span>
+<span id="cb87-8"><a href="phylogenies.html#cb87-8" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="fu">aes</span>(<span class="at">image =</span> <span class="fu">c</span>(<span class="st">&quot;images/deer.png&quot;</span>,</span>
+<span id="cb87-9"><a href="phylogenies.html#cb87-9" tabindex="-1"></a>                            <span class="st">&quot;images/robin.png&quot;</span>,</span>
+<span id="cb87-10"><a href="phylogenies.html#cb87-10" tabindex="-1"></a>                            <span class="st">&quot;images/spider.png&quot;</span>,</span>
+<span id="cb87-11"><a href="phylogenies.html#cb87-11" tabindex="-1"></a>                            <span class="st">&quot;images/jellyfish.png&quot;</span>,</span>
+<span id="cb87-12"><a href="phylogenies.html#cb87-12" tabindex="-1"></a>                            <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">3</span>))), </span>
+<span id="cb87-13"><a href="phylogenies.html#cb87-13" tabindex="-1"></a>              <span class="at">geom =</span> <span class="st">&quot;image&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, </span>
+<span id="cb87-14"><a href="phylogenies.html#cb87-14" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="cn">NA</span>, <span class="at">size =</span> <span class="fu">c</span>(.<span class="dv">12</span>, .<span class="dv">15</span>, .<span class="dv">09</span>, .<span class="dv">15</span>)) <span class="sc">+</span></span>
+<span id="cb87-15"><a href="phylogenies.html#cb87-15" tabindex="-1"></a>  <span class="co"># Highlight clades</span></span>
+<span id="cb87-16"><a href="phylogenies.html#cb87-16" tabindex="-1"></a>  <span class="fu">geom_hilight</span>(<span class="at">node =</span> <span class="dv">6</span>, <span class="at">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb87-17"><a href="phylogenies.html#cb87-17" tabindex="-1"></a>  <span class="fu">geom_hilight</span>(<span class="at">node =</span> <span class="dv">7</span>, <span class="at">fill =</span> <span class="st">&quot;springgreen&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb87-18"><a href="phylogenies.html#cb87-18" tabindex="-1"></a>  <span class="fu">geom_cladelabel</span>(<span class="at">node =</span> <span class="dv">7</span> , <span class="at">label =</span> <span class="st">&quot;A&quot;</span>, <span class="at">offset =</span> <span class="dv">4</span>,</span>
+<span id="cb87-19"><a href="phylogenies.html#cb87-19" tabindex="-1"></a>                  <span class="at">fontsize =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb87-20"><a href="phylogenies.html#cb87-20" tabindex="-1"></a>  <span class="fu">geom_cladelabel</span>(<span class="at">node =</span> <span class="dv">6</span> , <span class="at">label =</span> <span class="st">&quot;B&quot;</span>, <span class="at">offset =</span> <span class="dv">6</span>,</span>
+<span id="cb87-21"><a href="phylogenies.html#cb87-21" tabindex="-1"></a>                  <span class="at">fontsize =</span> <span class="dv">5</span>) </span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-69-1.png" width="672" /></p>
 <p>You can also highlight non-monophyletic groups using <code>groupOTU</code>. Here’s a quick and silly example…</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="phylogenies.html#cb90-1" tabindex="-1"></a><span class="co"># Define group</span></span>
-<span id="cb90-2"><a href="phylogenies.html#cb90-2" tabindex="-1"></a>feathers <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">no   =</span> <span class="fu">c</span>(<span class="st">&quot;deer&quot;</span>,<span class="st">&quot;jellyfish&quot;</span>, <span class="st">&quot;spider&quot;</span>),</span>
-<span id="cb90-3"><a href="phylogenies.html#cb90-3" tabindex="-1"></a>                 <span class="at">yes =</span> <span class="fu">c</span>(<span class="st">&quot;robin&quot;</span>))</span>
-<span id="cb90-4"><a href="phylogenies.html#cb90-4" tabindex="-1"></a></span>
-<span id="cb90-5"><a href="phylogenies.html#cb90-5" tabindex="-1"></a><span class="co"># Plot with images at tips</span></span>
-<span id="cb90-6"><a href="phylogenies.html#cb90-6" tabindex="-1"></a>p <span class="ot">&lt;-</span> </span>
-<span id="cb90-7"><a href="phylogenies.html#cb90-7" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
-<span id="cb90-8"><a href="phylogenies.html#cb90-8" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
-<span id="cb90-9"><a href="phylogenies.html#cb90-9" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
-<span id="cb90-10"><a href="phylogenies.html#cb90-10" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
-<span id="cb90-11"><a href="phylogenies.html#cb90-11" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb90-12"><a href="phylogenies.html#cb90-12" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
-<span id="cb90-13"><a href="phylogenies.html#cb90-13" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="phylogenies.html#cb88-1" tabindex="-1"></a><span class="co"># Define group</span></span>
+<span id="cb88-2"><a href="phylogenies.html#cb88-2" tabindex="-1"></a>feathers <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">no   =</span> <span class="fu">c</span>(<span class="st">&quot;deer&quot;</span>,<span class="st">&quot;jellyfish&quot;</span>, <span class="st">&quot;spider&quot;</span>),</span>
+<span id="cb88-3"><a href="phylogenies.html#cb88-3" tabindex="-1"></a>                 <span class="at">yes =</span> <span class="fu">c</span>(<span class="st">&quot;robin&quot;</span>))</span>
+<span id="cb88-4"><a href="phylogenies.html#cb88-4" tabindex="-1"></a></span>
+<span id="cb88-5"><a href="phylogenies.html#cb88-5" tabindex="-1"></a><span class="co"># Plot with images at tips</span></span>
+<span id="cb88-6"><a href="phylogenies.html#cb88-6" tabindex="-1"></a>p <span class="ot">&lt;-</span> </span>
+<span id="cb88-7"><a href="phylogenies.html#cb88-7" tabindex="-1"></a>  <span class="fu">ggtree</span>(tree) <span class="sc">+</span> </span>
+<span id="cb88-8"><a href="phylogenies.html#cb88-8" tabindex="-1"></a>  <span class="fu">theme_tree</span>() <span class="sc">+</span></span>
+<span id="cb88-9"><a href="phylogenies.html#cb88-9" tabindex="-1"></a>  <span class="co"># Change limits so labels fit</span></span>
+<span id="cb88-10"><a href="phylogenies.html#cb88-10" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb88-11"><a href="phylogenies.html#cb88-11" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb88-12"><a href="phylogenies.html#cb88-12" tabindex="-1"></a>  <span class="co"># Add tip labels</span></span>
+<span id="cb88-13"><a href="phylogenies.html#cb88-13" tabindex="-1"></a>  <span class="fu">geom_tiplab</span>(<span class="at">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="at">align =</span> <span class="cn">TRUE</span>, <span class="at">offset =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="cn">NA</span>)</span></code></pre></div>
 <pre><code>## Warning in fortify(data, ...): Arguments in `...` must be used.
 ## ✖ Problematic arguments:
 ## • as.Date = as.Date
 ## • yscale_mapping = yscale_mapping
 ## • hang = hang
 ## ℹ Did you misspell an argument name?</code></pre>
-<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="phylogenies.html#cb92-1" tabindex="-1"></a><span class="co"># Add colours to branches and labels</span></span>
-<span id="cb92-2"><a href="phylogenies.html#cb92-2" tabindex="-1"></a><span class="fu">groupOTU</span>(p, feathers, <span class="st">&#39;feathers&#39;</span>) <span class="sc">+</span> </span>
-<span id="cb92-3"><a href="phylogenies.html#cb92-3" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">color =</span> feathers) <span class="sc">+</span></span>
-<span id="cb92-4"><a href="phylogenies.html#cb92-4" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;orange1&quot;</span>,<span class="st">&quot;darkblue&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb92-5"><a href="phylogenies.html#cb92-5" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-67-1.png" width="672" /></p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="phylogenies.html#cb90-1" tabindex="-1"></a><span class="co"># Add colours to branches and labels</span></span>
+<span id="cb90-2"><a href="phylogenies.html#cb90-2" tabindex="-1"></a><span class="fu">groupOTU</span>(p, feathers, <span class="st">&#39;feathers&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb90-3"><a href="phylogenies.html#cb90-3" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">color =</span> feathers) <span class="sc">+</span></span>
+<span id="cb90-4"><a href="phylogenies.html#cb90-4" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;orange1&quot;</span>,<span class="st">&quot;darkblue&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb90-5"><a href="phylogenies.html#cb90-5" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-70-1.png" width="672" /></p>
 <div class="info">
 <p>
 There are many more things you can do with <code>ggtree</code>, all
@@ -885,30 +914,30 @@ more details.
 <div id="phylogeny-manipulation" class="section level2 hasAnchor" number="3.4">
 <h2><span class="header-section-number">3.4</span> Phylogeny manipulation<a href="phylogenies.html#phylogeny-manipulation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To run analyses in R we often need to manipulate our phylogeny in some way so that the analyses can work. I’ll mention these requirements where needed, but here are some common things we might need to change. I’ll use the <code>bird.orders</code> phylogeny again as it’s a manageable size.</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="phylogenies.html#cb93-1" tabindex="-1"></a><span class="co"># Load the tree</span></span>
-<span id="cb93-2"><a href="phylogenies.html#cb93-2" tabindex="-1"></a><span class="fu">data</span>(bird.orders)</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="phylogenies.html#cb91-1" tabindex="-1"></a><span class="co"># Load the tree</span></span>
+<span id="cb91-2"><a href="phylogenies.html#cb91-2" tabindex="-1"></a><span class="fu">data</span>(bird.orders)</span></code></pre></div>
 <div id="removing-polytomies" class="section level3 hasAnchor" number="3.4.1">
 <h3><span class="header-section-number">3.4.1</span> Removing polytomies<a href="phylogenies.html#removing-polytomies" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Most R functions require your tree to be dichotomous, i.e. to have no polytomies. To check whether your tree is dichotomous use <code>is.binary</code>.</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="phylogenies.html#cb94-1" tabindex="-1"></a><span class="co"># Check whether the tree is binary</span></span>
-<span id="cb94-2"><a href="phylogenies.html#cb94-2" tabindex="-1"></a><span class="co"># We want this to be TRUE</span></span>
-<span id="cb94-3"><a href="phylogenies.html#cb94-3" tabindex="-1"></a><span class="fu">is.binary</span>(bird.orders) </span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="phylogenies.html#cb92-1" tabindex="-1"></a><span class="co"># Check whether the tree is binary</span></span>
+<span id="cb92-2"><a href="phylogenies.html#cb92-2" tabindex="-1"></a><span class="co"># We want this to be TRUE</span></span>
+<span id="cb92-3"><a href="phylogenies.html#cb92-3" tabindex="-1"></a><span class="fu">is.binary</span>(bird.orders) </span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <p>If this is FALSE, use <code>multi2di</code> to make the tree dichotomous. This function works by randomly resolving polytomies with zero-length branches. This doesn’t change the tree overall, it’s just a clever trick to get the functions to work.</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="phylogenies.html#cb96-1" tabindex="-1"></a><span class="co"># Make the tree into a binary tree</span></span>
-<span id="cb96-2"><a href="phylogenies.html#cb96-2" tabindex="-1"></a>bird.orders <span class="ot">&lt;-</span> <span class="fu">multi2di</span>(bird.orders)</span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="phylogenies.html#cb94-1" tabindex="-1"></a><span class="co"># Make the tree into a binary tree</span></span>
+<span id="cb94-2"><a href="phylogenies.html#cb94-2" tabindex="-1"></a>bird.orders <span class="ot">&lt;-</span> <span class="fu">multi2di</span>(bird.orders)</span></code></pre></div>
 </div>
 <div id="rooting-your-phylogeny" class="section level3 hasAnchor" number="3.4.2">
 <h3><span class="header-section-number">3.4.2</span> Rooting your phylogeny<a href="phylogenies.html#rooting-your-phylogeny" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Most R functions also require the tree to be rooted, i.e., to have one (or more) taxon designated as the outgroup. We can check whether the tree is rooted as follows.</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="phylogenies.html#cb97-1" tabindex="-1"></a><span class="co"># Check whether the tree is rooted</span></span>
-<span id="cb97-2"><a href="phylogenies.html#cb97-2" tabindex="-1"></a><span class="co"># We want this to be TRUE</span></span>
-<span id="cb97-3"><a href="phylogenies.html#cb97-3" tabindex="-1"></a><span class="fu">is.rooted</span>(bird.orders)</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="phylogenies.html#cb95-1" tabindex="-1"></a><span class="co"># Check whether the tree is rooted</span></span>
+<span id="cb95-2"><a href="phylogenies.html#cb95-2" tabindex="-1"></a><span class="co"># We want this to be TRUE</span></span>
+<span id="cb95-3"><a href="phylogenies.html#cb95-3" tabindex="-1"></a><span class="fu">is.rooted</span>(bird.orders)</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <p>Our tree is rooted but if you wanted to change the root, or root an unrooted tree use <code>root</code>. We can make a new tree and root it on something silly (e.g. Passeriformes) to demonstrate. Remember that your root should be the outgroup from the phylogenetic inference. Rooting a tree incorrectly can cause big issues with downstream analyses, so make sure you choose carefully.</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="phylogenies.html#cb99-1" tabindex="-1"></a>new.tree <span class="ot">&lt;-</span> <span class="fu">root</span>(bird.orders, <span class="at">outgroup =</span> <span class="st">&quot;Passeriformes&quot;</span>)</span>
-<span id="cb99-2"><a href="phylogenies.html#cb99-2" tabindex="-1"></a><span class="fu">plot</span>(new.tree)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-73-1.png" width="672" /></p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="phylogenies.html#cb97-1" tabindex="-1"></a>new.tree <span class="ot">&lt;-</span> <span class="fu">root</span>(bird.orders, <span class="at">outgroup =</span> <span class="st">&quot;Passeriformes&quot;</span>)</span>
+<span id="cb97-2"><a href="phylogenies.html#cb97-2" tabindex="-1"></a><span class="fu">plot</span>(new.tree)</span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
 </div>
 <div id="manipulating-the-species-in-your-phlyogeny" class="section level3 hasAnchor" number="3.4.3">
 <h3><span class="header-section-number">3.4.3</span> Manipulating the species in your phlyogeny<a href="phylogenies.html#manipulating-the-species-in-your-phlyogeny" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -916,20 +945,20 @@ more details.
 <div id="renaming-species" class="section level4 hasAnchor" number="3.4.3.1">
 <h4><span class="header-section-number">3.4.3.1</span> Renaming species<a href="phylogenies.html#renaming-species" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>We can change the names of species using <code>gsub</code> which stands for generalised substitution. This can help with typos etc. or if you have minor taxonomic changes to make. Here, for fun let’s rename Passeriformes…</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="phylogenies.html#cb100-1" tabindex="-1"></a>bird.orders<span class="sc">$</span>tip.label <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;Passeriformes&quot;</span>, <span class="st">&quot;birbs&quot;</span>, bird.orders<span class="sc">$</span>tip.label)</span>
-<span id="cb100-2"><a href="phylogenies.html#cb100-2" tabindex="-1"></a><span class="fu">plot</span>(bird.orders)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-74-1.png" width="672" /></p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="phylogenies.html#cb98-1" tabindex="-1"></a>bird.orders<span class="sc">$</span>tip.label <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;Passeriformes&quot;</span>, <span class="st">&quot;birbs&quot;</span>, bird.orders<span class="sc">$</span>tip.label)</span>
+<span id="cb98-2"><a href="phylogenies.html#cb98-2" tabindex="-1"></a><span class="fu">plot</span>(bird.orders)</span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-77-1.png" width="672" /></p>
 </div>
 <div id="removing-species" class="section level4 hasAnchor" number="3.4.3.2">
 <h4><span class="header-section-number">3.4.3.2</span> Removing species<a href="phylogenies.html#removing-species" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Removing species uses the function <code>drop.tip</code>. If we want to remove birbs from the tree above..</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="phylogenies.html#cb101-1" tabindex="-1"></a>bird.orders <span class="ot">&lt;-</span> <span class="fu">drop.tip</span>(bird.orders, <span class="at">tip =</span> <span class="st">&quot;birbs&quot;</span>)</span>
-<span id="cb101-2"><a href="phylogenies.html#cb101-2" tabindex="-1"></a><span class="fu">plot</span>(bird.orders)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-75-1.png" width="672" /></p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="phylogenies.html#cb99-1" tabindex="-1"></a>bird.orders <span class="ot">&lt;-</span> <span class="fu">drop.tip</span>(bird.orders, <span class="at">tip =</span> <span class="st">&quot;birbs&quot;</span>)</span>
+<span id="cb99-2"><a href="phylogenies.html#cb99-2" tabindex="-1"></a><span class="fu">plot</span>(bird.orders)</span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-78-1.png" width="672" /></p>
 <p>You can also remove multiple tips at once…</p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="phylogenies.html#cb102-1" tabindex="-1"></a>bird.orders <span class="ot">&lt;-</span> <span class="fu">drop.tip</span>(bird.orders, <span class="at">tip =</span> <span class="fu">c</span>(<span class="st">&quot;Struthioniformes&quot;</span>, <span class="st">&quot;Tinamiformes&quot;</span>))</span>
-<span id="cb102-2"><a href="phylogenies.html#cb102-2" tabindex="-1"></a><span class="fu">plot</span>(bird.orders)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="phylogenies.html#cb100-1" tabindex="-1"></a>bird.orders <span class="ot">&lt;-</span> <span class="fu">drop.tip</span>(bird.orders, <span class="at">tip =</span> <span class="fu">c</span>(<span class="st">&quot;Struthioniformes&quot;</span>, <span class="st">&quot;Tinamiformes&quot;</span>))</span>
+<span id="cb100-2"><a href="phylogenies.html#cb100-2" tabindex="-1"></a><span class="fu">plot</span>(bird.orders)</span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-79-1.png" width="672" /></p>
 <p>However, if you’re looking to do something more complex like removing entire groups it’s probably easier to use the functions in the next exercise.</p>
 </div>
 <div id="adding-species" class="section level4 hasAnchor" number="3.4.3.3">
@@ -937,24 +966,18 @@ more details.
 <p>Sometimes you’ll find your phylogeny is missing some species that you have in your dataset. In general the easiest thing is just to omit those species from your analysis, but it may be that they’re data points you really want to keep. In which case you can add species to the tree.</p>
 <p>Before you can add the species you need to find out <em>where</em> in the tree the species belongs. This will require looking in the literature to find the closest relative of the species that already exists in the tree. You also need to know how long the branch should be that will attach the new species to the tree. In some cases this will also be possible to locate in the literature. In other cases, for example if you’re adding a species as a sister species to another species within its genus, you can just choose an arbitrary short branch length, e.g. 0.1 or 1. The exact value depends on the branch lengths in the tree. We can then use R to add the species to the tree.</p>
 <p>To add a species in R, we first select the node that we want to add the tip to. For example, if we want to add Big Bird to our <code>bird.orders</code> tree as a sister to the Galliformes, we can identify the node to add Big Bird to using:</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="phylogenies.html#cb103-1" tabindex="-1"></a><span class="co"># Identify the node</span></span>
-<span id="cb103-2"><a href="phylogenies.html#cb103-2" tabindex="-1"></a>node <span class="ot">&lt;-</span> <span class="fu">which</span>(bird.orders<span class="sc">$</span>tip.label <span class="sc">==</span> <span class="st">&quot;Galliformes&quot;</span>)</span>
-<span id="cb103-3"><a href="phylogenies.html#cb103-3" tabindex="-1"></a><span class="co"># Which node is it?</span></span>
-<span id="cb103-4"><a href="phylogenies.html#cb103-4" tabindex="-1"></a>node</span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="phylogenies.html#cb101-1" tabindex="-1"></a><span class="co"># Identify the node</span></span>
+<span id="cb101-2"><a href="phylogenies.html#cb101-2" tabindex="-1"></a>node <span class="ot">&lt;-</span> <span class="fu">which</span>(bird.orders<span class="sc">$</span>tip.label <span class="sc">==</span> <span class="st">&quot;Galliformes&quot;</span>)</span>
+<span id="cb101-3"><a href="phylogenies.html#cb101-3" tabindex="-1"></a><span class="co"># Which node is it?</span></span>
+<span id="cb101-4"><a href="phylogenies.html#cb101-4" tabindex="-1"></a>node</span></code></pre></div>
 <pre><code>## [1] 2</code></pre>
 <p>We then add the species to this node using the <code>bind.tip</code> function in <code>phytools</code>:</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="phylogenies.html#cb105-1" tabindex="-1"></a><span class="fu">library</span>(phytools)</span></code></pre></div>
-<pre><code>## Loading required package: maps</code></pre>
-<pre><code>## 
-## Attaching package: &#39;maps&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     map</code></pre>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="phylogenies.html#cb109-1" tabindex="-1"></a>bird.orders_plusbigbird <span class="ot">&lt;-</span> <span class="fu">bind.tip</span>(bird.orders, <span class="at">tip.label =</span> <span class="st">&quot;Big_Bird&quot;</span>,</span>
-<span id="cb109-2"><a href="phylogenies.html#cb109-2" tabindex="-1"></a>                                    <span class="at">where =</span> node, <span class="at">position =</span> <span class="fl">4.5</span>)</span>
-<span id="cb109-3"><a href="phylogenies.html#cb109-3" tabindex="-1"></a></span>
-<span id="cb109-4"><a href="phylogenies.html#cb109-4" tabindex="-1"></a><span class="fu">plot</span>(bird.orders_plusbigbird)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-78-1.png" width="672" /></p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="phylogenies.html#cb103-1" tabindex="-1"></a><span class="fu">library</span>(phytools)</span>
+<span id="cb103-2"><a href="phylogenies.html#cb103-2" tabindex="-1"></a>bird.orders_plusbigbird <span class="ot">&lt;-</span> <span class="fu">bind.tip</span>(bird.orders, <span class="at">tip.label =</span> <span class="st">&quot;Big_Bird&quot;</span>,</span>
+<span id="cb103-3"><a href="phylogenies.html#cb103-3" tabindex="-1"></a>                                    <span class="at">where =</span> node, <span class="at">position =</span> <span class="fl">4.5</span>)</span>
+<span id="cb103-4"><a href="phylogenies.html#cb103-4" tabindex="-1"></a></span>
+<span id="cb103-5"><a href="phylogenies.html#cb103-5" tabindex="-1"></a><span class="fu">plot</span>(bird.orders_plusbigbird)</span></code></pre></div>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-81-1.png" width="672" /></p>
 <p>You can see that Big Bird has been added to the Galliformes branch. In the <code>bind.tip</code> function, <code>position</code> is the length of the new branch. Here we used 4.5, but you could use other numbers if you needed the branch to be longer or shorter (i.e. if you knew the divergence between Galliformes and Big Bird was longer ago or more recent).</p>
 <div class="detail">
 <p>
@@ -976,7 +999,7 @@ smaller.
 <h3><span class="header-section-number">3.4.4</span> Writing phylogenies to file<a href="phylogenies.html#writing-phylogenies-to-file" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>After manipulating a phylogeny, if you want to save the new tree you can use <code>write.tree</code> or <code>write.nexus</code> as preferred. You can then use this modified tree for you analyses or plots, meaning that you don’t have to do all the manipulation again every time you want to use it.</p>
 <p>If we want to save the Big Bird tree we can use:</p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="phylogenies.html#cb110-1" tabindex="-1"></a><span class="fu">write.nexus</span>(bird.orders_plusbigbird, <span class="at">file =</span> <span class="st">&quot;bigbirdtree.nex&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="phylogenies.html#cb104-1" tabindex="-1"></a><span class="fu">write.nexus</span>(bird.orders_plusbigbird, <span class="at">file =</span> <span class="st">&quot;bigbirdtree.nex&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="summary-2" class="section level2 hasAnchor" number="3.5">

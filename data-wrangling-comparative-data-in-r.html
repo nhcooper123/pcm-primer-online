@@ -400,6 +400,7 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
 <li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+<li class="chapter" data-level="13.5" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#memory-issues"><i class="fa fa-check"></i><b>13.5</b> Memory issues</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -465,7 +466,7 @@ div.csl-indent {
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="data-wrangling-comparative-data-in-r.html#cb25-1" tabindex="-1"></a><span class="co"># Read in the data</span></span>
 <span id="cb25-2"><a href="data-wrangling-comparative-data-in-r.html#cb25-2" tabindex="-1"></a>chameleon <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/chameleon-data-raw.csv&quot;</span>)</span></code></pre></div>
 <pre><code>## Rows: 18 Columns: 8
-## ── Column specification ─────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (6): Species, Measurement, Type, Units, Quality, Source
 ## dbl (1): Value
@@ -478,14 +479,14 @@ div.csl-indent {
 <span id="cb27-2"><a href="data-wrangling-comparative-data-in-r.html#cb27-2" tabindex="-1"></a><span class="fu">glimpse</span>(chameleon)</span></code></pre></div>
 <pre><code>## Rows: 18
 ## Columns: 8
-## $ Species     &lt;chr&gt; &quot;Chamaeleo chamaeleon&quot;, &quot;Chamaeleo chamaeleon&quot;, &quot;Chamaeleo chamaele…
-## $ Measurement &lt;chr&gt; &quot;length&quot;, &quot;clutch size&quot;, &quot;dimorphic&quot;, &quot;length&quot;, &quot;clutch size&quot;, &quot;dim…
-## $ Value       &lt;dbl&gt; 245, 80, 1, 33, 2, 1, 650, 50, 1, 250, 100, 34, 2, 695, 50, 10, 1, …
-## $ Type        &lt;chr&gt; &quot;mean&quot;, &quot;mean&quot;, &quot;truefalse&quot;, &quot;mean&quot;, &quot;mean&quot;, &quot;truefalse&quot;, &quot;mean&quot;, &quot;…
-## $ Units       &lt;chr&gt; &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;,…
-## $ Quality     &lt;chr&gt; &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;hi…
-## $ Approx      &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
-## $ Source      &lt;chr&gt; &quot;Picard et al 2020&quot;, &quot;Picard et al 2021&quot;, &quot;Picard et al 2022&quot;, &quot;Pic…</code></pre>
+## $ Species     &lt;chr&gt; &quot;Chamaeleo chamaeleon&quot;, &quot;Chamaeleo chamaeleon&quot;, &quot;Chamaeleo chamaeleon&quot;, …
+## $ Measurement &lt;chr&gt; &quot;length&quot;, &quot;clutch size&quot;, &quot;dimorphic&quot;, &quot;length&quot;, &quot;clutch size&quot;, &quot;dimorphi…
+## $ Value       &lt;dbl&gt; 245, 80, 1, 33, 2, 1, 650, 50, 1, 250, 100, 34, 2, 695, 50, 10, 1, 24
+## $ Type        &lt;chr&gt; &quot;mean&quot;, &quot;mean&quot;, &quot;truefalse&quot;, &quot;mean&quot;, &quot;mean&quot;, &quot;truefalse&quot;, &quot;mean&quot;, &quot;mean&quot;…
+## $ Units       &lt;chr&gt; &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, NA, &quot;mm&quot;, &quot;eggs&quot;, &quot;mm&quot;…
+## $ Quality     &lt;chr&gt; &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, &quot;high&quot;, …
+## $ Approx      &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+## $ Source      &lt;chr&gt; &quot;Picard et al 2020&quot;, &quot;Picard et al 2021&quot;, &quot;Picard et al 2022&quot;, &quot;Picard e…</code></pre>
 <p>To wrangle this data, we would first convert the units to a standard unit for each measurement. Here we have length in mm and inches, so we would convert the inches into mm. The three altered rows are shown below. Note that converting from inches to mm gives us the false impression of precision, i.e. two values are now 25.4 and 609.6, rather than whole numbers making it look like these were measured accurately rather than approximated. It’s worth looking out for this in other data, especially curated databases where this kind of conversion is typical.</p>
 <p>We can do this easily using the function <code>conv_unit</code> in the package <code>measurements</code>. Let’s load the library here so we can do this.</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="data-wrangling-comparative-data-in-r.html#cb29-1" tabindex="-1"></a><span class="co"># Load packages</span></span>
@@ -576,16 +577,15 @@ one later in this book. To ensure that R knows to use the
 <span id="cb37-9"><a href="data-wrangling-comparative-data-in-r.html#cb37-9" tabindex="-1"></a>chameleon5</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 11
 ## # Groups:   Species [3]
-##   Species            median_clutch size_m…¹ median_clutch size_m…² median_dimorphic_tru…³
-##   &lt;chr&gt;                               &lt;dbl&gt;                  &lt;dbl&gt;                  &lt;dbl&gt;
-## 1 Brookesia minima                        2                      2                     NA
-## 2 Calumma parsonii                       50                     50                     NA
-## 3 Chamaeleo chamael…                    100                     80                     NA
-## # ℹ abbreviated names: ¹​`median_clutch size_max`, ²​`median_clutch size_mean`,
-## #   ³​median_dimorphic_truefalse
+##   Species              `median_clutch size_max` median_clutch size_me…¹ median_dimorphic_tru…²
+##   &lt;chr&gt;                                   &lt;dbl&gt;                   &lt;dbl&gt;                  &lt;dbl&gt;
+## 1 Brookesia minima                            2                       2                     NA
+## 2 Calumma parsonii                           50                      50                     NA
+## 3 Chamaeleo chamaeleon                      100                      80                     NA
+## # ℹ abbreviated names: ¹​`median_clutch size_mean`, ²​median_dimorphic_truefalse
 ## # ℹ 7 more variables: median_length_max &lt;dbl&gt;, median_length_mean &lt;dbl&gt;,
-## #   `max_clutch size_max` &lt;dbl&gt;, `max_clutch size_mean` &lt;dbl&gt;,
-## #   max_dimorphic_truefalse &lt;dbl&gt;, max_length_max &lt;dbl&gt;, max_length_mean &lt;dbl&gt;</code></pre>
+## #   `max_clutch size_max` &lt;dbl&gt;, `max_clutch size_mean` &lt;dbl&gt;, max_dimorphic_truefalse &lt;dbl&gt;,
+## #   max_length_max &lt;dbl&gt;, max_length_mean &lt;dbl&gt;</code></pre>
 <p>Finally, we probably don’t need all of these columns. The summary data you use and how you calculate it will vary depending on your inputs for example here we might want to extract:</p>
 <ul>
 <li><em>Median of mean length values</em>. This will tell us about the overall <strong>mean</strong> value for length across all sources.</li>
@@ -608,11 +608,11 @@ one later in this book. To ensure that R knows to use the
 <span id="cb39-11"><a href="data-wrangling-comparative-data-in-r.html#cb39-11" tabindex="-1"></a>chameleon6</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 6
 ## # Groups:   Species [3]
-##   Species             median_length max_length median_clutchsize max_clutchsize dimorphic
-##   &lt;chr&gt;                       &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
-## 1 Brookesia minima             29.2         34                 2              2        NA
-## 2 Calumma parsonii            630.         695                50             50        NA
-## 3 Chamaeleo chamaele…         250.         250                80            100        NA</code></pre>
+##   Species              median_length max_length median_clutchsize max_clutchsize dimorphic
+##   &lt;chr&gt;                        &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Brookesia minima              29.2         34                 2              2        NA
+## 2 Calumma parsonii             630.         695                50             50        NA
+## 3 Chamaeleo chamaeleon         250.         250                80            100        NA</code></pre>
 <p>Finally if this were a real dataset, we might want to save this clean and tidy version so that we don’t have to run all of this code again every time we want to use it. We can do this using the function <code>write_csv</code>:</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="data-wrangling-comparative-data-in-r.html#cb41-1" tabindex="-1"></a><span class="fu">write_csv</span>(<span class="at">x =</span> chameleon6, <span class="at">file =</span> <span class="st">&quot;data/chameleon-data-for-analyses.csv&quot;</span>)</span></code></pre></div>
 <p>Note that, to demonstrate how the code works we’ve separated it into chunks above, but you could use <code>%&gt;%</code> to do all of these in one go if you wanted to:</p>
@@ -639,11 +639,11 @@ one later in this book. To ensure that R knows to use the
 <span id="cb42-21"><a href="data-wrangling-comparative-data-in-r.html#cb42-21" tabindex="-1"></a>chameleon_final</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 6
 ## # Groups:   Species [3]
-##   Species             median_length max_length median_clutchsize max_clutchsize dimorphic
-##   &lt;chr&gt;                       &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
-## 1 Brookesia minima             29.2         34                 2              2        NA
-## 2 Calumma parsonii            630.         695                50             50        NA
-## 3 Chamaeleo chamaele…         250.         250                80            100        NA</code></pre>
+##   Species              median_length max_length median_clutchsize max_clutchsize dimorphic
+##   &lt;chr&gt;                        &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Brookesia minima              29.2         34                 2              2        NA
+## 2 Calumma parsonii             630.         695                50             50        NA
+## 3 Chamaeleo chamaeleon         250.         250                80            100        NA</code></pre>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="data-wrangling-comparative-data-in-r.html#cb44-1" tabindex="-1"></a><span class="co"># Write to file</span></span>
 <span id="cb44-2"><a href="data-wrangling-comparative-data-in-r.html#cb44-2" tabindex="-1"></a><span class="co"># I&#39;ve commented this out as we already made this above</span></span>
 <span id="cb44-3"><a href="data-wrangling-comparative-data-in-r.html#cb44-3" tabindex="-1"></a><span class="co"># write_csv(x = chameleon_final, file = &quot;data/chameleon-data-for-analyses.csv&quot;)</span></span></code></pre></div>

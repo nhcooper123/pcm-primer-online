@@ -400,6 +400,7 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
 <li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+<li class="chapter" data-level="13.5" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#memory-issues"><i class="fa fa-check"></i><b>13.5</b> Memory issues</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -425,7 +426,7 @@ div.csl-indent {
 <div id="beyond" class="section level1 hasAnchor" number="10">
 <h1><span class="header-section-number">10</span> Beyond simple macroevolutionary models<a href="beyond.html#beyond" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>The aims of this exercise are to learn how to use R to fit slightly more complex macroevolutionary models.</p>
-<p>Our question here still revolves around the snake head shape data. In Models: Continuous (see <a href="cont.html#cont">8</a>) we fitted simple Brownian Motion (BM) and Ornstein-Uhlenbeck (OU) models to the head length data. We found that the OU model was a better fit, but we didn’t account for any of the limitations of the BM or OU models (see <a href="https://nhcooper123.github.io/pcm-primer/tempo-mode.html">here</a>). In the both models we only allowed head length to have one rate of evolution across the tree, and in the OU model we only fit a single optimum. We can extend these models by relaxing these assumptions.</p>
+<p>Our question here still revolves around the snake head shape data. In Models: Continuous (see <a href="cont.html#cont">8</a>) we fitted simple Brownian Motion (BM) and Ornstein-Uhlenbeck (OU) models to the head length data. We found that the OU model was a better fit, but we didn’t account for any of the limitations of the BM or OU models (see <a href="https://nhcooper123.github.io/pcm-primer/tempo-mode.html">here</a>). In both models we only allowed head length to have one rate of evolution across the tree, and in the OU model we only fit a single optimum. We can extend these models by relaxing these assumptions.</p>
 <p>In Models: Discrete (see <a href="discrete.html#discrete">9</a>) we fitted three simple models of evolution to discrete data to see how ecomorph changed across the tree. We found the best fitting model was the symmetric (SYM) model, where rates of transition between ecomorphs were the same in both directions, but were different for the different pairs of ecomorphs. A more interesting question is how do these different ecomorphs relate to the head shape data? Do aquatic species have wider heads than terrestrial species? Are burrowers evolving their head shape more quickly than semi-aquatic species? We can use more complex evolutionary models to approach these questions.</p>
 <div class="info">
 <p>
@@ -464,15 +465,15 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <span id="cb421-4"><a href="beyond.html#cb421-4" tabindex="-1"></a><span class="fu">glimpse</span>(snakedata)</span></code></pre></div>
 <pre><code>## Rows: 206
 ## Columns: 9
-## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;Amphiesma_beddome…
-## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terrestrial&quot;, &quot;Terrest…
-## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, &quot;anurans&quot;, &quot;gener…
-## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparou…
-## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 19.950, 18.810, 16.375, 22.640…
-## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 10.32, 9.82, 8.39, 11.30, 9.04, 9.55,…
-## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 7.56, 5.80, 6.40, 8.70, 5.68, 6.64, 4…
-## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.84, 5.42, 6.00, 6.05, 5.01, 6.39, 3.…
-## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 165, 155, NA, 163, 130, 309, 31, 62, 56, 3…</code></pre>
+## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;…
+## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terre…
+## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, …
+## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Ovip…
+## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 19.950, 18.81…
+## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 10.32, 9.82, 8.39, 1…
+## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 7.56, 5.80, 6.40, 8.…
+## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.84, 5.42, 6.00, 6.0…
+## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 165, 155, NA, 163, 130, 3…</code></pre>
 <p>To load the tree we will use <code>read.nexus</code>.</p>
 <div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb423-1"><a href="beyond.html#cb423-1" tabindex="-1"></a><span class="co"># Read in the tree</span></span>
 <span id="cb423-2"><a href="beyond.html#cb423-2" tabindex="-1"></a>snaketree <span class="ot">&lt;-</span> <span class="fu">read.nexus</span>(<span class="st">&quot;data/snake-tree.nex&quot;</span>)</span>
@@ -524,15 +525,15 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <span id="cb434-2"><a href="beyond.html#cb434-2" tabindex="-1"></a><span class="fu">glimpse</span>(mydata)</span></code></pre></div>
 <pre><code>## Rows: 162
 ## Columns: 9
-## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;Amphiesma_beddome…
-## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terrestrial&quot;, &quot;Terrest…
-## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, &quot;anurans&quot;, &quot;gener…
-## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparou…
-## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 18.810, 16.375, 22.640, 19.760…
-## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 9.82, 8.39, 11.30, 9.55, 4.03, 4.90, …
-## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 5.80, 6.40, 8.70, 6.64, 3.24, 4.41, 3…
-## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.42, 6.00, 6.05, 6.39, 3.34, 2.27, 1.…
-## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 155, NA, 163, 309, 62, 35, 16, 23, NA, 33,…</code></pre>
+## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;…
+## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terre…
+## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, …
+## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Ovip…
+## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 18.810, 16.37…
+## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 9.82, 8.39, 11.30, 9…
+## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 5.80, 6.40, 8.70, 6.…
+## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.42, 6.00, 6.05, 6.3…
+## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 155, NA, 163, 309, 62, 35…</code></pre>
 <div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb436-1"><a href="beyond.html#cb436-1" tabindex="-1"></a><span class="co"># Convert to a dataframe</span></span>
 <span id="cb436-2"><a href="beyond.html#cb436-2" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(mydata)</span>
 <span id="cb436-3"><a href="beyond.html#cb436-3" tabindex="-1"></a><span class="co"># Check this is now a data frame</span></span>
@@ -555,24 +556,28 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <p>To get the data into the correct format, we use the function <code>pull</code> to extract just the ecomorph values. We then name these values with the species names from <code>mydata</code> using the function <code>names</code>. Note that this requires the trait data is in the <em>same order</em> as the tree tip labels so we will check this first.</p>
 <div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="beyond.html#cb438-1" tabindex="-1"></a><span class="co"># Check first few tip labels and species</span></span>
 <span id="cb438-2"><a href="beyond.html#cb438-2" tabindex="-1"></a>mytree<span class="sc">$</span>tip.label[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;   &quot;Rhabdophis_swinhonis_1&quot; 
-## [4] &quot;Rhabdophis_nigrocinctus&quot; &quot;Rhabdophis_tigrinus&quot;</code></pre>
+<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;  
+## [3] &quot;Rhabdophis_swinhonis_1&quot;  &quot;Rhabdophis_nigrocinctus&quot;
+## [5] &quot;Rhabdophis_tigrinus&quot;</code></pre>
 <div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="beyond.html#cb440-1" tabindex="-1"></a>mydata<span class="sc">$</span>Species[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>## [1] &quot;Adelophis_foxi&quot;         &quot;Afronatrix_anoscopus_2&quot; &quot;Amphiesma_beddomei&quot;    
-## [4] &quot;Amphiesma_monticola&quot;    &quot;Amphiesma_stolatum_1&quot;</code></pre>
+<pre><code>## [1] &quot;Adelophis_foxi&quot;         &quot;Afronatrix_anoscopus_2&quot;
+## [3] &quot;Amphiesma_beddomei&quot;     &quot;Amphiesma_monticola&quot;   
+## [5] &quot;Amphiesma_stolatum_1&quot;</code></pre>
 <div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="beyond.html#cb442-1" tabindex="-1"></a><span class="co"># These are different so we reorder the data by the tips</span></span>
 <span id="cb442-2"><a href="beyond.html#cb442-2" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> mydata[<span class="fu">match</span>(mytree<span class="sc">$</span>tip.label, mydata<span class="sc">$</span>Species), ]</span>
 <span id="cb442-3"><a href="beyond.html#cb442-3" tabindex="-1"></a><span class="co"># Check this now matches the tip label order</span></span>
 <span id="cb442-4"><a href="beyond.html#cb442-4" tabindex="-1"></a>mydata<span class="sc">$</span>Species[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;   &quot;Rhabdophis_swinhonis_1&quot; 
-## [4] &quot;Rhabdophis_nigrocinctus&quot; &quot;Rhabdophis_tigrinus&quot;</code></pre>
+<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;  
+## [3] &quot;Rhabdophis_swinhonis_1&quot;  &quot;Rhabdophis_nigrocinctus&quot;
+## [5] &quot;Rhabdophis_tigrinus&quot;</code></pre>
 <div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb444-1"><a href="beyond.html#cb444-1" tabindex="-1"></a><span class="co"># Create ecomorph containing just ecomorph values</span></span>
 <span id="cb444-2"><a href="beyond.html#cb444-2" tabindex="-1"></a>ecomorph <span class="ot">&lt;-</span> <span class="fu">pull</span>(mydata, Ecomorph)</span>
 <span id="cb444-3"><a href="beyond.html#cb444-3" tabindex="-1"></a><span class="co"># Make sure ecomorph is a character, not a factor</span></span>
 <span id="cb444-4"><a href="beyond.html#cb444-4" tabindex="-1"></a>ecomorph <span class="ot">&lt;-</span> <span class="fu">as.character</span>(ecomorph)</span>
 <span id="cb444-5"><a href="beyond.html#cb444-5" tabindex="-1"></a><span class="co"># Look at the first few rows</span></span>
 <span id="cb444-6"><a href="beyond.html#cb444-6" tabindex="-1"></a><span class="fu">head</span>(ecomorph)</span></code></pre></div>
-<pre><code>## [1] &quot;Semiaquatic&quot; &quot;Terrestrial&quot; &quot;Semiaquatic&quot; &quot;Terrestrial&quot; &quot;Terrestrial&quot; &quot;Terrestrial&quot;</code></pre>
+<pre><code>## [1] &quot;Semiaquatic&quot; &quot;Terrestrial&quot; &quot;Semiaquatic&quot; &quot;Terrestrial&quot;
+## [5] &quot;Terrestrial&quot; &quot;Terrestrial&quot;</code></pre>
 <div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb446-1"><a href="beyond.html#cb446-1" tabindex="-1"></a><span class="co"># Give log head length names = species names at the tips of the phylogeny</span></span>
 <span id="cb446-2"><a href="beyond.html#cb446-2" tabindex="-1"></a><span class="fu">names</span>(ecomorph) <span class="ot">&lt;-</span> mydata<span class="sc">$</span>Species</span>
 <span id="cb446-3"><a href="beyond.html#cb446-3" tabindex="-1"></a><span class="co"># Look at the first few rows</span></span>
@@ -597,7 +602,7 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <pre><code>##                fit    delta            w
 ## equal     355.6782 39.11423 3.207273e-09
 ## symmetric 316.5639  0.00000 9.992717e-01
-## different 331.0120 14.44809 7.283178e-04</code></pre>
+## different 331.0120 14.44809 7.283186e-04</code></pre>
 <p>The best model of evolution is the symmetric model, the same as we found in <code>09-ModelsDiscrete</code>. Phew!</p>
 <p>Next we use this model to determine what the best fit state value is for each node. Let’s remind ourselves of the ancestral state estimates we got for ecomorphs in <code>09-ModelsDiscrete</code>…</p>
 <div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="beyond.html#cb451-1" tabindex="-1"></a><span class="co"># Ancestral state estimation of ecomorph under the SYM model</span></span>
@@ -623,20 +628,26 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <span id="cb455-8"><a href="beyond.html#cb455-8" tabindex="-1"></a>                  <span class="st">&quot;Burrower&quot;</span>, <span class="st">&quot;Terrestrial&quot;</span>), </span>
 <span id="cb455-9"><a href="beyond.html#cb455-9" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;darkblue&quot;</span>, <span class="st">&quot;lightblue&quot;</span>, <span class="st">&quot;plum&quot;</span>, </span>
 <span id="cb455-10"><a href="beyond.html#cb455-10" tabindex="-1"></a>               <span class="st">&quot;chocolate&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>))</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-285-1.png" width="672" />
-Each pie shows the scaled likelihoods of the node being within each of the five ecomorphs. Many of these are ambiguous, so how do we pick the “best” state? To solve this problem we use simulations. We use the transition or <span class="math inline">\(Q\)</span> matrix from the SYM model and use it to simulate tip values and node values of ecomorph category for the tree. We repeat this a number of times - below I use 500 simulations but if the states are fairly simply distributed across the tree you could use fewer. This takes a bit of time to run…</p>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-288-1.png" width="672" />
+Each pie shows the scaled likelihoods of the node being within each of the five ecomorphs. Many of these are ambiguous, so how do we pick the “best” state? To solve this problem we use simulations. We use <code>make.simmap</code> to simulate node values of ecomorph category for the tree conditioned on the transition or <span class="math inline">\(Q\)</span> matrix from the SYM model and the tip states. We repeat this a number of times - below I use 500 simulations but if the states are fairly simply distributed across the tree you could use fewer. This takes a bit of time to run…</p>
 <div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb456-1"><a href="beyond.html#cb456-1" tabindex="-1"></a><span class="co"># Simulate node and tip values for 500 trees using the SYM model</span></span>
 <span id="cb456-2"><a href="beyond.html#cb456-2" tabindex="-1"></a>trees.SYM <span class="ot">&lt;-</span> <span class="fu">make.simmap</span>(mytree, ecomorph, <span class="at">model =</span> <span class="st">&quot;SYM&quot;</span>, <span class="at">nsim =</span> <span class="dv">500</span>)</span></code></pre></div>
 <pre><code>## make.simmap is sampling character histories conditioned on
 ## the transition matrix
 ## 
 ## Q =
-##                        Aquatic Aquatic Burrowing    Burrowing  Semiaquatic Terrestrial
-## Aquatic           -0.033979558       0.006989447  0.008442940  0.018547171  0.00000000
-## Aquatic Burrowing  0.006989447      -0.006989447  0.000000000  0.000000000  0.00000000
-## Burrowing          0.008442940       0.000000000 -0.011914911  0.003471971  0.00000000
-## Semiaquatic        0.018547171       0.000000000  0.003471971 -0.065114673  0.04309553
-## Terrestrial        0.000000000       0.000000000  0.000000000  0.043095532 -0.04309553
+##                        Aquatic Aquatic Burrowing    Burrowing
+## Aquatic           -0.033979558       0.006989447  0.008442940
+## Aquatic Burrowing  0.006989447      -0.006989447  0.000000000
+## Burrowing          0.008442940       0.000000000 -0.011914911
+## Semiaquatic        0.018547171       0.000000000  0.003471971
+## Terrestrial        0.000000000       0.000000000  0.000000000
+##                    Semiaquatic Terrestrial
+## Aquatic            0.018547171  0.00000000
+## Aquatic Burrowing  0.000000000  0.00000000
+## Burrowing          0.003471971  0.00000000
+## Semiaquatic       -0.065114673  0.04309553
+## Terrestrial        0.043095532 -0.04309553
 ## (estimated using likelihood);
 ## and (mean) root node prior probabilities
 ## pi =
@@ -648,7 +659,7 @@ Each pie shows the scaled likelihoods of the node being within each of the five 
 <div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="beyond.html#cb459-1" tabindex="-1"></a><span class="co"># Store the results of the summary of the 500 trees</span></span>
 <span id="cb459-2"><a href="beyond.html#cb459-2" tabindex="-1"></a>summary.SYM <span class="ot">&lt;-</span> <span class="fu">summary</span>(trees.SYM)</span></code></pre></div>
 <p>Now we can use a simple trick to extract the most likely states. We use <code>apply</code> to extract the maximum value for each node from the <code>summary.SYM</code>.</p>
-<p>However, <code>summary.SYM</code> contains the summary of estimates at the tips <em>and</em> the nodes. A fully bifurcating/resolved tree has <code>n - 1</code> nodes. This means we have 161 nodes in our snake tree. <code>summary.SYM</code> reports the node values first, and then the tip values, so we only want entries 1 to 161. WE can write this in our code as: <code>summary.SYM$ace[1:161, ]</code>.</p>
+<p>However, <code>summary.SYM</code> contains the summary of estimates at the tips <em>and</em> the nodes. A fully bifurcating/resolved tree has <code>n - 1</code> nodes, where n = the number of species in the tree. This means we have 161 nodes in our snake tree. <code>summary.SYM</code> reports the node values first, and then the tip values, so we only want entries 1 to 161. WE can write this in our code as: <code>summary.SYM$ace[1:161, ]</code>.</p>
 <div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="beyond.html#cb460-1" tabindex="-1"></a><span class="co"># Get the max likelihood state at each node</span></span>
 <span id="cb460-2"><a href="beyond.html#cb460-2" tabindex="-1"></a>best <span class="ot">&lt;-</span> <span class="fu">apply</span>(summary.SYM<span class="sc">$</span>ace[<span class="dv">1</span><span class="sc">:</span><span class="dv">161</span>, ], <span class="dv">1</span>, which.max)</span>
 <span id="cb460-3"><a href="beyond.html#cb460-3" tabindex="-1"></a><span class="co"># Look at first few rows of the output</span></span>
@@ -688,8 +699,8 @@ Each pie shows the scaled likelihoods of the node being within each of the five 
 <p>As a quick reminder, the BM model is a so called “random walk” model where traits change gradually through time. The model has two parameters, the Brownian rate parameter, <span class="math inline">\(\sigma^2\)</span> and the state of the root at time zero, <span class="math inline">\(z(0)\)</span>.</p>
 <p>To fit a BM model in <code>OUwie</code> we use the following code. The model name here is <code>BM1</code> to indicate this is a simple BM model with only one rate of evolution.</p>
 <div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="beyond.html#cb465-1" tabindex="-1"></a>BM <span class="ot">&lt;-</span> <span class="fu">OUwie</span>(mytree, headw, <span class="at">model =</span> <span class="st">&quot;BM1&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the determinant and
-## inversion of the vcv.</code></pre>
+<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the
+## determinant and inversion of the vcv.</code></pre>
 <pre><code>## Initializing... 
 ## Finished. Begin thorough search... 
 ## Finished. Summarizing results.</code></pre>
@@ -715,11 +726,11 @@ Each pie shows the scaled likelihoods of the node being within each of the five 
 </div>
 <div id="single-optimum-ou-models" class="section level3 hasAnchor" number="10.2.4">
 <h3><span class="header-section-number">10.2.4</span> Single optimum OU models<a href="beyond.html#single-optimum-ou-models" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Again as a reminder, the OU model is a random walk where trait values are pulled back towards some “optimal” value with an attraction strength proportional to the “rubber-band” parameter <span class="math inline">\(\alpha\)</span>. The OU model has four parameters the Brownian rate parameter, <span class="math inline">\(\sigma^2\)</span>, the state of the root at time zero, <span class="math inline">\(z(0)\)</span>, the long-term mean, <span class="math inline">\(\mu\)</span>, and the strength of evolutionary force that returns traits back towards the long-term mean if they evolve away from it, <span class="math inline">\(\alpha\)</span>. If <span class="math inline">\(\alpha\)</span> is close to zero then evolution is approximately Brownian.</p>
+<p>Again as a reminder, the OU model is a random walk where trait values are pulled back towards some “optimal” value with an attraction strength proportional to the “rubber-band” parameter <span class="math inline">\(\alpha\)</span>. The OU model has four parameters: the Brownian rate parameter, <span class="math inline">\(\sigma^2\)</span>, the state of the root at time zero, <span class="math inline">\(z(0)\)</span>, the long-term mean, <span class="math inline">\(\mu\)</span>, and the strength of evolutionary force that returns traits back towards the long-term mean if they evolve away from it, <span class="math inline">\(\alpha\)</span>. If <span class="math inline">\(\alpha\)</span> is close to zero then evolution is approximately Brownian.</p>
 <p>To fit a single peak OU model in <code>OUwie</code> we use the following code. The model name here is <code>OU1</code> to indicate this is a simple OU model with only one rate of evolution and one peak.</p>
 <div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="beyond.html#cb470-1" tabindex="-1"></a>OU <span class="ot">&lt;-</span> <span class="fu">OUwie</span>(mytree, headw, <span class="at">model =</span> <span class="st">&quot;OU1&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the determinant and
-## inversion of the vcv.</code></pre>
+<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the
+## determinant and inversion of the vcv.</code></pre>
 <pre><code>## Initializing... 
 ## Finished. Begin thorough search... 
 ## Finished. Summarizing results.</code></pre>
@@ -754,8 +765,8 @@ Each pie shows the scaled likelihoods of the node being within each of the five 
 <p>BMS models allow different <span class="math inline">\(\sigma^2\)</span> values for different regimes. We can use the code below to fit them.</p>
 <div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="beyond.html#cb475-1" tabindex="-1"></a><span class="co"># Fit BMS model</span></span>
 <span id="cb475-2"><a href="beyond.html#cb475-2" tabindex="-1"></a>BMS <span class="ot">&lt;-</span> <span class="fu">OUwie</span>(mytree, headw, <span class="at">model =</span> <span class="st">&quot;BMS&quot;</span>, <span class="at">root.station =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the determinant and
-## inversion of the vcv.</code></pre>
+<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the
+## determinant and inversion of the vcv.</code></pre>
 <pre><code>## Initializing... 
 ## Finished. Begin thorough search... 
 ## Finished. Summarizing results.</code></pre>
@@ -782,9 +793,12 @@ understood, so the authors of <code>OUwie</code> recommend using
 ##  -157.9152 327.8304 328.3723 346.356   BMS  162
 ## 
 ## Rates
-##             Aquatic Aquatic Burrowing  Burrowing Semiaquatic Terrestrial
-## alpha            NA                NA         NA          NA          NA
-## sigma.sq 0.02204358       0.003111179 0.01164539   0.1597481 0.004698516
+##             Aquatic Aquatic Burrowing  Burrowing Semiaquatic
+## alpha            NA                NA         NA          NA
+## sigma.sq 0.02204358       0.003111179 0.01164539   0.1597481
+##          Terrestrial
+## alpha             NA
+## sigma.sq 0.004698516
 ## 
 ## Optima
 ##            Aquatic Aquatic Burrowing Burrowing Semiaquatic Terrestrial
@@ -800,8 +814,8 @@ understood, so the authors of <code>OUwie</code> recommend using
 <p>We fit the model as follows:</p>
 <div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="beyond.html#cb480-1" tabindex="-1"></a><span class="co"># Fit OUM model</span></span>
 <span id="cb480-2"><a href="beyond.html#cb480-2" tabindex="-1"></a>OUM <span class="ot">&lt;-</span> <span class="fu">OUwie</span>(mytree, headw, <span class="at">model =</span> <span class="st">&quot;OUM&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the determinant and
-## inversion of the vcv.</code></pre>
+<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the
+## determinant and inversion of the vcv.</code></pre>
 <pre><code>## Initializing... 
 ## Finished. Begin thorough search... 
 ## Finished. Summarizing results.</code></pre>
@@ -848,8 +862,8 @@ there’s nothing weird going on.
 <p>We fit the model as follows:</p>
 <div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="beyond.html#cb485-1" tabindex="-1"></a><span class="co"># Fit OUMV model</span></span>
 <span id="cb485-2"><a href="beyond.html#cb485-2" tabindex="-1"></a>OUMV <span class="ot">&lt;-</span> <span class="fu">OUwie</span>(mytree, headw, <span class="at">model =</span> <span class="st">&quot;OUMV&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the determinant and
-## inversion of the vcv.</code></pre>
+<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the
+## determinant and inversion of the vcv.</code></pre>
 <pre><code>## Initializing... 
 ## Finished. Begin thorough search... 
 ## Finished. Summarizing results.</code></pre>
@@ -867,9 +881,12 @@ there’s nothing weird going on.
 ## sigma.sq 0.2782787         0.1519382 0.0598302   0.3984056    0.160183
 ## 
 ## Optima
-##             Aquatic Aquatic Burrowing  Burrowing Semiaquatic Terrestrial
-## estimate 2.56529038         2.0737928 1.63074539  2.35341586  2.33191379
-## se       0.05522251         0.0789795 0.04054012  0.05902695  0.04572044
+##             Aquatic Aquatic Burrowing  Burrowing Semiaquatic
+## estimate 2.56529038         2.0737928 1.63074539  2.35341586
+## se       0.05522251         0.0789795 0.04054012  0.05902695
+##          Terrestrial
+## estimate  2.33191379
+## se        0.04572044
 ## 
 ## 
 ## Half life (another way of reporting alpha)
@@ -886,8 +903,8 @@ there’s nothing weird going on.
 <p>The OUMA models allow different <span class="math inline">\(\alpha\)</span> values and different trait optima or long-term mean values for different evolutionary regimes but the same <span class="math inline">\(\sigma^2\)</span> across the whole tree.</p>
 <p>To fit the model:</p>
 <div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="beyond.html#cb490-1" tabindex="-1"></a>OUMA <span class="ot">&lt;-</span> <span class="fu">OUwie</span>(mytree, headw, <span class="at">model =</span> <span class="st">&quot;OUMA&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the determinant and
-## inversion of the vcv.</code></pre>
+<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the
+## determinant and inversion of the vcv.</code></pre>
 <pre><code>## Initializing... 
 ## Finished. Begin thorough search... 
 ## Finished. Summarizing results.</code></pre>
@@ -900,9 +917,12 @@ there’s nothing weird going on.
 ## 
 ## 
 ## Rates
-##             Aquatic Aquatic Burrowing  Burrowing Semiaquatic Terrestrial
-## alpha    0.05168439        0.03138748 0.05572996  0.09029490  0.05190169
-## sigma.sq 0.02792355        0.02792355 0.02792355  0.02792355  0.02792355
+##             Aquatic Aquatic Burrowing  Burrowing Semiaquatic
+## alpha    0.05168439        0.03138748 0.05572996  0.09029490
+## sigma.sq 0.02792355        0.02792355 0.02792355  0.02792355
+##          Terrestrial
+## alpha     0.05190169
+## sigma.sq  0.02792355
 ## 
 ## Optima
 ##            Aquatic Aquatic Burrowing Burrowing Semiaquatic Terrestrial
@@ -923,8 +943,8 @@ there’s nothing weird going on.
 <h3><span class="header-section-number">10.2.9</span> Multi-rate multi-optima OU motion models (OUMVA)<a href="beyond.html#multi-rate-multi-optima-ou-motion-models-oumva" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Finally, OUMVA models allow us to vary everything! We fit different <span class="math inline">\(\sigma^2\)</span> and <span class="math inline">\(\alpha\)</span> values and different trait optima or long-term mean values for different evolutionary regimes. We don’t have enough data to fit this model but I’ve included it for completeness. It takes a while to run…</p>
 <div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb495-1"><a href="beyond.html#cb495-1" tabindex="-1"></a>OUMVA <span class="ot">&lt;-</span> <span class="fu">OUwie</span>(mytree, headw, <span class="at">model =</span> <span class="st">&quot;OUMVA&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the determinant and
-## inversion of the vcv.</code></pre>
+<pre><code>## Warning: An algorithm was not specified. Defaulting to computing the
+## determinant and inversion of the vcv.</code></pre>
 <pre><code>## Initializing... 
 ## Finished. Begin thorough search... 
 ## Finished. Summarizing results.</code></pre>
@@ -937,9 +957,12 @@ there’s nothing weird going on.
 ## 
 ## 
 ## Rates
-##             Aquatic Aquatic Burrowing   Burrowing Semiaquatic Terrestrial
-## alpha    0.02915080      0.1309366782 0.068046991  0.07113973 0.060473906
-## sigma.sq 0.04097894      0.0002697022 0.004091733  0.01978032 0.007932876
+##             Aquatic Aquatic Burrowing   Burrowing Semiaquatic
+## alpha    0.02915080      0.1309366782 0.068046991  0.07113973
+## sigma.sq 0.04097894      0.0002697022 0.004091733  0.01978032
+##          Terrestrial
+## alpha    0.060473906
+## sigma.sq 0.007932876
 ## 
 ## Optima
 ##            Aquatic Aquatic Burrowing Burrowing Semiaquatic Terrestrial

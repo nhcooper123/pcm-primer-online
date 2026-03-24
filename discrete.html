@@ -400,6 +400,7 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
 <li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+<li class="chapter" data-level="13.5" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#memory-issues"><i class="fa fa-check"></i><b>13.5</b> Memory issues</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -460,15 +461,15 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <span id="cb364-4"><a href="discrete.html#cb364-4" tabindex="-1"></a><span class="fu">glimpse</span>(snakedata)</span></code></pre></div>
 <pre><code>## Rows: 206
 ## Columns: 9
-## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;Amphiesma_beddome…
-## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terrestrial&quot;, &quot;Terrest…
-## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, &quot;anurans&quot;, &quot;gener…
-## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparou…
-## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 19.950, 18.810, 16.375, 22.640…
-## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 10.32, 9.82, 8.39, 11.30, 9.04, 9.55,…
-## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 7.56, 5.80, 6.40, 8.70, 5.68, 6.64, 4…
-## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.84, 5.42, 6.00, 6.05, 5.01, 6.39, 3.…
-## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 165, 155, NA, 163, 130, 309, 31, 62, 56, 3…</code></pre>
+## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;…
+## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terre…
+## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, …
+## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Ovip…
+## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 19.950, 18.81…
+## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 10.32, 9.82, 8.39, 1…
+## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 7.56, 5.80, 6.40, 8.…
+## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.84, 5.42, 6.00, 6.0…
+## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 165, 155, NA, 163, 130, 3…</code></pre>
 <p>To load the tree we will use <code>read.nexus</code>.</p>
 <div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="discrete.html#cb366-1" tabindex="-1"></a><span class="co"># Read in the tree</span></span>
 <span id="cb366-2"><a href="discrete.html#cb366-2" tabindex="-1"></a>snaketree <span class="ot">&lt;-</span> <span class="fu">read.nexus</span>(<span class="st">&quot;data/snake-tree.nex&quot;</span>)</span>
@@ -520,15 +521,15 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <span id="cb377-2"><a href="discrete.html#cb377-2" tabindex="-1"></a><span class="fu">glimpse</span>(mydata)</span></code></pre></div>
 <pre><code>## Rows: 162
 ## Columns: 9
-## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;Amphiesma_beddome…
-## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terrestrial&quot;, &quot;Terrest…
-## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, &quot;anurans&quot;, &quot;gener…
-## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparou…
-## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 18.810, 16.375, 22.640, 19.760…
-## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 9.82, 8.39, 11.30, 9.55, 4.03, 4.90, …
-## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 5.80, 6.40, 8.70, 6.64, 3.24, 4.41, 3…
-## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.42, 6.00, 6.05, 6.39, 3.34, 2.27, 1.…
-## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 155, NA, 163, 309, 62, 35, 16, 23, NA, 33,…</code></pre>
+## $ Species          &lt;chr&gt; &quot;Adelophis_foxi&quot;, &quot;Afronatrix_anoscopus_2&quot;, &quot;…
+## $ Ecomorph         &lt;chr&gt; &quot;Burrowing&quot;, &quot;Aquatic&quot;, &quot;Terrestrial&quot;, &quot;Terre…
+## $ Diet             &lt;chr&gt; &quot;annelids&quot;, &quot;aquatic generalist&quot;, &quot;anurans&quot;, …
+## $ ReproductiveMode &lt;chr&gt; &quot;Viviparous&quot;, &quot;Oviparous&quot;, &quot;Oviparous&quot;, &quot;Ovip…
+## $ HeadLength       &lt;dbl&gt; 12.560, 25.100, 15.060, 20.105, 18.810, 16.37…
+## $ HeadWidth        &lt;dbl&gt; 6.60, 15.80, 7.82, 9.13, 9.82, 8.39, 11.30, 9…
+## $ HeadHeight       &lt;dbl&gt; 5.43, 10.30, 5.40, 6.61, 5.80, 6.40, 8.70, 6.…
+## $ EyeDistance      &lt;dbl&gt; 4.01, 7.40, 4.85, 5.85, 5.42, 6.00, 6.05, 6.3…
+## $ TotalLength      &lt;dbl&gt; 105, 194, 106, 185, 155, NA, 163, 309, 62, 35…</code></pre>
 <div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="discrete.html#cb379-1" tabindex="-1"></a><span class="co"># Convert to a dataframe</span></span>
 <span id="cb379-2"><a href="discrete.html#cb379-2" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(mydata)</span>
 <span id="cb379-3"><a href="discrete.html#cb379-3" tabindex="-1"></a><span class="co"># Check this is now a data frame</span></span>
@@ -571,7 +572,7 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <span id="cb385-7"><a href="discrete.html#cb385-7" tabindex="-1"></a>                  <span class="st">&quot;Burrower&quot;</span>, <span class="st">&quot;Terrestrial&quot;</span>), </span>
 <span id="cb385-8"><a href="discrete.html#cb385-8" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;darkblue&quot;</span>, <span class="st">&quot;lightblue&quot;</span>, <span class="st">&quot;plum&quot;</span>, </span>
 <span id="cb385-9"><a href="discrete.html#cb385-9" tabindex="-1"></a>               <span class="st">&quot;chocolate&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>))</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-251-1.png" width="672" /></p>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-254-1.png" width="672" /></p>
 <p>Some ecomorphs are clustered, but others appear across the phylogeny (this is the result of some pretty cool convergent evolution - check out <span class="citation"><a href="#ref-deepak2023">[4]</a></span> for more details).</p>
 <div id="fitting-the-er-sym-and-ard-models-of-evolution-using-fitdiscrete" class="section level3 hasAnchor" number="9.2.1">
 <h3><span class="header-section-number">9.2.1</span> Fitting the ER, SYM and ARD models of evolution using <code>fitDiscrete</code><a href="discrete.html#fitting-the-er-sym-and-ard-models-of-evolution-using-fitdiscrete" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -584,24 +585,28 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <p>We use the function <code>pull</code> to extract just the ecomorph values. We then name these values with the species names from <code>mydata</code> using the function <code>names</code>. Note that this requires the trait data is in the <em>same order</em> as the tree tip labels so we need to reorder the data first…</p>
 <div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb386-1"><a href="discrete.html#cb386-1" tabindex="-1"></a><span class="co"># Check first few tip labels and species</span></span>
 <span id="cb386-2"><a href="discrete.html#cb386-2" tabindex="-1"></a>mytree<span class="sc">$</span>tip.label[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;   &quot;Rhabdophis_swinhonis_1&quot; 
-## [4] &quot;Rhabdophis_nigrocinctus&quot; &quot;Rhabdophis_tigrinus&quot;</code></pre>
+<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;  
+## [3] &quot;Rhabdophis_swinhonis_1&quot;  &quot;Rhabdophis_nigrocinctus&quot;
+## [5] &quot;Rhabdophis_tigrinus&quot;</code></pre>
 <div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="discrete.html#cb388-1" tabindex="-1"></a>mydata<span class="sc">$</span>Species[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>## [1] &quot;Adelophis_foxi&quot;         &quot;Afronatrix_anoscopus_2&quot; &quot;Amphiesma_beddomei&quot;    
-## [4] &quot;Amphiesma_monticola&quot;    &quot;Amphiesma_stolatum_1&quot;</code></pre>
+<pre><code>## [1] &quot;Adelophis_foxi&quot;         &quot;Afronatrix_anoscopus_2&quot;
+## [3] &quot;Amphiesma_beddomei&quot;     &quot;Amphiesma_monticola&quot;   
+## [5] &quot;Amphiesma_stolatum_1&quot;</code></pre>
 <div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="discrete.html#cb390-1" tabindex="-1"></a><span class="co"># These are different so we reorder the data by the tips</span></span>
 <span id="cb390-2"><a href="discrete.html#cb390-2" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> mydata[<span class="fu">match</span>(mytree<span class="sc">$</span>tip.label, mydata<span class="sc">$</span>Species), ]</span>
 <span id="cb390-3"><a href="discrete.html#cb390-3" tabindex="-1"></a><span class="co"># Check this now matches the tip label order</span></span>
 <span id="cb390-4"><a href="discrete.html#cb390-4" tabindex="-1"></a>mydata<span class="sc">$</span>Species[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;   &quot;Rhabdophis_swinhonis_1&quot; 
-## [4] &quot;Rhabdophis_nigrocinctus&quot; &quot;Rhabdophis_tigrinus&quot;</code></pre>
+<pre><code>## [1] &quot;Rhabdophis_leonardi&quot;     &quot;Rhabdophis_nuchalis_3&quot;  
+## [3] &quot;Rhabdophis_swinhonis_1&quot;  &quot;Rhabdophis_nigrocinctus&quot;
+## [5] &quot;Rhabdophis_tigrinus&quot;</code></pre>
 <div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="discrete.html#cb392-1" tabindex="-1"></a><span class="co"># Create ecomorph containing just ecomorph values</span></span>
 <span id="cb392-2"><a href="discrete.html#cb392-2" tabindex="-1"></a>ecomorph <span class="ot">&lt;-</span> <span class="fu">pull</span>(mydata, Ecomorph)</span>
 <span id="cb392-3"><a href="discrete.html#cb392-3" tabindex="-1"></a><span class="co"># Make sure ecomorph is a character, not a factor</span></span>
 <span id="cb392-4"><a href="discrete.html#cb392-4" tabindex="-1"></a>ecomorph <span class="ot">&lt;-</span> <span class="fu">as.character</span>(ecomorph)</span>
 <span id="cb392-5"><a href="discrete.html#cb392-5" tabindex="-1"></a><span class="co"># Look at the first few rows</span></span>
 <span id="cb392-6"><a href="discrete.html#cb392-6" tabindex="-1"></a><span class="fu">head</span>(ecomorph)</span></code></pre></div>
-<pre><code>## [1] &quot;Semiaquatic&quot; &quot;Terrestrial&quot; &quot;Semiaquatic&quot; &quot;Terrestrial&quot; &quot;Terrestrial&quot; &quot;Terrestrial&quot;</code></pre>
+<pre><code>## [1] &quot;Semiaquatic&quot; &quot;Terrestrial&quot; &quot;Semiaquatic&quot; &quot;Terrestrial&quot;
+## [5] &quot;Terrestrial&quot; &quot;Terrestrial&quot;</code></pre>
 <div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="discrete.html#cb394-1" tabindex="-1"></a><span class="co"># Give log head length names = species names at the tips of the phylogeny</span></span>
 <span id="cb394-2"><a href="discrete.html#cb394-2" tabindex="-1"></a><span class="fu">names</span>(ecomorph) <span class="ot">&lt;-</span> mydata<span class="sc">$</span>Species</span>
 <span id="cb394-3"><a href="discrete.html#cb394-3" tabindex="-1"></a><span class="co"># Look at the first few rows</span></span>
@@ -621,18 +626,18 @@ see the full results check out Deepak et al. 2023 <span class="citation"><span 
 <span id="cb397-2"><a href="discrete.html#cb397-2" tabindex="-1"></a>equal</span></code></pre></div>
 <pre><code>## GEIGER-fitted comparative model of discrete data
 ##  fitted Q matrix:
-##                            Aquatic Aquatic Burrowing    Burrowing  Semiaquatic
-##     Aquatic           -0.034973715       0.008743429  0.008743429  0.008743429
-##     Aquatic Burrowing  0.008743429      -0.034973715  0.008743429  0.008743429
-##     Burrowing          0.008743429       0.008743429 -0.034973715  0.008743429
-##     Semiaquatic        0.008743429       0.008743429  0.008743429 -0.034973715
-##     Terrestrial        0.008743429       0.008743429  0.008743429  0.008743429
-##                        Terrestrial
-##     Aquatic            0.008743429
-##     Aquatic Burrowing  0.008743429
-##     Burrowing          0.008743429
-##     Semiaquatic        0.008743429
-##     Terrestrial       -0.034973715
+##                            Aquatic Aquatic Burrowing    Burrowing
+##     Aquatic           -0.034973715       0.008743429  0.008743429
+##     Aquatic Burrowing  0.008743429      -0.034973715  0.008743429
+##     Burrowing          0.008743429       0.008743429 -0.034973715
+##     Semiaquatic        0.008743429       0.008743429  0.008743429
+##     Terrestrial        0.008743429       0.008743429  0.008743429
+##                        Semiaquatic  Terrestrial
+##     Aquatic            0.008743429  0.008743429
+##     Aquatic Burrowing  0.008743429  0.008743429
+##     Burrowing          0.008743429  0.008743429
+##     Semiaquatic       -0.034973715  0.008743429
+##     Terrestrial        0.008743429 -0.034973715
 ## 
 ##  model summary:
 ##  log-likelihood = -176.839091
@@ -666,18 +671,18 @@ Why are the diagonal elements of the <span class="math inline"><span class="math
 <span id="cb399-4"><a href="discrete.html#cb399-4" tabindex="-1"></a>sym</span></code></pre></div>
 <pre><code>## GEIGER-fitted comparative model of discrete data
 ##  fitted Q matrix:
-##                             Aquatic Aquatic Burrowing     Burrowing   Semiaquatic
-##     Aquatic           -3.410162e-02      6.787524e-03  8.536114e-03  1.877798e-02
-##     Aquatic Burrowing  6.787524e-03     -6.787524e-03  4.387587e-20  6.171162e-22
-##     Burrowing          8.536114e-03      4.387587e-20 -1.172377e-02  3.187653e-03
-##     Semiaquatic        1.877798e-02      6.171162e-22  3.187653e-03 -6.519603e-02
-##     Terrestrial        7.754194e-17      1.179400e-21  6.023475e-21  4.323040e-02
-##                         Terrestrial
-##     Aquatic            7.754194e-17
-##     Aquatic Burrowing  1.179400e-21
-##     Burrowing          6.023475e-21
-##     Semiaquatic        4.323040e-02
-##     Terrestrial       -4.323040e-02
+##                             Aquatic Aquatic Burrowing     Burrowing
+##     Aquatic           -3.410191e-02      6.787705e-03  8.536166e-03
+##     Aquatic Burrowing  6.787705e-03     -6.787705e-03  2.172738e-62
+##     Burrowing          8.536166e-03      2.172738e-62 -1.172368e-02
+##     Semiaquatic        1.877803e-02      2.885565e-25  3.187511e-03
+##     Terrestrial        1.772895e-30      7.522429e-21  2.539531e-17
+##                         Semiaquatic   Terrestrial
+##     Aquatic            1.877803e-02  1.772895e-30
+##     Aquatic Burrowing  2.885565e-25  7.522429e-21
+##     Burrowing          3.187511e-03  2.539531e-17
+##     Semiaquatic       -6.519661e-02  4.323106e-02
+##     Terrestrial        4.323106e-02 -4.323106e-02
 ## 
 ##  model summary:
 ##  log-likelihood = -148.281974
@@ -688,8 +693,8 @@ Why are the diagonal elements of the <span class="math inline"><span class="math
 ## Convergence diagnostics:
 ##  optimization iterations = 100
 ##  failed iterations = 0
-##  number of iterations with same best fit = 11
-##  frequency of best fit = 0.110
+##  number of iterations with same best fit = 6
+##  frequency of best fit = 0.060
 ## 
 ##  object summary:
 ##  &#39;lik&#39; -- likelihood function
@@ -699,7 +704,7 @@ Why are the diagonal elements of the <span class="math inline"><span class="math
 <p>Again the <span class="math inline">\(Q\)</span> matrix is the key output here. You could just read the numbers, we can see this more clearly if we plot the <span class="math inline">\(Q\)</span> matrix for the model:</p>
 <div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="discrete.html#cb401-1" tabindex="-1"></a><span class="co"># Plot Q matrix as network</span></span>
 <span id="cb401-2"><a href="discrete.html#cb401-2" tabindex="-1"></a><span class="fu">plot.gfit</span>(sym)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-258-1.png" width="672" />
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-261-1.png" width="672" />
 The transition rate between Semi-aquatic and Terrestrial is highest (0.043), followed by transitions between Semi-aquatic and Aquatic (0.019). Burrowing and Aquatic (0.009) and Aquatic Burrowing and Aquatic (0.007) have the next highest rates, followed by Burrowing and Semi-aquatic (0.003). All the other rates are &lt; 0.001 so they appear as zeros on this plot</p>
 <p>Finally let’s fit the ARD model. Again this may take some time! Go and grab a tea/coffee/biscuit or take a short break.</p>
 <div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="discrete.html#cb402-1" tabindex="-1"></a><span class="co"># Fit the ARD model</span></span>
@@ -708,23 +713,23 @@ The transition rate between Semi-aquatic and Terrestrial is highest (0.043), fol
 <span id="cb402-4"><a href="discrete.html#cb402-4" tabindex="-1"></a>ard</span></code></pre></div>
 <pre><code>## GEIGER-fitted comparative model of discrete data
 ##  fitted Q matrix:
-##                             Aquatic Aquatic Burrowing     Burrowing   Semiaquatic
-##     Aquatic           -3.871103e-02      7.710905e-03  1.070720e-02  2.029293e-02
-##     Aquatic Burrowing  3.005747e-08     -3.008130e-08  6.638405e-12  8.495581e-12
-##     Burrowing          1.280584e-11      1.935156e-11 -2.365536e-08  2.361726e-08
-##     Semiaquatic        1.592951e-02      1.292544e-11  2.496539e-03 -5.538259e-02
-##     Terrestrial        1.425995e-09      1.071111e-10  2.571834e-12  2.678887e-03
-##                         Terrestrial
-##     Aquatic            9.224794e-14
-##     Aquatic Burrowing  8.700785e-12
-##     Burrowing          5.942342e-12
-##     Semiaquatic        3.695654e-02
-##     Terrestrial       -2.678889e-03
+##                             Aquatic Aquatic Burrowing     Burrowing
+##     Aquatic           -3.871186e-02      7.710850e-03  1.070704e-02
+##     Aquatic Burrowing  3.972094e-18     -4.665042e-18  6.929470e-19
+##     Burrowing          3.776994e-18      5.816948e-23 -1.052130e-17
+##     Semiaquatic        1.592927e-02      1.596186e-18  2.496600e-03
+##     Terrestrial        3.961918e-16      6.765336e-17  9.029606e-18
+##                         Semiaquatic   Terrestrial
+##     Aquatic            2.029397e-02  2.945948e-21
+##     Aquatic Burrowing  1.839194e-33  1.601216e-24
+##     Burrowing          6.051089e-20  6.683734e-18
+##     Semiaquatic       -5.538247e-02  3.695661e-02
+##     Terrestrial        2.675006e-03 -2.675006e-03
 ## 
 ##  model summary:
-##  log-likelihood = -145.506019
-##  AIC = 331.012038
-##  AICc = 336.969484
+##  log-likelihood = -145.506018
+##  AIC = 331.012035
+##  AICc = 336.969482
 ##  free parameters = 20
 ## 
 ## Convergence diagnostics:
@@ -741,11 +746,11 @@ The transition rate between Semi-aquatic and Terrestrial is highest (0.043), fol
 <p>Again the <span class="math inline">\(Q\)</span> matrix is the key output. We can plot the <span class="math inline">\(Q\)</span> matrix for the model:</p>
 <div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="discrete.html#cb404-1" tabindex="-1"></a><span class="co"># Plot Q matrix as network</span></span>
 <span id="cb404-2"><a href="discrete.html#cb404-2" tabindex="-1"></a><span class="fu">plot.gfit</span>(ard)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-260-1.png" width="672" />
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-263-1.png" width="672" />
 This is quite complex because in the ARD model we have different rates for each type of state change. Here, for example, the bottom left hand arrows joining Semi-aquatic and Terrestrial show that rates of change from Semi-aquatic to Terrestrial (0.037) are higher than those from Terrestrial to Semi-aquatic (0.003). These plots can be a little easier to read if we hide all the transitions where rates are &lt; 0.001 as follows.</p>
 <div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="discrete.html#cb405-1" tabindex="-1"></a><span class="co"># Plot Q matrix as network without zeros</span></span>
 <span id="cb405-2"><a href="discrete.html#cb405-2" tabindex="-1"></a><span class="fu">plot.gfit</span>(ard, <span class="at">show.zeros =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-261-1.png" width="672" /></p>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-264-1.png" width="672" /></p>
 <div class="detail">
 <p>
 For now these plots are pretty simple, but you can add some code to
@@ -773,7 +778,7 @@ have these functions added.
 <pre><code>##                fit    delta            w
 ## equal     355.6782 39.11423 3.207273e-09
 ## symmetric 316.5639  0.00000 9.992717e-01
-## different 331.0120 14.44809 7.283178e-04</code></pre>
+## different 331.0120 14.44809 7.283186e-04</code></pre>
 <p><code>aicw</code> outputs the AIC (<code>fit</code>), <span class="math inline">\(\Delta\)</span>AIC (<code>delta</code>) and AIC weights (<code>w</code>) for each of the models we fitted. The best model is the model with <span class="math inline">\(\Delta\)</span>AIC = 0 or with AICw closest to 1. Using <span class="math inline">\(\Delta\)</span>AIC we can conclude that the SYM model is the best fit to the data.</p>
 </div>
 </div>
@@ -818,7 +823,7 @@ critiques of this method
 <span id="cb419-8"><a href="discrete.html#cb419-8" tabindex="-1"></a>                  <span class="st">&quot;Burrower&quot;</span>, <span class="st">&quot;Terrestrial&quot;</span>), </span>
 <span id="cb419-9"><a href="discrete.html#cb419-9" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;darkblue&quot;</span>, <span class="st">&quot;lightblue&quot;</span>, <span class="st">&quot;plum&quot;</span>, </span>
 <span id="cb419-10"><a href="discrete.html#cb419-10" tabindex="-1"></a>               <span class="st">&quot;chocolate&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>))</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-269-1.png" width="672" /></p>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-272-1.png" width="672" /></p>
 <p>Aquatic is most commonly estimated as the ancestral ecomorph for natricine snakes, with Semi-aquatic as a close second, and with multiple transitions to other ecomorphs throughout the tree.</p>
 <div class="warning">
 <p>

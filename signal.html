@@ -400,6 +400,7 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="13.3" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-an-error-message"><i class="fa fa-check"></i><b>13.3</b> What to do if you get an Error message</a></li>
 <li class="chapter" data-level="13.4" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#what-to-do-if-you-get-a-warning-message"><i class="fa fa-check"></i><b>13.4</b> What to do if you get a Warning message</a></li>
+<li class="chapter" data-level="13.5" data-path="common-mistakes-using-pcms-in-r.html"><a href="common-mistakes-using-pcms-in-r.html#memory-issues"><i class="fa fa-check"></i><b>13.5</b> Memory issues</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -434,6 +435,20 @@ species and a few variables to make things a bit more straightforward.
 If you want to see the full results check out Thomas et al. 2020 <span class="citation"><span class="citation"><a href="#ref-thomas2020eye">[2]</a></span></span>!
 </p>
 </div>
+<div class="warning">
+<p>
+Remember that when fitting models to account for phylogenetic
+non-independence, it is <em>not</em> phylogenetic signal in the
+individual variables that is important. It is phylogenetic signal in the
+<strong>residuals</strong> of the model that matters. Evidence of
+phylogenetic signal in variable X (or variable Y) does not necessarily
+mean that there will be phylogenetic signal in the residuals of a model
+correlating variable X with variable Y. Conversely, lack of evidence of
+phylogenetic signal in variable X (or variable Y) does not necessarily
+mean that there will be no phylogenetic signal in the residuals of a
+model correlating variable X with variable Y.
+</p>
+</div>
 <div id="before-you-start-3" class="section level2 unnumbered hasAnchor">
 <h2>Before you start<a href="signal.html#before-you-start-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Open your R Project. Mine is a folder called <code>PCM-exercises</code>, and it is named <code>PCM-exercises.RProj</code>. Within the <code>PCM-exercises</code> folder is a subfolder called <code>data</code> where I have stored all the data I downloaded from <a href="https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data">here</a>.</p>
@@ -463,17 +478,17 @@ If you want to see the full results check out Thomas et al. 2020 <span class="c
 <span id="cb149-4"><a href="signal.html#cb149-4" tabindex="-1"></a><span class="fu">glimpse</span>(frogdata)</span></code></pre></div>
 <pre><code>## Rows: 215
 ## Columns: 11
-## $ Binomial         &lt;chr&gt; &quot;Allophryne_ruthveni&quot;, &quot;Eupsophus_roseus&quot;, &quot;Alytes_obstetrican…
-## $ Family           &lt;chr&gt; &quot;Allophrynidae&quot;, &quot;Alsodidae&quot;, &quot;Alytidae&quot;, &quot;Alytidae&quot;, &quot;Aromoba…
-## $ Genus            &lt;chr&gt; &quot;Allophryne&quot;, &quot;Eupsophus&quot;, &quot;Alytes&quot;, &quot;Discoglossus&quot;, &quot;Allobate…
-## $ tiplabel         &lt;chr&gt; &quot;Allophryne_ruthveni_Allophrynidae&quot;, &quot;Eupsophus_roseus_Alsodid…
-## $ Adult_habitat    &lt;chr&gt; &quot;Scansorial&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dw…
-## $ Life_history     &lt;chr&gt; &quot;Free-living larvae&quot;, &quot;Free-living larvae&quot;, &quot;Free-living larva…
-## $ Sex_dichromatism &lt;chr&gt; &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;A…
-## $ SVL              &lt;dbl&gt; 23.76667, 38.37500, 37.46667, 62.64000, 25.60000, 27.03333, 38…
-## $ mass             &lt;dbl&gt; 1.0000000, 7.5000000, 6.6666667, 24.4000000, 2.1000000, 2.4666…
-## $ rootmass         &lt;dbl&gt; 0.9917748, 1.9273451, 1.8690601, 2.8885465, 1.2549697, 1.35076…
-## $ eyesize          &lt;dbl&gt; 3.200000, 5.362500, 6.366667, 7.550000, 4.116667, 3.783333, 4.…</code></pre>
+## $ Binomial         &lt;chr&gt; &quot;Allophryne_ruthveni&quot;, &quot;Eupsophus_roseus&quot;, &quot;A…
+## $ Family           &lt;chr&gt; &quot;Allophrynidae&quot;, &quot;Alsodidae&quot;, &quot;Alytidae&quot;, &quot;Al…
+## $ Genus            &lt;chr&gt; &quot;Allophryne&quot;, &quot;Eupsophus&quot;, &quot;Alytes&quot;, &quot;Discogl…
+## $ tiplabel         &lt;chr&gt; &quot;Allophryne_ruthveni_Allophrynidae&quot;, &quot;Eupsoph…
+## $ Adult_habitat    &lt;chr&gt; &quot;Scansorial&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dwel…
+## $ Life_history     &lt;chr&gt; &quot;Free-living larvae&quot;, &quot;Free-living larvae&quot;, &quot;…
+## $ Sex_dichromatism &lt;chr&gt; &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Abse…
+## $ SVL              &lt;dbl&gt; 23.76667, 38.37500, 37.46667, 62.64000, 25.60…
+## $ mass             &lt;dbl&gt; 1.0000000, 7.5000000, 6.6666667, 24.4000000, …
+## $ rootmass         &lt;dbl&gt; 0.9917748, 1.9273451, 1.8690601, 2.8885465, 1…
+## $ eyesize          &lt;dbl&gt; 3.200000, 5.362500, 6.366667, 7.550000, 4.116…</code></pre>
 <p>To load the tree we will use <code>read.nexus</code>.</p>
 <div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="signal.html#cb151-1" tabindex="-1"></a><span class="co"># Read in the tree</span></span>
 <span id="cb151-2"><a href="signal.html#cb151-2" tabindex="-1"></a>frogtree <span class="ot">&lt;-</span> <span class="fu">read.nexus</span>(<span class="st">&quot;data/frog-tree.nex&quot;</span>)</span>
@@ -506,12 +521,16 @@ If you want to see the full results check out Thomas et al. 2020 <span class="c
 <span id="cb159-4"><a href="signal.html#cb159-4" tabindex="-1"></a><span class="co"># Look at check</span></span>
 <span id="cb159-5"><a href="signal.html#cb159-5" tabindex="-1"></a>check</span></code></pre></div>
 <pre><code>## $tree_not_data
-## [1] &quot;Incilius_nebulifer_Bufonidae&quot;            &quot;Leptobrachella_bidoupensis_Megophryidae&quot;
-## [3] &quot;Microhyla_fissipes_Microhylidae&quot;         &quot;Microhyla_marmorata_Microhylidae&quot;       
+## [1] &quot;Incilius_nebulifer_Bufonidae&quot;           
+## [2] &quot;Leptobrachella_bidoupensis_Megophryidae&quot;
+## [3] &quot;Microhyla_fissipes_Microhylidae&quot;        
+## [4] &quot;Microhyla_marmorata_Microhylidae&quot;       
 ## 
 ## $data_not_tree
-## [1] &quot;Gastrophryne_carolinensis_Microhylidae&quot; &quot;Leptobrachella_dringi_Megophryidae&quot;    
-## [3] &quot;Megophrys_gerti_Megophryidae&quot;           &quot;Microhyla_pulverata_Microhylidae&quot;      
+## [1] &quot;Gastrophryne_carolinensis_Microhylidae&quot;
+## [2] &quot;Leptobrachella_dringi_Megophryidae&quot;    
+## [3] &quot;Megophrys_gerti_Megophryidae&quot;          
+## [4] &quot;Microhyla_pulverata_Microhylidae&quot;      
 ## [5] &quot;Oreobates_quixensis_Strabomantidae&quot;</code></pre>
 <p>Here all the excluded species are excluded because they are genuinely missing, not because of any typos, so we can move on.</p>
 <p>Next we exclude species that are not in both the tree and the data, using the following code:</p>
@@ -535,17 +554,17 @@ If you want to see the full results check out Thomas et al. 2020 <span class="c
 <span id="cb164-2"><a href="signal.html#cb164-2" tabindex="-1"></a><span class="fu">glimpse</span>(mydata)</span></code></pre></div>
 <pre><code>## Rows: 210
 ## Columns: 11
-## $ Binomial         &lt;chr&gt; &quot;Allophryne_ruthveni&quot;, &quot;Eupsophus_roseus&quot;, &quot;Alytes_obstetrican…
-## $ Family           &lt;chr&gt; &quot;Allophrynidae&quot;, &quot;Alsodidae&quot;, &quot;Alytidae&quot;, &quot;Alytidae&quot;, &quot;Aromoba…
-## $ Genus            &lt;chr&gt; &quot;Allophryne&quot;, &quot;Eupsophus&quot;, &quot;Alytes&quot;, &quot;Discoglossus&quot;, &quot;Allobate…
-## $ tiplabel         &lt;chr&gt; &quot;Allophryne_ruthveni_Allophrynidae&quot;, &quot;Eupsophus_roseus_Alsodid…
-## $ Adult_habitat    &lt;chr&gt; &quot;Scansorial&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dw…
-## $ Life_history     &lt;chr&gt; &quot;Free-living larvae&quot;, &quot;Free-living larvae&quot;, &quot;Free-living larva…
-## $ Sex_dichromatism &lt;chr&gt; &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;A…
-## $ SVL              &lt;dbl&gt; 23.76667, 38.37500, 37.46667, 62.64000, 25.60000, 27.03333, 38…
-## $ mass             &lt;dbl&gt; 1.0000000, 7.5000000, 6.6666667, 24.4000000, 2.1000000, 2.4666…
-## $ rootmass         &lt;dbl&gt; 0.9917748, 1.9273451, 1.8690601, 2.8885465, 1.2549697, 1.35076…
-## $ eyesize          &lt;dbl&gt; 3.200000, 5.362500, 6.366667, 7.550000, 4.116667, 3.783333, 4.…</code></pre>
+## $ Binomial         &lt;chr&gt; &quot;Allophryne_ruthveni&quot;, &quot;Eupsophus_roseus&quot;, &quot;A…
+## $ Family           &lt;chr&gt; &quot;Allophrynidae&quot;, &quot;Alsodidae&quot;, &quot;Alytidae&quot;, &quot;Al…
+## $ Genus            &lt;chr&gt; &quot;Allophryne&quot;, &quot;Eupsophus&quot;, &quot;Alytes&quot;, &quot;Discogl…
+## $ tiplabel         &lt;chr&gt; &quot;Allophryne_ruthveni_Allophrynidae&quot;, &quot;Eupsoph…
+## $ Adult_habitat    &lt;chr&gt; &quot;Scansorial&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dwel…
+## $ Life_history     &lt;chr&gt; &quot;Free-living larvae&quot;, &quot;Free-living larvae&quot;, &quot;…
+## $ Sex_dichromatism &lt;chr&gt; &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Abse…
+## $ SVL              &lt;dbl&gt; 23.76667, 38.37500, 37.46667, 62.64000, 25.60…
+## $ mass             &lt;dbl&gt; 1.0000000, 7.5000000, 6.6666667, 24.4000000, …
+## $ rootmass         &lt;dbl&gt; 0.9917748, 1.9273451, 1.8690601, 2.8885465, 1…
+## $ eyesize          &lt;dbl&gt; 3.200000, 5.362500, 6.366667, 7.550000, 4.116…</code></pre>
 <p>Don’t forget to ensure the data are a data frame:</p>
 <div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="signal.html#cb166-1" tabindex="-1"></a><span class="co"># Convert to a dataframe</span></span>
 <span id="cb166-2"><a href="signal.html#cb166-2" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(mydata)</span>
@@ -578,12 +597,18 @@ ask for the other, so why not do both and pop one in the appendix?
 <span id="cb170-2"><a href="signal.html#cb170-2" tabindex="-1"></a><span class="fu">names</span>(logEye) <span class="ot">&lt;-</span> mydata<span class="sc">$</span>tiplabel</span>
 <span id="cb170-3"><a href="signal.html#cb170-3" tabindex="-1"></a><span class="co"># Look at the first few rows</span></span>
 <span id="cb170-4"><a href="signal.html#cb170-4" tabindex="-1"></a><span class="fu">head</span>(logEye)</span></code></pre></div>
-<pre><code>##        Allophryne_ruthveni_Allophrynidae               Eupsophus_roseus_Alsodidae 
-##                                 1.163151                                 1.679430 
-##             Alytes_obstetricans_Alytidae             Discoglossus_pictus_Alytidae 
-##                                 1.851076                                 2.021548 
-##        Allobates_femoralis_Dendrobatidae Arthroleptis_poecilonotus_Arthroleptidae 
-##                                 1.415044                                 1.330605</code></pre>
+<pre><code>##        Allophryne_ruthveni_Allophrynidae 
+##                                 1.163151 
+##               Eupsophus_roseus_Alsodidae 
+##                                 1.679430 
+##             Alytes_obstetricans_Alytidae 
+##                                 1.851076 
+##             Discoglossus_pictus_Alytidae 
+##                                 2.021548 
+##        Allobates_femoralis_Dendrobatidae 
+##                                 1.415044 
+## Arthroleptis_poecilonotus_Arthroleptidae 
+##                                 1.330605</code></pre>
 <p>Now we have a list of values with associated species names.</p>
 <div id="pagels-lambda" class="section level3 hasAnchor" number="5.2.1">
 <h3><span class="header-section-number">5.2.1</span> Pagel’s <span class="math inline">\(\lambda\)</span><a href="signal.html#pagels-lambda" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -612,20 +637,6 @@ ask for the other, so why not do both and pop one in the appendix?
 ## P-value (based on 1000 randomizations) : 0.001</code></pre>
 <p><em>K</em> for log eye size is 0.283. The p value tells us how many times out of 1000, a randomised value of <em>K</em> is more extreme than the observed value. If this number is low, the p value is low (e.g. if 5 out of 1000 randomised values of <em>K</em> are more extreme than the observed value p = 5/1000 = 0.005). Here p = 0.001, suggesting that only 1 randomised value of <em>K</em> was more extreme than the observed value.</p>
 <p>We interpret this as <em>K</em> being significantly different from 0, i.e. there is significant phylogenetic signal in log eye size.</p>
-<div class="warning">
-<p>
-Remember that when fitting models to account for phylogenetic
-non-independence, it is <em>not</em> phylogenetic signal in the
-individual variables that is important. It is phylogenetic signal in the
-<strong>residuals</strong> of the model that matters. Evidence of
-phylogenetic signal in variable X (or variable Y) does not necessarily
-mean that there will be phylogenetic signal in the residuals of a model
-correlating variable X with variable Y. Conversely, lack of evidence of
-phylogenetic signal in variable X (or variable Y) does not necessarily
-mean that there will be no phylogenetic signal in the residuals of a
-model correlating variable X with variable Y.
-</p>
-</div>
 </div>
 </div>
 <div id="estimating-phylogenetic-signal-for-non-continuous-variables" class="section level2 hasAnchor" number="5.3">
@@ -634,17 +645,17 @@ model correlating variable X with variable Y.
 <div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="signal.html#cb178-1" tabindex="-1"></a><span class="fu">glimpse</span>(mydata)</span></code></pre></div>
 <pre><code>## Rows: 210
 ## Columns: 11
-## $ Binomial         &lt;chr&gt; &quot;Allophryne_ruthveni&quot;, &quot;Eupsophus_roseus&quot;, &quot;Alytes_obstetrican…
-## $ Family           &lt;chr&gt; &quot;Allophrynidae&quot;, &quot;Alsodidae&quot;, &quot;Alytidae&quot;, &quot;Alytidae&quot;, &quot;Aromoba…
-## $ Genus            &lt;chr&gt; &quot;Allophryne&quot;, &quot;Eupsophus&quot;, &quot;Alytes&quot;, &quot;Discoglossus&quot;, &quot;Allobate…
-## $ tiplabel         &lt;chr&gt; &quot;Allophryne_ruthveni_Allophrynidae&quot;, &quot;Eupsophus_roseus_Alsodid…
-## $ Adult_habitat    &lt;chr&gt; &quot;Scansorial&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dw…
-## $ Life_history     &lt;chr&gt; &quot;Free-living larvae&quot;, &quot;Free-living larvae&quot;, &quot;Free-living larva…
-## $ Sex_dichromatism &lt;chr&gt; &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;A…
-## $ SVL              &lt;dbl&gt; 23.76667, 38.37500, 37.46667, 62.64000, 25.60000, 27.03333, 38…
-## $ mass             &lt;dbl&gt; 1.0000000, 7.5000000, 6.6666667, 24.4000000, 2.1000000, 2.4666…
-## $ rootmass         &lt;dbl&gt; 0.9917748, 1.9273451, 1.8690601, 2.8885465, 1.2549697, 1.35076…
-## $ eyesize          &lt;dbl&gt; 3.200000, 5.362500, 6.366667, 7.550000, 4.116667, 3.783333, 4.…</code></pre>
+## $ Binomial         &lt;chr&gt; &quot;Allophryne_ruthveni&quot;, &quot;Eupsophus_roseus&quot;, &quot;A…
+## $ Family           &lt;chr&gt; &quot;Allophrynidae&quot;, &quot;Alsodidae&quot;, &quot;Alytidae&quot;, &quot;Al…
+## $ Genus            &lt;chr&gt; &quot;Allophryne&quot;, &quot;Eupsophus&quot;, &quot;Alytes&quot;, &quot;Discogl…
+## $ tiplabel         &lt;chr&gt; &quot;Allophryne_ruthveni_Allophrynidae&quot;, &quot;Eupsoph…
+## $ Adult_habitat    &lt;chr&gt; &quot;Scansorial&quot;, &quot;Ground-dwelling&quot;, &quot;Ground-dwel…
+## $ Life_history     &lt;chr&gt; &quot;Free-living larvae&quot;, &quot;Free-living larvae&quot;, &quot;…
+## $ Sex_dichromatism &lt;chr&gt; &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Absent&quot;, &quot;Abse…
+## $ SVL              &lt;dbl&gt; 23.76667, 38.37500, 37.46667, 62.64000, 25.60…
+## $ mass             &lt;dbl&gt; 1.0000000, 7.5000000, 6.6666667, 24.4000000, …
+## $ rootmass         &lt;dbl&gt; 0.9917748, 1.9273451, 1.8690601, 2.8885465, 1…
+## $ eyesize          &lt;dbl&gt; 3.200000, 5.362500, 6.366667, 7.550000, 4.116…</code></pre>
 <p>Estimating phylogenetic signal in categorical variables is tricky. Let’s take <code>Adult_habitat</code> as an example. In this variable we have the following categories:</p>
 <div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="signal.html#cb180-1" tabindex="-1"></a>mydata <span class="sc">%&gt;%</span></span>
 <span id="cb180-2"><a href="signal.html#cb180-2" tabindex="-1"></a> dplyr<span class="sc">::</span><span class="fu">select</span>(Adult_habitat) <span class="sc">%&gt;%</span></span>
@@ -729,11 +740,11 @@ model correlating variable X with variable Y.
 ##   Phylogeny :  mytree2
 ##   Number of permutations :  1000
 ## 
-## Estimated D :  0.8662818
-## Probability of E(D) resulting from no (random) phylogenetic structure :  0.171
-## Probability of E(D) resulting from Brownian phylogenetic structure    :  0.001</code></pre>
+## Estimated D :  0.8630903
+## Probability of E(D) resulting from no (random) phylogenetic structure :  0.184
+## Probability of E(D) resulting from Brownian phylogenetic structure    :  0</code></pre>
 <p><code>phylo.d</code> estimates the D value, then tests the estimated D value for significant departure from random association and a Brownian evolution threshold model (see <a href="https://nhcooper123.github.io/pcm-primer/signal.html#calculating-d-for-binary-traits">here</a> and <span class="citation"><a href="#ref-fritz2010selectivity">[32]</a></span> for more details).</p>
-<p>Here <em>D</em> for <code>Sex_dichromatism</code> is 0.866. This is significantly different from the expectation under a Brownian threshold model (p = 0.001) but not significantly different from the trait being randomly assorted on the phylogeny (p = 0.171). So here we can say there is no significant phylogenetic signal in the trait.</p>
+<p>Here <em>D</em> for <code>Sex_dichromatism</code> is 0.863. This is significantly different from the expectation under a Brownian threshold model (p = 0) but not significantly different from the trait being randomly assorted on the phylogeny (p = 0.184). So here we can say there is no significant phylogenetic signal in the trait.</p>
 <p>We can make a really quick plot to check we agree with that statement (never take the results of any analysis at face value). It doesn’t seem like sexual dichromatism (red text) is a trait that is particularly clustered within certain taxonomic groups, so seems that <em>D</em> is giving us a sensible answer.</p>
 <div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="signal.html#cb195-1" tabindex="-1"></a>mycolours <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>)</span>
 <span id="cb195-2"><a href="signal.html#cb195-2" tabindex="-1"></a></span>
@@ -744,7 +755,7 @@ model correlating variable X with variable Y.
 <span id="cb195-7"><a href="signal.html#cb195-7" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">fill =</span> mycolours, </span>
 <span id="cb195-8"><a href="signal.html#cb195-8" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Absent&quot;</span>, <span class="st">&quot;Present&quot;</span>), </span>
 <span id="cb195-9"><a href="signal.html#cb195-9" tabindex="-1"></a>       <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
-<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-137-1.png" width="672" /></p>
+<p><img src="pcm-primer-online_files/figure-html/unnamed-chunk-140-1.png" width="672" /></p>
 <div class="warning">
 <p>
 Always carefully consider what variation in values of <span class="math inline"><span class="math inline">\(\lambda\)</span></span> and <em>K</em> and <em>D</em>
