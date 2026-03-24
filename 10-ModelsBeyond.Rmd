@@ -2,7 +2,7 @@
 
 The aims of this exercise are to learn how to use R to fit slightly more complex macroevolutionary models.
 
-Our question here still revolves around the snake head shape data. In Models: Continuous (see \@ref(cont)) we fitted simple Brownian Motion (BM) and Ornstein-Uhlenbeck (OU) models to the head length data. We found that the OU model was a better fit, but we didn't account for any of the limitations of the BM or OU models (see [here](https://nhcooper123.github.io/pcm-primer/tempo-mode.html)). In the both models we only allowed head length to have one rate of evolution across the tree, and in the OU model we only fit a single optimum. We can extend these models by relaxing these assumptions.
+Our question here still revolves around the snake head shape data. In Models: Continuous (see \@ref(cont)) we fitted simple Brownian Motion (BM) and Ornstein-Uhlenbeck (OU) models to the head length data. We found that the OU model was a better fit, but we didn't account for any of the limitations of the BM or OU models (see [here](https://nhcooper123.github.io/pcm-primer/tempo-mode.html)). In both models we only allowed head length to have one rate of evolution across the tree, and in the OU model we only fit a single optimum. We can extend these models by relaxing these assumptions.
 
 In Models: Discrete (see \@ref(discrete)) we fitted three simple models of evolution to discrete data to see how ecomorph changed across the tree. We found the best fitting model was the symmetric (SYM) model, where rates of transition between ecomorphs were the same in both directions, but were different for the different pairs of ecomorphs. A more interesting question is how do these different ecomorphs relate to the head shape data? Do aquatic species have wider heads than terrestrial species? Are burrowers evolving their head shape more quickly than semi-aquatic species? We can use more complex evolutionary models to approach these questions.
 
@@ -197,7 +197,7 @@ legend("bottomleft", pch = 15, bty = "n",
        col = c("darkblue", "lightblue", "plum", 
                "chocolate", "lightgreen"))
 ```
-Each pie shows the scaled likelihoods of the node being within each of the five ecomorphs. Many of these are ambiguous, so how do we pick the "best" state? To solve this problem we use simulations. We use the transition or $Q$ matrix from the SYM model and use it to simulate tip values and node values of ecomorph category for the tree. We repeat this a number of times - below I use 500 simulations but if the states are fairly simply distributed across the tree you could use fewer. This takes a bit of time to run...
+Each pie shows the scaled likelihoods of the node being within each of the five ecomorphs. Many of these are ambiguous, so how do we pick the "best" state? To solve this problem we use simulations. We use `make.simmap` to simulate node values of ecomorph category for the tree conditioned on the transition or $Q$ matrix from the SYM model and the tip states. We repeat this a number of times - below I use 500 simulations but if the states are fairly simply distributed across the tree you could use fewer. This takes a bit of time to run...
 
 ```{r}
 # Simulate node and tip values for 500 trees using the SYM model
@@ -207,7 +207,7 @@ summary.SYM <- summary(trees.SYM)
 ```
 Now we can use a simple trick to extract the most likely states. We use `apply` to extract the maximum value for each node from the `summary.SYM`.
 
-However, `summary.SYM` contains the summary of estimates at the tips *and* the nodes. A fully bifurcating/resolved tree has `n - 1` nodes. This means we have 161 nodes in our snake tree. `summary.SYM` reports the node values first, and then the tip values, so we only want entries 1  to 161. WE can write this in our code as: `summary.SYM$ace[1:161, ]`.
+However, `summary.SYM` contains the summary of estimates at the tips *and* the nodes. A fully bifurcating/resolved tree has `n - 1` nodes, where n = the number of species in the tree. This means we have 161 nodes in our snake tree. `summary.SYM` reports the node values first, and then the tip values, so we only want entries 1  to 161. WE can write this in our code as: `summary.SYM$ace[1:161, ]`.
 
 ```{r}
 # Get the max likelihood state at each node
@@ -260,7 +260,7 @@ BM
 The `Rates` section shows us what the parameter estimates are for $\sigma^2$ and $\alpha$. We don't fit $\alpha$ in a BM model so it's NA in this output. The `Optima` section tells us what the trait "optima" are for each regime. In a BM model we don't have any different regimes so this is just estimated value of log head width at the root, $z(0)$. `Arrived at a reliable solution` tells us that the model converged on a reliable set of parameter estimates. The rest of the output includes log likelihood and AIC of the model etc. 
 
 ### Single optimum OU models
-Again as a reminder, the OU model is a random walk where trait values are pulled back towards some “optimal” value with an attraction strength proportional to the "rubber-band" parameter $\alpha$. The OU model has four parameters the Brownian rate parameter, $\sigma^2$, the state of the root at time zero, $z(0)$, the long-term mean, $\mu$, and the strength of evolutionary force that returns traits back towards the long-term mean if they evolve away from it, $\alpha$. If $\alpha$ is close to zero then evolution is approximately Brownian.
+Again as a reminder, the OU model is a random walk where trait values are pulled back towards some “optimal” value with an attraction strength proportional to the "rubber-band" parameter $\alpha$. The OU model has four parameters: the Brownian rate parameter, $\sigma^2$, the state of the root at time zero, $z(0)$, the long-term mean, $\mu$, and the strength of evolutionary force that returns traits back towards the long-term mean if they evolve away from it, $\alpha$. If $\alpha$ is close to zero then evolution is approximately Brownian.
 
 To fit a single peak OU model in `OUwie` we use the following code. The model name here is `OU1` to indicate this is a simple OU model with only one rate of evolution and one peak. 
 ```{r}
