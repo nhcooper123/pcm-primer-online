@@ -3,9 +3,9 @@
 Author: Natalie Cooper
 
 To cite this guide:
-> Natalie Cooper. 2026. Introduction to Phylogenetic Comparative Methods in R. https://nhcooper123.github.io/pcm-primer-online. DOI: 10.5281/zenodo.19134985.
+> Natalie Cooper. 2026. Introduction to Phylogenetic Comparative Methods in R. https://nhcooper123.github.io/pcm-primer-online. DOI: 10.5281/zenodo.19206417.
 
-[![DOI](https://zenodo.org/badge/19134985.svg)](https://zenodo.org/doi/10.5281/zenodo.19134985)
+[![DOI](https://zenodo.org/badge/244871297.svg)](https://doi.org/10.5281/zenodo.19206417)
 
 # Welcome to PCMs in R!
 
