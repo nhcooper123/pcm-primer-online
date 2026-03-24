@@ -6,6 +6,10 @@ Phylogenetic signal is the pattern where close relatives have more similar trait
 We will be using the evolution of eye size in frogs as an example. The data and modified tree come from @thomas2020eye, and the original tree comes from @feng2017phylogenomics. I've removed a few species and a few variables to make things a bit more straightforward. If you want to see the full results check out Thomas et al. 2020 @thomas2020eye!
 ```
 
+```{block, type = "warning"}
+Remember that when fitting models to account for phylogenetic non-independence, it is *not* phylogenetic signal in the individual variables that is important. It is phylogenetic signal in the __residuals__ of the model that matters. Evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be phylogenetic signal in the residuals of a model correlating variable X with variable Y. Conversely, lack of evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be no phylogenetic signal in the residuals of a model correlating variable X with variable Y.
+```
+
 ## Before you start {-}
 Open your R Project. Mine is a folder called `PCM-exercises`, and it is named `PCM-exercises.RProj`. Within the `PCM-exercises` folder is a subfolder called `data` where I have stored all the data I downloaded from [here](https://download-directory.github.io?url=https://github.com/nhcooper123/pcm-primer-online/tree/main/data).
 
@@ -168,10 +172,6 @@ KEye
 *K* for log eye size is 0.283. The p value tells us how many times out of 1000, a randomised value of *K* is more extreme than the observed value. If this number is low, the p value is low (e.g. if 5 out of 1000 randomised values of *K* are more extreme than the observed value p = 5/1000 = 0.005). Here p = 0.001, suggesting that only 1 randomised value of *K* was more extreme than the observed value. 
 
 We interpret this as *K* being significantly different from 0, i.e. there is significant phylogenetic signal in log eye size.
-
-```{block, type = "warning"}
-Remember that when fitting models to account for phylogenetic non-independence, it is *not* phylogenetic signal in the individual variables that is important. It is phylogenetic signal in the __residuals__ of the model that matters. Evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be phylogenetic signal in the residuals of a model correlating variable X with variable Y. Conversely, lack of evidence of phylogenetic signal in variable X (or variable Y) does not necessarily mean that there will be no phylogenetic signal in the residuals of a model correlating variable X with variable Y.
-```
 
 ## Estimating phylogenetic signal for non-continuous variables
 Not all variables are continuous, some are categorical, some are binary. For example in the frog data `Adult_habitat`, `Life_history` and `Sex_dichromatism` are categorical variables. We can also code `Sex_dichromatism` as a binary variable if we code Absent as 0 and Present as 1.
