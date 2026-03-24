@@ -1,6 +1,6 @@
 # Data wrangling comparative data in R
 
-In the [Introduction to Comparative Data](https://nhcooper123.github.io/pcm-primer/foundations.html) section of pur book, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the [tidyverse](https://www.tidyverse.org/) - these are amazing for data manipulation etc. It's beyond our scope to cover these in detail, but we will show you what we did to get the tidied dataset in the book.
+In the [Introduction to Comparative Data](https://nhcooper123.github.io/pcm-primer/foundations.html) section of our book, we took some data on chameleons and manipulated/wrangled it so it was ready for analyses. In this exercise we will show you how we did this in R. We use functions from a collection of packages called the [tidyverse](https://www.tidyverse.org/) - these are amazing for data manipulation etc. It's beyond our scope to cover these in detail, but we will show you what we did to get the tidied dataset in the book.
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
