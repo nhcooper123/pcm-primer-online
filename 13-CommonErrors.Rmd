@@ -117,7 +117,7 @@ Error messages will have the word "Error" in the message after you try to run th
 
 ## What to do if you get a Warning message
 
-```{block, type = "info}
+```{block, type = "info"}
 Warning messages will have __not__ have the word "Error" in the message after you try to run the code. Many will have the word "Warning". Some will just print a message without the word "Warning". A warning message means that R has run the code as you asked BUT it thinks there is some information you need to consider. Maybe you did something silly? Or maybe it just wants to clarify to you exactly what it did.
 
 In PCMs the warnings may indicate unrealistic parameters or poor convergence.
