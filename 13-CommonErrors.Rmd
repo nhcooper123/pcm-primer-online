@@ -129,6 +129,7 @@ In PCMs the warnings may indicate unrealistic parameters or poor convergence.
 
 ## Memory issues
 If your tree/dataset is too large, R may crash, especially for more computationally demanding analyses. In this situation, first check your code works by running it on a smaller subset of the tree/dataset. This will also give you an idea of how long the analysis might take on the whole dataset. You then will need to think about either: 
+
 1. Finding a better computer with more memory
 2. [Parallelisation](https://nceas.github.io/oss-lessons/parallel-computing-in-r/parallel-computing-in-r.html), i.e. running small analyses that can then be stuck back together again. This is often not very useful in PCMs but worth considering.
 3. Using High Performance Computing facilities to run the code remotely.
