@@ -9,7 +9,8 @@ There are a couple of ways you can help yourself avoid errors.
 1. Look at your data (and tree) before beginning any analysis to check it read in correctly.
 2. Check the exact spelling (and capitalisation) of your variable names. For example, in the datasets we have used the tip names have been called `tiplabel`, `Species` and `Binomial`. It's important to check what things are called in your data before you start the analyses. 
 3. Check (using `glimpse` or `str` or `class`) what *kind of data* R thinks each of your variables is. If a function expects a factor, it will not work if R thinks your variable is a character.
-4. Finally, make sure to run through your code slowly and carefully, making copious notes and comments to yourself (preceded by `#` so R ignores them) to remind yourself what you are doing and why. __Always__ check the output at every stage of the analysis. Every time you modify the data or tree, check that this happened as you expected. This can save you from lots of downstream issues.
+4. Sometimes species names (and variable names) are separated by spaces, sometimes by `.`, and other times by `_`. Check this in your data and use something consistent. You can use [`stringr` functions](https://stringr.tidyverse.org/) to easily change capitalisation or replace " " for "_" or vice versa.
+5. Finally, make sure to run through your code slowly and carefully, making copious notes and comments to yourself (preceded by `#` so R ignores them) to remind yourself what you are doing and why. __Always__ check the output at every stage of the analysis. Every time you modify the data or tree, check that this happened as you expected. This can save you from lots of downstream issues.
 
 ## Common errors
 
@@ -37,12 +38,24 @@ There are a couple of ways you can help yourself avoid errors.
   
 7. Using the wrong data
 - Are you working with the correct data? If you use generic names like `mydata` and `mytree` (like I've done throughout this book) it's easy to accidentally use the wrong `mydata`. You can avoid this by giving your objects more descriptive names. 
-  
+
+8. Data uses `,` rather than `.` for decimals. 
+- This is common in mainland Europe. Luckily there's an easy fix. When you read in your data use `read_csv2` or `read.csv2` or similar, and R will read it in with this information in mind.
+
+9. Functions with the same names from different packages act differently.
+- Some functions, especially those with useful names like `select`, appear in multiple packages and work differently in each. To solve this problem you can declare which package you would like the function to come from, for example to ask R to use the version of the function `select` from the package `dplyr`, use `dplyr::select`.
+
+10. Arguments are in the wrong order.
+- R functions expect arguments to be entered into them in a specific order. This is known as "syntax" and you can see the correct syntax in the help files for a function.
+- For example, if the syntax of a function is `myfunction(phy, node)` then it expects the `phy` to be entered first and the `node` second. So if we have a phylogeny called `mytree` and we want to investigate node 10, we could type `myfunction(mytree, 10)` and the function will do what we expect. However, if we forget what the syntax of the function is and try `myfunction(mytree, 10)` the function will __not__ work. 
+- A simple (and highly recommended) solution to this is to __always specify the arguments__ of the function, then you can't go wrong! `myfunction(phy = mytree, node = 10)` will work, and so will `myfunction(node = 10, phy = mytree)` because we have specified the argument names so the order is no longer important.
+
 ### Issues with the tree or data
 
 1. Tree is not ultrametric.  See \@ref(phylogenies) and \@ref(prep).
 - Use `is.ultrametric` to check.
 - Fix using `force.ultrametric` in the `phytools` package.
+- Remember that `force.ultrametric` should only be used to correct rounding errors, it is not a substitute for time calibrating the tree. 
 
 2. Tree is not rooted. See \@ref(phylogenies) and \@ref(prep).
 - Use `is.rooted` to check. 
@@ -53,19 +66,21 @@ There are a couple of ways you can help yourself avoid errors.
 - Fix using `multi2di`.
 
 4. Species names in the tree and the data do not match.  See \@ref(prep).
-- Use `name.check` in the `geiger` package to check.
+- Use `name.check` in the `geiger` package to check, or use `setdiff(phy$tip.label, data$species)`.
 - If they do not match, but they should do, check for spaces rather than underscores in species names, differences in capitalisation, or any words (like family names or numbers) added to tip label names. Also ensure you use the variable name from the data set that contains the species names.
+- Note that when you plot the tree the `_` will be omitted from tip labels so you will need to check these within the actual tree file or using `phy$tip.label`.
+- Fix using code in \@ref(prep).
 
 5. Species names have not been added to the data. See \@ref(signal) and \@ref(discrete).
 - Check you have the species names attached to any dataset/variable you are working with.
-- Some functions require that the species names are rownames. Others require a vector for the variable with names added using the `names` function. 
+- Some functions require that the species names are rownames. Some functions require named vectors (e.g. `fitContinuous` in \@ref(cont)). Use `setNames` to generate names for these.
 
 6. Species in the tree and the data are not in the same order. See \@ref(signal) and \@ref(discrete).
 - Some functions require the data and the tree to be ordered so that species are in the same order in both.
 - Fix using `mydata <- mydata[match(mytree$tip.label, mydata$Species), ]`
 
-7. Data is a tibble not a data frame. See \@ref(prep).
-- Most functions for PCMs require a data frame as input.
+7. Data is a tibble not a dataframe. See \@ref(prep).
+- Most functions for PCMs require a dataframe as input.
 - Check using `class` or `str`.
 - Convert to a data frame using `as.data.frame`
 
@@ -75,19 +90,26 @@ There are a couple of ways you can help yourself avoid errors.
 - If you need to convert something to numeric use `as.numeric`, or if you need to convert something to character use `as.character` and so on. 
 
 9. Optimisation errors. See \@ref(pgls) and \@ref(cont).
-- This generally happens when the likelihood profile for one of your parameters is really flat, and the model is getting stuck near one of the bounds (i.e. limits) of the parameter.
-- To fix this error you need to _change the bounds_ (i.e. upper and lower values) on the parameter being optimized. First establish which bound is the problem, then change it to something a little bigger/smaller than the default upper/lower bound until it works. See the appropriate chapters for more details on specific function.
+- This generally happens when the likelihood profile for one of your parameters is really flat (i.e. it could be one of many different values all of which are equally likely), and the model is getting stuck near one of the bounds (i.e. limits) of the parameter.
+- To fix this error you need to _change the bounds_ (i.e. upper and lower values) on the parameter being optimized to restrict where the function is looking. First establish which bound is the problem, then change it to something a little bigger/smaller than the default upper/lower bound until it works. See the appropriate chapters for more details on specific function.
 
 10. Unrealistic parameter estimates. See \@ref(cont) and \@ref(beyond).
-- As mentioned in the relevant chapters, you must check your parameter estimates make sense.
+- As mentioned in the relevant chapters, you must check your parameter estimates make sense. This can take time to work out, so discuss with your supervisor/colleagues and think carefully about what the numbers mean.
 - If these are wildly unrealistic it suggests you don't have enough data to fit a model of the complexity you're trying to fit.
 - There's no solution to this, aside from gathering more data.
 
+11. Tree formats
+- Check the format of your tree, if it is a NEXUS file then use `read.nexus`, if it is any other kind of tree use `read.tree`. Note that some NEXUS files contain only the data (morphological matrices or molecular data). If there is no tree bit in there these cannot be used as a phylogeny. 
+
 ## What to do if you get an Error message
 
-1. Don't panic! Error messages are common and there might be an easy fix. Read the message carefully s some will indicate the problem and you'll be able to fix it quickly.
+```{block, type = "warning"}
+Error messages will have the word "Error" in the message after you try to run the code. This means R did not run the code. You will need to fix this before you can move on.
+```
+
+1. Don't panic! Error messages are common and there might be an easy fix. Read the message carefully as some will indicate the problem and you'll be able to fix it quickly.
 2. If you don't know what issue the message is referring to, first make sure the basics are correct. Check your code carefully for typos, missing parentheses etc. Ensure that you are using the right data and tree, and that you have used the correct variable names and function names etc. 
-3. Run through all your code again slowly to check you didn't miss an important step. Look at the data (and the tree) at every stage to make sure they are changing as you expect them to.
+3. Run through all your code again slowly to check you didn't miss an important step. Look at the data (and the tree) at every stage to make sure they are changing as you expect them to. Make sure you didn't accidentally overwrite an object with something that has the same name.
 4. Restart R Studio, and clear the Global Environment by clicking the little broom button on the top right hand panel in a standard R Studio set up. Then try to run the code again.
 5. If none of these basic fixes work move onto the Error message itself. Read the message again and see if you can work out what the issue is.
 6. If you can't work out what the error means, try Googling it (remove any words specific to your data from it first). Google may be able to tell you what the issue is and help you find solutions on websites like [Stack Overflow](https://stackoverflow.com/).
@@ -95,6 +117,19 @@ There are a couple of ways you can help yourself avoid errors.
 
 ## What to do if you get a Warning message
 
+```{block, type = "info}
+Warning messages will have __not__ have the word "Error" in the message after you try to run the code. Many will have the word "Warning". Some will just print a message without the word "Warning". A warning message means that R has run the code as you asked BUT it thinks there is some information you need to consider. Maybe you did something silly? Or maybe it just wants to clarify to you exactly what it did.
+
+In PCMs the warnings may indicate unrealistic parameters or poor convergence.
+```
+
 1. Don't panic! Warning messages are common and there's probably an easy fix. 
 2. Read the warning carefully. Try to understand what it means. You may need to Google it. In many cases it is nothing to worry about, but it may be alerting you to a serious issue with your analysis.
 3. __Always__ check warning messages, do not ignore them.
+
+## Memory issues
+If your tree/dataset is too large, R may crash, especially for more computationally demanding analyses. In this situation, first check your code works by running it on a smaller subset of the tree/dataset. This will also give you an idea of how long the analysis might take on the whole dataset. You then will need to think about either: 
+1. Finding a better computer with more memory
+2. [Parallelisation](https://nceas.github.io/oss-lessons/parallel-computing-in-r/parallel-computing-in-r.html), i.e. running small analyses that can then be stuck back together again. This is often not very useful in PCMs but worth considering.
+3. Using High Performance Computing facilities to run the code remotely.
+Sometimes analyses just aren't feasible on certain datasets. 
